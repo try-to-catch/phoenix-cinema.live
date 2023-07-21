@@ -3,7 +3,10 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Genre;
+use App\Models\Movie;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +15,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        DB::transaction(function () {
+            $this->call([GenreSeeder::class, RoleSeeder::class]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+            Genre::query()->inRandomOrder()->take(10)
+                ->each(function (Genre $genre) {
+                    $genre->movies()->saveMany(Movie::factory()->count(2)->make());
+                });
+            
+        });
     }
 }
