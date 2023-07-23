@@ -13,14 +13,23 @@ class Movie extends Model
 {
     use HasFactory, HasUuids, Sluggable;
 
+    const AGE_RESTRICTIONS = ['0+', '6+', '12+', '16+', '18+'];
+
+    protected $casts = [
+        'release_year' => 'integer',
+        'start_showing' => 'date',
+        'end_showing' => 'date',
+    ];
+
     protected $fillable = [
         'title',
         'slug',
         'description',
+        'priority',
         'duration_in_minutes',
         'age_restriction',
         'thumbnail',
-        'release_date',
+        'release_year',
         'original_title',
         'production_country',
         'studio',
@@ -46,5 +55,10 @@ class Movie extends Model
     public function screenings(): HasMany
     {
         return $this->hasMany(Screening::class);
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 }
