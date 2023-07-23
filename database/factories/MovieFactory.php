@@ -2,10 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Actions\Images\StoreThumbnailAction;
 use App\Models\Movie;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Http\File;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Movie>
@@ -20,25 +19,25 @@ class MovieFactory extends Factory
     public function definition(): array
     {
         $thumbnailPath = public_path('/images/defaults/joker.jpg');
-        $thumbnail = new File($thumbnailPath);
-        $storeThumbnailAction = new StoreThumbnailAction();
-        $storagePath = $storeThumbnailAction->handle($thumbnail, 'movies');
+        $storagePath = "images/movies/" . Str::random(24) . '.jpg';
+        copy($thumbnailPath, storage_path("app/public/$storagePath"));
 
         $startingDate = now()->subMonths(rand(1, 3))->subDays(rand(1, 30));
 
         return [
             'title' => fake()->sentence(rand(2, 4)),
             'description' => fake()->paragraph(4),
+            'priority' => rand(1, 100),
             'duration_in_minutes' => fake()->numberBetween(60, 150),
-            'age_restriction' => (['G', 'PG', 'PG-13', 'R', 'NC-17'][rand(0, 4)]),
+            'age_restriction' => collect(Movie::AGE_RESTRICTIONS)->random(),
             'thumbnail' => $storagePath,
-            'release_date' => $startingDate->subDays(rand(5, 10))->startOfDay(),
+            'release_year' => fake()->year(),
             'original_title' => fake()->words(rand(1, 3), true),
             'production_country' => fake()->country(),
             'studio' => fake()->company(),
             'main_cast' => fake()->words(5, true),
-            'start_showing' => $startingDate->startOfDay(),
-            'end_showing' => $startingDate->addMonths(rand(1, 3))->addDays(rand(1, 30))->endOfDay(),
+            'start_showing' => $startingDate->format('Y-m-d'),
+            'end_showing' => $startingDate->addMonths(rand(1, 3))->addDays(rand(1, 30))->format('Y-m-d'),
         ];
     }
 }
