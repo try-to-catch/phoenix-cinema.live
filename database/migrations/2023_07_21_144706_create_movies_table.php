@@ -15,16 +15,17 @@ return new class extends Migration {
             $table->string('title');
             $table->string('slug')->unique();
             $table->string('description');
-            $table->string('duration_in_minutes');
+            $table->tinyInteger('priority');
+            $table->smallInteger('duration_in_minutes');
             $table->string('age_restriction');
             $table->string('thumbnail');
-            $table->timestamp('release_date')->nullable();
+            $table->year('release_year')->nullable();
             $table->string('original_title')->nullable();
             $table->string('production_country')->nullable();
             $table->string('studio')->nullable();
             $table->string('main_cast')->nullable();
-            $table->timestamp('start_showing')->nullable();
-            $table->timestamp('end_showing')->nullable();
+            $table->date('start_showing')->nullable();
+            $table->date('end_showing')->nullable();
             $table->timestamps();
         });
     }
