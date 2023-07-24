@@ -79,20 +79,13 @@ class MovieTest extends TestCase
                         ->where('slug', $movie->slug)
                         ->where('duration_in_minutes', $movie->duration_in_minutes)
                         ->where('age_restriction', $movie->age_restriction)
-                        ->where('thumbnail', $movie->thumbnail)
+                        ->where('thumbnail', $movie->thumbnail_path)
                         ->where('start_showing', $movie->start_showing->format('d-m-Y'))
                         ->where('end_showing', $movie->end_showing->format('d-m-Y'))
                         ->etc()
                     )->etc()
                 )
             );
-    }
-
-
-    public function test_non_admin_user_cannot_access_movie_list_view(): void
-    {
-        $this->actingAs($this->user)->get('/admin/movies')
-            ->assertStatus(403);
     }
 
 
@@ -110,13 +103,6 @@ class MovieTest extends TestCase
                     ->etc()
                 )
             );
-    }
-
-
-    public function test_non_admin_user_cannot_access_movie_create_view(): void
-    {
-        $this->actingAs($this->user)->get('/admin/movies/create')
-            ->assertStatus(403);
     }
 
 
@@ -151,14 +137,6 @@ class MovieTest extends TestCase
     }
 
 
-    public function test_non_admin_user_cannot_store_movie(): void
-    {
-        $this->actingAs($this->user)
-            ->post('/admin/movies', $this->getNewMovie())
-            ->assertStatus(403);
-    }
-
-
     public function test_movie_cannot_be_stored_with_invalid_data(): void
     {
         $newMovie = $this->getNewMovie();
@@ -176,16 +154,26 @@ class MovieTest extends TestCase
     }
 
 
-    public function test_movie_show_view_functions_properly(): void
+    public function test_movie_show_returns_redirect_to_movies_edit(): void
+    {
+        $this->withoutExceptionHandling();
+
+        $movie = Movie::factory()->create();
+
+        $this->actingAs($this->admin)->get('/admin/movies/' . $movie->slug)
+            ->assertRedirect('/admin/movies/' . $movie->slug . '/edit');
+    }
+
+    public function test_movie_edit_view_functions_properly(): void
     {
         $this->withoutExceptionHandling();
 
         $movie = Movie::factory()->create();
         $movie->genres()->attach($this->getRandomGenreIDs());
 
-        $this->actingAs($this->admin)->get('/admin/movies/' . $movie->slug)
+        $this->actingAs($this->admin)->get('/admin/movies/' . $movie->slug . '/edit')
             ->assertInertia(fn(Assert $page) => $page
-                ->component('Admin/Movies/Show')
+                ->component('Admin/Movies/Edit')
                 ->has('movie', fn(Assert $page) => $page
                     ->has('data', fn(Assert $page) => $page
                         ->where('id', $movie->id)
@@ -194,7 +182,7 @@ class MovieTest extends TestCase
                         ->where('description', $movie->description)
                         ->where('duration_in_minutes', $movie->duration_in_minutes)
                         ->where('age_restriction', $movie->age_restriction)
-                        ->where('thumbnail', $movie->thumbnail)
+                        ->where('thumbnail', $movie->thumbnail_path)
                         ->where('release_year', $movie->release_year)
                         ->where('production_country', $movie->production_country)
                         ->where('studio', $movie->studio)
@@ -211,5 +199,92 @@ class MovieTest extends TestCase
                     )
                 )
             );
+    }
+
+
+    public function test_movie_can_be_updated_by_admin(): void
+    {
+        $this->withoutExceptionHandling();
+
+        $movie = Movie::factory()->create();
+        $movie->genres()->attach($this->getRandomGenreIDs());
+
+        $this->actingAs($this->admin)
+            ->put('/admin/movies/' . $movie->slug, $this->getNewMovie())
+            ->assertRedirect('/admin/movies/' . $movie->slug . '/edit');
+
+        $this->assertDatabaseCount('movies', 1)
+            ->assertDatabaseHas('movies', [
+                'title' => 'Test Movie',
+                'slug' => $movie->slug,
+                'description' => 'Test Description',
+                'priority' => 2,
+                'duration_in_minutes' => 120,
+                'age_restriction' => '16+',
+                'release_year' => '2021',
+                'original_title' => 'Test Original Title',
+                'production_country' => 'Test Production Country',
+                'studio' => 'Test Studio',
+                'main_cast' => 'Test Main Cast',
+                'start_showing' => '2021-10-10 00:00:00',
+                'end_showing' => '2021-10-20 00:00:00',
+            ]);
+
+        $updatedMovie = Movie::query()->first('thumbnail');
+        $this->assertFileExists(storage_path("app/public/$updatedMovie->thumbnail"));
+        $this->assertFileDoesNotExist(storage_path("app/public/$movie->thumbnail"));
+    }
+
+
+    public function test_movie_cannot_be_updated_with_invalid_data(): void
+    {
+        $movie = Movie::factory()->create();
+
+        $newMovie = $this->getNewMovie();
+
+        $newMovie['title'] = '';
+        $newMovie['thumbnail'] = 'string is not a file';
+
+        $this->actingAs($this->admin)
+            ->put('/admin/movies/' . $movie->slug, $newMovie)
+            ->assertStatus(302)
+            ->assertSessionHasErrors([
+                'title',
+                'thumbnail',
+            ]);
+    }
+
+
+    public function test_movie_can_be_deleted_by_admin(): void
+    {
+        $this->withoutExceptionHandling();
+
+        $movie = Movie::factory()->create();
+
+        $this->actingAs($this->admin)
+            ->delete('/admin/movies/' . $movie->slug)
+            ->assertRedirect('/admin/movies');
+
+        $this->assertDatabaseCount('movies', 0);
+
+        $this->assertFileDoesNotExist(storage_path("app/public/$movie->thumbnail"));
+    }
+
+
+    public function test_non_admin_user_cannot_access_to_movies(): void
+    {
+        $movie = Movie::factory()->create();
+
+        $this->actingAs($this->user)
+            ->post('/admin/movies')
+            ->assertStatus(403);
+
+        $this->actingAs($this->user)
+            ->put('/admin/movies/' . $movie->slug)
+            ->assertStatus(403);
+
+        $this->actingAs($this->user)
+            ->delete('/admin/movies/' . $movie->slug)
+            ->assertStatus(403);
     }
 }
