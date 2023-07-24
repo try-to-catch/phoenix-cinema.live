@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -60,5 +61,12 @@ class Movie extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    public function thumbnailPath(): Attribute
+    {
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) => '/storage/' . $attributes['thumbnail'],
+        );
     }
 }
