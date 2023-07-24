@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Images\StoreThumbnailAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Movie\StoreMovieRequest;
+use App\Http\Requests\Admin\Movie\UpdateMovieRequest;
 use App\Http\Resources\Admin\Genre\GenreResource;
 use App\Http\Resources\Admin\Movie\MovieItemResource;
 use App\Http\Resources\Admin\Movie\MovieListResource;
 use App\Models\Genre;
 use App\Models\Movie;
+use App\Services\ThumbnailService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,7 +19,7 @@ class MovieController extends Controller
 {
 
 
-    public function __construct(public StoreThumbnailAction $storeThumbnailAction)
+    public function __construct(public ThumbnailService $thumbnailService)
     {
     }
 
@@ -28,16 +28,19 @@ class MovieController extends Controller
      */
     public function index(): Response
     {
-        $movies = Movie::select([
-            'id',
-            'title',
-            'slug',
-            'duration_in_minutes',
-            'age_restriction',
-            'thumbnail',
-            'start_showing',
-            'end_showing',
-        ])->paginate();
+        $movies = Movie::query()
+            ->select([
+                'id',
+                'title',
+                'slug',
+                'duration_in_minutes',
+                'age_restriction',
+                'thumbnail',
+                'start_showing',
+                'end_showing',
+            ])
+            ->latest('updated_at')
+            ->paginate();
 
         return Inertia::render('Admin/Movies/Index', [
             'movies' => MovieListResource::collection($movies),
@@ -60,12 +63,17 @@ class MovieController extends Controller
     public function store(StoreMovieRequest $request): RedirectResponse
     {
         $newMovie = $request->validated();
-        $newMovie['thumbnail'] = $this->storeThumbnailAction->handle($newMovie['thumbnail'], 'movie');
+        $newMovie['thumbnail'] = $this->thumbnailService->store($newMovie['thumbnail'], 'movie');
 
         $movie = tap(
-            Movie::create($newMovie),
+            Movie::query()->create($newMovie),
             fn(Movie $movie) => $movie->genres()->attach($newMovie['genres'])
         );
+
+        session()->flash('message', [
+            'type' => 'success',
+            'text' => 'Фільм успішно створено.',
+        ]);
 
         return to_route('admin.movies.show', ['movie' => $movie->slug]);
     }
@@ -73,35 +81,58 @@ class MovieController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Movie $movie): Response
+    public function show(Movie $movie): RedirectResponse
     {
-        $movie->load('genres');
-        return Inertia::render('Admin/Movies/Show', [
-            'movie' => new MovieItemResource($movie),
-        ]);
+        return to_route('admin.movies.edit', ['movie' => $movie->slug]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Movie $movie)
+    public function edit(Movie $movie): Response
     {
-        //
+        $movie->load('genres');
+
+        return Inertia::render('Admin/Movies/Edit', [
+            'movie' => new MovieItemResource($movie),
+            'genres' => GenreResource::collection(Genre::all('id', 'name'))
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Movie $movie)
+    public function update(UpdateMovieRequest $request, Movie $movie): RedirectResponse
     {
-        //
+        $newMovie = $request->validated();
+
+        $newMovie['thumbnail'] = $this->thumbnailService->update($newMovie['thumbnail'], $movie->thumbnail);
+
+        $movie->update($newMovie);
+        $movie->genres()->sync($newMovie['genres']);
+
+        session()->flash('message', [
+            'type' => 'success',
+            'text' => 'Фільм успішно оновлено.',
+        ]);
+
+        return to_route('admin.movies.edit', ['movie' => $movie->slug]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Movie $movie)
+    public function destroy(Movie $movie): RedirectResponse
     {
-        //
+        $this->thumbnailService->destroy($movie->thumbnail);
+
+        $movie->delete();
+
+        session()->flash('message', [
+            'type' => 'success',
+            'text' => 'Фільм успішно видалено.',
+        ]);
+
+        return to_route('admin.movies.index');
     }
 }
