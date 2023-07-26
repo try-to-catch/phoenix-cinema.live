@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +18,7 @@ class Hall extends Model
     ];
 
     protected $fillable = [
-        'name',
+        'title',
         'is_available',
         'is_preset',
     ];
@@ -25,5 +26,10 @@ class Hall extends Model
     public function seats(): hasMany
     {
         return $this->hasMany(Seat::class);
+    }
+
+    public function scopeWherePreset(): Builder
+    {
+        return $this->where('is_preset', true);
     }
 }

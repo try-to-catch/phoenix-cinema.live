@@ -18,7 +18,7 @@ class HallFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->words(rand(1, 3), true),
+            'title' => fake()->words(rand(1, 3), true),
             'is_preset' => fake()->boolean(),
             'is_available' => true,
         ];

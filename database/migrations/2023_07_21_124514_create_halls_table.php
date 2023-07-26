@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('halls', function (Blueprint $table) {
             $table->uuid('id')->primary();
             
-            $table->string('name');
+            $table->string('title');
             $table->boolean('is_preset')->default(false);
             $table->boolean('is_available')->default(true);
 
