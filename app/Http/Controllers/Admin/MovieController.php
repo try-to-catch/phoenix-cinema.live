@@ -91,10 +91,8 @@ class MovieController extends Controller
      */
     public function edit(Movie $movie): Response
     {
-        $movie->load('genres');
-
         return Inertia::render('Admin/Movies/Edit', [
-            'movie' => new MovieItemResource($movie),
+            'movie' => new MovieItemResource($movie->load('genres')),
             'genres' => GenreResource::collection(Genre::all('id', 'name'))
         ]);
     }
