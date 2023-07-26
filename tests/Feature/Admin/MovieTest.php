@@ -30,19 +30,19 @@ class MovieTest extends TestCase
     }
 
 
-    public function createThumbnail(): File
+    private function createThumbnail(): File
     {
         return File::image('thumbnail.jpg', 320, 472);
     }
 
 
-    public function getRandomGenreIDs(int $number = 4): array
+    private function getRandomGenreIDs(int $number = 4): array
     {
         return Genre::query()->inRandomOrder()->take($number)->pluck('id')->toArray();
     }
 
 
-    public function getNewMovie(): array
+    private function getNewMovie(): array
     {
         return [
             'title' => 'Test Movie',
