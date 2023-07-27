@@ -18,12 +18,7 @@ class SeatResource extends JsonResource
         $preparedSeats = [];
 
         foreach ($seats as $seat) {
-            $preparedSeats[$seat->row_number][$seat->seat_number] = [
-                'id' => $seat->id,
-                'type' => $seat->type,
-                'row_number' => $seat->row_number,
-                'seat_number' => $seat->seat_number,
-            ];
+            $preparedSeats[$seat->row_number][$seat->seat_number] = $seat;
         }
 
         return $preparedSeats;
