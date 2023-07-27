@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,8 +16,8 @@ class Role extends Model
         'name',
     ];
 
-    public function scopeWhereAdmin()
+    public function scopeWhereAdmin(Builder $query): Builder
     {
-        return $this->where('name', 'admin');
+        return $query->where('name', 'admin');
     }
 }

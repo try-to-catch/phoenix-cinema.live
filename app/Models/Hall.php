@@ -28,8 +28,8 @@ class Hall extends Model
         return $this->hasMany(Seat::class);
     }
 
-    public function scopeWherePreset(): Builder
+    public function scopeWherePreset(Builder $query): Builder
     {
-        return $this->where('is_preset', true);
+        return $query->where('is_preset', true);
     }
 }
