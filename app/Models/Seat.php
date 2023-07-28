@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,4 +27,9 @@ class Seat extends Model
         'type',
         'is_taken',
     ];
+
+    public function scopeOrderByPosition(Builder $query): Builder
+    {
+        return $query->orderBy('row_number')->orderBy('seat_number');
+    }
 }
