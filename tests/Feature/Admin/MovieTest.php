@@ -70,6 +70,7 @@ class MovieTest extends TestCase
         $movie = Movie::factory()->create();
 
         $this->actingAs($this->admin)->get('/admin/movies')
+            ->assertOk()
             ->assertInertia(fn(Assert $page) => $page
                 ->component('Admin/Movies/Index')
                 ->has('movies', fn(Assert $page) => $page
@@ -94,6 +95,7 @@ class MovieTest extends TestCase
         $this->withoutExceptionHandling();
 
         $this->actingAs($this->admin)->get('/admin/movies/create')
+            ->assertOk()
             ->assertInertia(fn(Assert $page) => $page
                 ->component('Admin/Movies/Create')
                 ->has('genres', 1, fn(Assert $page) => $page
@@ -211,7 +213,7 @@ class MovieTest extends TestCase
 
         $this->actingAs($this->admin)
             ->put('/admin/movies/' . $movie->slug, $this->getNewMovie())
-            ->assertRedirect('/admin/movies/' . $movie->slug . '/edit');
+            ->assertRedirect('/admin/movies/' . $movie->slug);
 
         $this->assertDatabaseCount('movies', 1)
             ->assertDatabaseHas('movies', [
