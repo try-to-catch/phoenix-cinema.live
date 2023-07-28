@@ -2,20 +2,27 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Seat\StoreSeatsAction;
+use App\Actions\Seats\StoreSeatsAction;
+use App\Actions\Seats\UpdateSeatsAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Hall\StoreHallRequest;
+use App\Http\Requests\Admin\Hall\UpdateHallRequest;
 use App\Http\Resources\Admin\Hall\HallListResource;
 use App\Http\Resources\Admin\Hall\HallWithSeatsResource;
 use App\Models\Hall;
 use App\Models\Seat;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class HallController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(Hall::class, 'hall');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -45,7 +52,12 @@ class HallController extends Controller
         $hall = Hall::create($request->validated());
         $storeSeats->handle($hall, $request->validated()['seats']);
 
-        return redirect()->route('admin.halls.show', $hall);
+        session()->flash('message', [
+            'type' => 'success',
+            'text' => 'Зал успішно створено.',
+        ]);
+
+        return to_route('admin.halls.show', $hall);
     }
 
     /**
@@ -53,7 +65,7 @@ class HallController extends Controller
      */
     public function show(Hall $hall): RedirectResponse
     {
-        return redirect()->route('admin.halls.edit', $hall);
+        return to_route('admin.halls.edit', $hall);
     }
 
     /**
@@ -69,16 +81,33 @@ class HallController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Hall $hall)
+    public function update(UpdateHallRequest $request, Hall $hall, UpdateSeatsAction $updateSeats): RedirectResponse
     {
-        //
+        $updatedHall = $request->validated();
+
+        $hall->update($updatedHall);
+        $updateSeats->handle($hall, $updatedHall['updated_seats']);
+
+        session()->flash('message', [
+            'type' => 'success',
+            'text' => 'Зал успішно оновлено.',
+        ]);
+
+        return to_route('admin.halls.show', $hall);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Hall $hall)
+    public function destroy(Hall $hall): RedirectResponse
     {
-        //
+        $hall->delete();
+
+        session()->flash('message', [
+            'type' => 'success',
+            'text' => 'Зал успішно видалено.',
+        ]);
+
+        return to_route('admin.halls.index');
     }
 }
