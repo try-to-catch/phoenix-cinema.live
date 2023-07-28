@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Seat;
+namespace App\Actions\Seats;
 
 use App\Models\Hall;
 
