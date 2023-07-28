@@ -114,7 +114,7 @@ class MovieController extends Controller
             'text' => 'Фільм успішно оновлено.',
         ]);
 
-        return to_route('admin.movies.edit', ['movie' => $movie->slug]);
+        return to_route('admin.movies.show', ['movie' => $movie->slug]);
     }
 
     /**
