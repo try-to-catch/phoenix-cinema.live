@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin\Hall;
 use App\Models\Seat;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreHallRequest extends FormRequest
 {
@@ -21,7 +22,7 @@ class StoreHallRequest extends FormRequest
             'seats' => ['required', 'array'],
             'seats.*' => ['required', 'array'],
             'seats.*.*' => ['required', 'array'],
-            'seats.*.*.type' => ['required', 'string', 'in:' . implode(',', array_values(Seat::SEAT_TYPES))],
+            'seats.*.*.type' => ['required', 'string', Rule::in(Seat::SEAT_TYPES)],
         ];
     }
 }
