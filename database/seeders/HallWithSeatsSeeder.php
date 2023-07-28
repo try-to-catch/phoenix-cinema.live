@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Actions\Seats\StoreSeatsAction;
 use App\Models\Hall;
 use Illuminate\Database\Seeder;
 
@@ -10,27 +11,21 @@ class HallWithSeatsSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run(StoreSeatsAction $storeSeats): void
     {
-        $halls = Hall::factory()->count(3)->create();
-
         $seats = [
             [
-                ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard']
+                ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard']
             ],
             [
-                ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard']
+                ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'],
             ],
             [
-                ['type' => 'premium'], ['type' => 'premium'], ['type' => 'premium']
-            ],
-            [
-                ['type' => 'premium'], ['type' => 'premium'], ['type' => 'premium']
-            ],
+                ['type' => 'premium'], ['type' => 'premium'], ['type' => 'premium'], ['type' => 'premium'],
+            ]
         ];
 
-//        $halls->each(function (Hall $hall) use ($seats) {
-//            $hall->seats()->createMany($seats);
-//        });
+        $hall = Hall::factory()->create(['is_preset' => true]);
+        $storeSeats->handle($hall, $seats);
     }
 }
