@@ -70,11 +70,6 @@ class MovieController extends Controller
             fn(Movie $movie) => $movie->genres()->attach($newMovie['genres'])
         );
 
-        session()->flash('message', [
-            'type' => 'success',
-            'text' => 'Фільм успішно створено.',
-        ]);
-
         return to_route('admin.movies.show', ['movie' => $movie->slug]);
     }
 
@@ -109,11 +104,6 @@ class MovieController extends Controller
         $movie->update($newMovie);
         $movie->genres()->sync($newMovie['genres']);
 
-        session()->flash('message', [
-            'type' => 'success',
-            'text' => 'Фільм успішно оновлено.',
-        ]);
-
         return to_route('admin.movies.show', ['movie' => $movie->slug]);
     }
 
@@ -125,11 +115,6 @@ class MovieController extends Controller
         $this->thumbnailService->destroy($movie->thumbnail);
 
         $movie->delete();
-
-        session()->flash('message', [
-            'type' => 'success',
-            'text' => 'Фільм успішно видалено.',
-        ]);
 
         return to_route('admin.movies.index');
     }

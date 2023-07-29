@@ -49,11 +49,6 @@ class HallTemplateController extends Controller
         $template = HallTemplate::query()->create($request->validated());
         $storeSeats->handle($template, $request->validated()['seats']);
 
-        session()->flash('message', [
-            'type' => 'success',
-            'text' => 'Зал успішно створено.',
-        ]);
-
         return to_route('admin.hall_templates.show', $template);
     }
 
@@ -85,11 +80,6 @@ class HallTemplateController extends Controller
         $template->update($updatedHall);
         $updateSeats->handle($template, $updatedHall['updated_seats']);
 
-        session()->flash('message', [
-            'type' => 'success',
-            'text' => 'Зал успішно оновлено.',
-        ]);
-
         return to_route('admin.hall_templates.show', $template);
     }
 
@@ -99,11 +89,6 @@ class HallTemplateController extends Controller
     public function destroy(HallTemplate $template): RedirectResponse
     {
         $template->delete();
-
-        session()->flash('message', [
-            'type' => 'success',
-            'text' => 'Зал успішно видалено.',
-        ]);
 
         return to_route('admin.hall_templates.index');
     }
