@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Seat extends Model
 {
@@ -31,5 +32,10 @@ class Seat extends Model
     public function scopeOrderByPosition(Builder $query): Builder
     {
         return $query->orderBy('row_number')->orderBy('seat_number');
+    }
+
+    public function seatable(): MorphTo
+    {
+        return $this->morphTo();
     }
 }
