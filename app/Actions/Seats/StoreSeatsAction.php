@@ -2,14 +2,14 @@
 
 namespace App\Actions\Seats;
 
-use App\Models\Hall;
+use App\Models\HallTemplate;
 
 /**
  * This action is used to store seats in the hall in the correct format.
  */
 class StoreSeatsAction
 {
-    public function handle(Hall $hall, array $seats): void
+    public function handle(HallTemplate $hall, array $seats): void
     {
         $preparedSeats = [];
 

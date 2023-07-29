@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Admin\Hall;
+namespace App\Http\Resources\Admin\HallTemplate;
 
+use App\Http\Resources\Admin\Seat\SeatResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class HallListResource extends JsonResource
+class HallTemplateWithSeatsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,7 +19,7 @@ class HallListResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'is_available' => $this->is_available,
-            'seats_count' => $this->seats_count,
+            'seats' => SeatResource::make($this->seats)->resolve(),
         ];
     }
 }

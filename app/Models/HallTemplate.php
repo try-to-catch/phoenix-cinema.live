@@ -7,12 +7,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Hall extends Model
+class HallTemplate extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $casts = [
+        'is_available' => 'boolean',
+    ];
+
     protected $fillable = [
         'title',
+        'is_available',
     ];
 
     public function seats(): MorphMany

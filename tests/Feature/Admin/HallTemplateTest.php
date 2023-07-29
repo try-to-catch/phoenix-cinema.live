@@ -2,34 +2,33 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\Hall;
+use App\Models\HallTemplate;
 use App\Models\Role;
 use App\Models\Seat;
 use App\Models\User;
-use Database\Seeders\HallWithSeatsSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
-class HallTest extends TestCase
+class HallTemplateTest extends TestCase
 {
     use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->seed(RoleSeeder::class);
 
-        $adminId = Role::whereAdmin()->pluck('id');
         $this->user = User::factory()->create();
 
         $this->admin = User::factory()->create();
-        $this->admin->roles()->attach($adminId);
+        $this->admin->roles()->attach(Role::whereAdmin()->pluck('id'));
     }
 
 
-    private function getNewHall(): array
+    private function getNewTemplate(): array
     {
         return [
             'title' => 'Test Hall',
@@ -50,22 +49,29 @@ class HallTest extends TestCase
     }
 
 
+    private function getTemplateWithRandomSeat()
+    {
+        $template = HallTemplate::factory()->create();
+        return $template->load(['seats' => fn($query) => $query->inRandomOrder()->take(1)->get()])
+            ->first(['id', 'title', 'is_available']);
+    }
+
     public function test_hall_list_view_functions_properly()
     {
         $this->withoutExceptionHandling();
 
-        $hall = Hall::factory()->create(['is_preset' => true]);
+        $template = HallTemplate::factory()->create();
 
-        $this->actingAs($this->admin)->get('/admin/halls')
+        $this->actingAs($this->admin)->get('/admin/hall-templates')
             ->assertOk()
             ->assertInertia(fn(Assert $page) => $page
-                ->component('Admin/Halls/Index')
-                ->has('halls', fn(Assert $page) => $page
+                ->component('Admin/HallTemplates/Index')
+                ->has('hall_templates', fn(Assert $page) => $page
                     ->has('data', 1, fn(Assert $page) => $page
-                        ->where('id', $hall->id)
-                        ->where('title', $hall->title)
-                        ->where('is_available', $hall->is_available)
-                        ->where('seats_count', $hall->seats()->count())
+                        ->where('id', $template->id)
+                        ->where('title', $template->title)
+                        ->where('is_available', $template->is_available)
+                        ->where('seats_count', $template->seats()->count())
                     )->etc()
                 )
             );
@@ -76,10 +82,10 @@ class HallTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->actingAs($this->admin)->get('/admin/halls/create')
+        $this->actingAs($this->admin)->get('/admin/hall-templates/create')
             ->assertOk()
             ->assertInertia(fn(Assert $page) => $page
-                ->component('Admin/Halls/Create')
+                ->component('Admin/HallTemplates/Create')
                 ->whereContains('seat_types', Seat::SEAT_TYPES)
             );
     }
@@ -89,10 +95,10 @@ class HallTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->actingAs($this->admin)->post('/admin/halls', $this->getNewHall())
-            ->assertRedirect('/admin/halls/' . Hall::first()->id);
+        $this->actingAs($this->admin)->post('/admin/hall-templates', $this->getNewTemplate())
+            ->assertRedirect('/admin/hall-templates/' . HallTemplate::first()->id);
 
-        $this->assertDatabaseHas('halls', [
+        $this->assertDatabaseHas('hall_templates', [
             'title' => 'Test Hall',
             'is_available' => true,
         ]);
@@ -101,13 +107,13 @@ class HallTest extends TestCase
 
     public function test_movie_cannot_be_stored_with_invalid_data(): void
     {
-        $newHall = $this->getNewHall();
+        $newHall = $this->getNewTemplate();
 
         $newHall['title'] = '';
         $newHall['seats'] = ['standard', 'premium'];
 
         $this->actingAs($this->admin)
-            ->post('/admin/halls', $newHall)
+            ->post('/admin/hall-templates', $newHall)
             ->assertStatus(302)
             ->assertSessionHasErrors([
                 'title',
@@ -116,14 +122,14 @@ class HallTest extends TestCase
     }
 
 
-    public function test_edit_show_returns_redirect_to_halls_edit(): void
+    public function test_edit_show_returns_redirect_to_hall_templates_edit(): void
     {
         $this->withoutExceptionHandling();
 
-        $hall = Hall::factory()->create(['is_preset' => true]);
+        $template = HallTemplate::factory()->create();
 
-        $this->actingAs($this->admin)->get('/admin/halls/' . $hall->id)
-            ->assertRedirect('/admin/halls/' . $hall->id . '/edit');
+        $this->actingAs($this->admin)->get('/admin/hall-templates/' . $template->id)
+            ->assertRedirect('/admin/hall-templates/' . $template->id . '/edit');
     }
 
 
@@ -131,21 +137,19 @@ class HallTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->seed(HallWithSeatsSeeder::class);
+        $template = HallTemplate::factory()->create();
 
-        $hall = Hall::first();
-
-        $this->actingAs($this->admin)->get('/admin/halls/' . $hall->id . '/edit')
+        $this->actingAs($this->admin)->get('/admin/hall-templates/' . $template->id . '/edit')
             ->assertOk()
             ->assertInertia(fn(Assert $page) => $page
-                ->component('Admin/Halls/Edit')
+                ->component('Admin/HallTemplates/Edit')
                 ->has('hall', fn(Assert $page) => $page
                     ->has('data', fn(Assert $page) => $page
-                        ->where('id', $hall->id)
-                        ->where('title', $hall->title)
-                        ->where('is_available', $hall->is_available)
+                        ->where('id', $template->id)
+                        ->where('title', $template->title)
+                        ->where('is_available', $template->is_available)
                         ->has('seats', fn(Assert $page) => $page
-                            ->count(count($this->getNewHall()['seats']))
+                            ->count(count($this->getNewTemplate()['seats']))
                             ->has('0.0.id')
                             ->has('0.0.type')
                             ->has('0.0.row_number')
@@ -162,40 +166,32 @@ class HallTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->seed(HallWithSeatsSeeder::class);
+        $template = $this->getTemplateWithRandomSeat();
 
-        $hall = Hall::query()
-            ->with(['seats' => fn($query) => $query->inRandomOrder()->take(1)->get()])
-            ->first();
-
-        $hall->seats[0]->type = $hall->seats[0]->type !== 'premium' ? 'premium' : 'standard';
+        $template->seats[0]->type = $template->seats[0]->type !== 'premium' ? 'premium' : 'standard';
 
         $this->actingAs($this->admin)
-            ->patch('/admin/halls/' . $hall->id, [...$this->getNewHall(), 'updated_seats' => $hall->seats->toArray()])
-            ->assertRedirect('/admin/halls/' . $hall->id);
+            ->patch('/admin/hall-templates/' . $template->id, [...$this->getNewTemplate(), 'updated_seats' => $template->seats->toArray()])
+            ->assertRedirect('/admin/hall-templates/' . $template->id);
 
-        $this->assertDatabaseHas('halls', [
+        $this->assertDatabaseHas('hall_templates', [
             'title' => 'Test Hall',
             'is_available' => true,
         ]);
 
-        $this->assertDatabaseHas('seats', $hall->seats[0]->only(['id', 'type', 'row_number', 'seat_number']));
+        $this->assertDatabaseHas('seats', $template->seats[0]->only(['id', 'type', 'row_number', 'seat_number']));
     }
 
 
     public function test_hall_cannot_be_updated_with_invalid_data(): void
     {
-        $this->seed(HallWithSeatsSeeder::class);
+        $template = $this->getTemplateWithRandomSeat();
 
-        $hall = Hall::query()
-            ->with(['seats' => fn($query) => $query->inRandomOrder()->take(1)->get()])
-            ->first(['id', 'title', 'is_available']);
-
-        $hall->title = ''; //Title cannot be empty
-        $hall->seats[0]->type = 'VIP'; //There is no such a type
+        $template->title = ''; //Title cannot be empty
+        $template->seats[0]->type = 'VIP'; //There is no such a type
 
         $this->actingAs($this->admin)
-            ->patch('/admin/halls/' . $hall->id, [...$hall->toArray(), 'updated_seats' => $hall->seats->toArray()])
+            ->patch('/admin/hall-templates/' . $template->id, [...$template->toArray(), 'updated_seats' => $template->seats->toArray()])
             ->assertStatus(302)
             ->assertSessionHasErrors([
                 'title',
@@ -208,44 +204,30 @@ class HallTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->seed(HallWithSeatsSeeder::class);
+        $template = HallTemplate::factory()->create();
 
-        $hall = Hall::first();
+        $this->actingAs($this->admin)->delete('/admin/hall-templates/' . $template->id)
+            ->assertRedirect('/admin/hall-templates');
 
-        $this->actingAs($this->admin)->delete('/admin/halls/' . $hall->id)
-            ->assertRedirect('/admin/halls');
-
-        $this->assertDatabaseMissing('halls', ['id' => $hall->id]);
-        $this->assertDatabaseMissing('seats', ['hall_id' => $hall->id]);
+        $this->assertDatabaseMissing('hall_templates', ['id' => $template->id]);
+        $this->assertDatabaseMissing('seats', ['hall_id' => $template->id]);
     }
 
 
     public function test_non_admin_user_cannot_access_to_movies(): void
     {
-        $hall = Hall::factory()->create(['is_preset' => true]);
+        $template = HallTemplate::factory()->create();
 
         $this->actingAs($this->user)
-            ->post('/admin/halls')
-            ->assertStatus(403);
-
-        $this->actingAs($this->user)
-            ->put('/admin/halls/' . $hall->id)
+            ->post('/admin/hall-templates')
             ->assertStatus(403);
 
         $this->actingAs($this->user)
-            ->delete('/admin/halls/' . $hall->id)
-            ->assertStatus(403);
-    }
-
-
-    public function test_preset_hall_cannot_be_deleted_updated(): void
-    {
-        $hall = Hall::factory()->create(['is_preset' => false]);
-
-        $this->actingAs($this->admin)->delete('/admin/halls/' . $hall->id)
+            ->put('/admin/hall-templates/' . $template->id)
             ->assertStatus(403);
 
-        $this->actingAs($this->admin)->patch('/admin/halls/' . $hall->id, $hall->toArray())
+        $this->actingAs($this->user)
+            ->delete('/admin/hall-templates/' . $template->id)
             ->assertStatus(403);
     }
 }
