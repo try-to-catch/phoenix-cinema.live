@@ -13,13 +13,11 @@ return new class extends Migration {
         Schema::create('seats', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuidMorphs('seatable');
-            
+
             $table->integer('seat_number');
             $table->integer('row_number');
             $table->string('type');
             $table->boolean('is_taken')->default(false);
-
-            $table->timestamps();
         });
     }
 
