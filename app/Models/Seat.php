@@ -19,6 +19,7 @@ class Seat extends Model
         3 => 'premium',
     ];
 
+    public $timestamps = false;
     protected $casts = [
         'is_taken' => 'boolean',
     ];
