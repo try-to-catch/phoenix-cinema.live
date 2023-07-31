@@ -179,7 +179,9 @@ class HallTemplateTest extends TestCase
             'is_available' => true,
         ]);
 
-        $this->assertDatabaseHas('seats', $template->seats[0]->only(['id', 'type', 'row_number', 'seat_number']));
+        $seat = $template->seats[0]->only(['id', 'type', 'row_number', 'seat_number']);
+        $seat['type'] = array_search($seat['type'], Seat::SEAT_TYPES);
+        $this->assertDatabaseHas('seats', $seat);
     }
 
 
