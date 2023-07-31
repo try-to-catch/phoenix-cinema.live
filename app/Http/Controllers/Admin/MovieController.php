@@ -70,7 +70,7 @@ class MovieController extends Controller
             fn(Movie $movie) => $movie->genres()->attach($newMovie['genres'])
         );
 
-        return to_route('admin.movies.show', ['movie' => $movie->slug]);
+        return to_route('admin.movies.show', $movie);
     }
 
     /**
@@ -78,7 +78,7 @@ class MovieController extends Controller
      */
     public function show(Movie $movie): RedirectResponse
     {
-        return to_route('admin.movies.edit', ['movie' => $movie->slug]);
+        return to_route('admin.movies.edit', $movie);
     }
 
     /**
@@ -104,7 +104,7 @@ class MovieController extends Controller
         $movie->update($newMovie);
         $movie->genres()->sync($newMovie['genres']);
 
-        return to_route('admin.movies.show', ['movie' => $movie->slug]);
+        return to_route('admin.movies.show', $movie);
     }
 
     /**
