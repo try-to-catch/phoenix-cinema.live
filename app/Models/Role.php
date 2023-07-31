@@ -16,7 +16,7 @@ class Role extends Model
         'name',
     ];
 
-    public function scopeWhereAdmin(Builder $query): Builder
+    public function scopeAdmin(Builder $query): Builder
     {
         return $query->where('name', 'admin');
     }

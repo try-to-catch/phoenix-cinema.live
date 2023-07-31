@@ -22,7 +22,7 @@ class MovieTest extends TestCase
         parent::setUp();
         $this->seed([RoleSeeder::class, GenreSeeder::class]);
 
-        $adminId = Role::whereAdmin()->pluck('id');
+        $adminId = Role::admin()->pluck('id');
         $this->user = User::factory()->create();
 
         $this->admin = User::factory()->create();

@@ -24,7 +24,7 @@ class HallTemplateTest extends TestCase
         $this->user = User::factory()->create();
 
         $this->admin = User::factory()->create();
-        $this->admin->roles()->attach(Role::whereAdmin()->pluck('id'));
+        $this->admin->roles()->attach(Role::admin()->pluck('id'));
     }
 
 
