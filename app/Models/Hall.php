@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Hall extends Model
@@ -19,5 +20,10 @@ class Hall extends Model
     public function seats(): MorphMany
     {
         return $this->morphMany(Seat::class, 'seatable');
+    }
+
+    public function screenings(): HasMany
+    {
+        return $this->hasMany(Screening::class);
     }
 }
