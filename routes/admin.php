@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\HallTemplateController;
 use App\Http\Controllers\Admin\MovieController;
+use App\Http\Controllers\Admin\ScreeningController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -18,3 +19,5 @@ Route::prefix('hall-templates')->name('hall_templates.')->controller(HallTemplat
         Route::match(['put', 'patch'], '/{template}', 'update')->name('update');
         Route::delete('/{template}', 'destroy')->name('destroy');
     });
+
+Route::resource('screenings', ScreeningController::class);
