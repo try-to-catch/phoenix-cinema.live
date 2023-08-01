@@ -122,7 +122,7 @@ class HallTemplateTest extends TestCase
     }
 
 
-    public function test_edit_show_returns_redirect_to_hall_templates_edit(): void
+    public function test_show_returns_redirect_to_hall_templates_edit_page(): void
     {
         $this->withoutExceptionHandling();
 
