@@ -12,13 +12,13 @@ return new class extends Migration {
     {
         Schema::create('screenings', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            
+
             $table->foreignUuid('movie_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('hall_id')->constrained()->cascadeOnDelete();
             $table->timestamp('start_time');
             $table->timestamp('end_time');
             $table->integer('standard_seat_price_in_cents');
-            $table->integer('vip_seat_price_in_cents');
+            $table->integer('premium_seat_price_in_cents');
 
             $table->timestamps();
         });
