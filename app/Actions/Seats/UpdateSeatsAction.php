@@ -13,7 +13,9 @@ class UpdateSeatsAction
     {
         foreach ($updatedSeats as $updatedSeatData) {
             $seatId = $updatedSeatData['id'];
-            $hall->seats()->updateOrCreate(['id' => $seatId], $updatedSeatData);
+            $hall->seats()->updateOrCreate(['id' => $seatId], [
+                'type' => $updatedSeatData['type'],
+            ]);
         }
 
     }

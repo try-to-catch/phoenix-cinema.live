@@ -64,10 +64,12 @@ class MovieController extends Controller
     {
         $newMovie = $request->validated();
         $newMovie['thumbnail'] = $this->thumbnailService->store($newMovie['thumbnail'], 'movie');
+        $genres = $newMovie['genres'];
+        unset($newMovie['genres']);
 
         $movie = tap(
             Movie::query()->create($newMovie),
-            fn(Movie $movie) => $movie->genres()->attach($newMovie['genres'])
+            fn(Movie $movie) => $movie->genres()->attach($genres)
         );
 
         return to_route('admin.movies.show', $movie);
@@ -100,9 +102,11 @@ class MovieController extends Controller
         $newMovie = $request->validated();
 
         $newMovie['thumbnail'] = $this->thumbnailService->update($newMovie['thumbnail'], $movie->thumbnail);
+        $genres = $newMovie['genres'];
+        unset($newMovie['genres']);
 
         $movie->update($newMovie);
-        $movie->genres()->sync($newMovie['genres']);
+        $movie->genres()->sync($genres);
 
         return to_route('admin.movies.show', $movie);
     }

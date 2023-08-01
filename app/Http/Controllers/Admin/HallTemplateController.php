@@ -45,9 +45,12 @@ class HallTemplateController extends Controller
      */
     public function store(StoreHallTemplateRequest $request, StoreSeatsAction $storeSeats): RedirectResponse
     {
-        /** @var HallTemplate $template */
-        $template = HallTemplate::query()->create($request->validated());
-        $storeSeats->handle($template, $request->validated()['seats']);
+        $newTemplate = $request->validated();
+        $seats = $newTemplate['seats'];
+        unset($newTemplate['seats']);
+
+        $template = HallTemplate::create($newTemplate);
+        $storeSeats->handle($template, $seats);
 
         return to_route('admin.hall_templates.show', $template);
     }
@@ -76,9 +79,11 @@ class HallTemplateController extends Controller
     public function update(UpdateHallTemplateRequest $request, HallTemplate $template, UpdateSeatsAction $updateSeats): RedirectResponse
     {
         $updatedHall = $request->validated();
+        $seats = $updatedHall['updated_seats'];
+        unset($updatedHall['updated_seats']);
 
         $template->update($updatedHall);
-        $updateSeats->handle($template, $updatedHall['updated_seats']);
+        $updateSeats->handle($template, $seats);
 
         return to_route('admin.hall_templates.show', $template);
     }
