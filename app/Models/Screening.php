@@ -18,9 +18,13 @@ class Screening extends Model
         'start_time',
         'end_time',
         'standard_seat_price_in_cents',
-        'vip_seat_price_in_cents',
+        'premium_seat_price_in_cents',
     ];
 
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
 
     public function movie(): BelongsTo
     {
@@ -32,7 +36,7 @@ class Screening extends Model
         return $this->belongsTo(Hall::class);
     }
 
-    public function standard_seat_price_in_cents(): Attribute
+    public function standardSeatPriceInCents(): Attribute
     {
         return Attribute::make(
             get: fn($value) => $value / 100,
@@ -40,11 +44,18 @@ class Screening extends Model
         );
     }
 
-    public function vip_seat_price_in_cents(): Attribute
+    public function premiumSeatPriceInCents(): Attribute
     {
         return Attribute::make(
             get: fn($value) => $value / 100,
             set: fn($value) => $value * 100,
+        );
+    }
+
+    public function isOver(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value, $attributes) => $attributes['end_time']->isPast(),
         );
     }
 }
