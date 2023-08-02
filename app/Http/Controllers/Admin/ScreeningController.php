@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Actions\Hall\CreateHallAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Screening\StoreScreeningRequest;
+use App\Http\Requests\Admin\Screening\UpdateScreeningRequest;
 use App\Http\Resources\Admin\HallTemplate\HallTemplateMinResource;
 use App\Http\Resources\Admin\Movie\MovieMinResource;
 use App\Http\Resources\Admin\Screening\ScreeningItemResource;
@@ -12,8 +13,9 @@ use App\Http\Resources\Admin\Screening\ScreeningListResource;
 use App\Models\HallTemplate;
 use App\Models\Movie;
 use App\Models\Screening;
+use App\Services\FlashMessageService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -25,8 +27,8 @@ class ScreeningController extends Controller
     public function index(): Response
     {
         $screenings = Screening::query()
-            ->select('id', 'movie_id', 'hall_id', 'start_time', 'end_time')
-            ->with('movie:id,slug,title,thumbnail,duration_in_minutes', 'hall:id,title')
+            ->select('id', 'movie_id', 'start_time', 'end_time')
+            ->with('movie:id,slug,title,thumbnail,duration_in_minutes', 'hall:id,title,screening_id')
             ->latest('start_time')
             ->paginate(10);
 
@@ -52,18 +54,14 @@ class ScreeningController extends Controller
     public function store(StoreScreeningRequest $request, CreateHallAction $createHall): RedirectResponse
     {
         $newScreening = $request->validated();
+        $hallTemplateId = $newScreening['hall_template_id'];
+        unset($newScreening['hall_template_id']);
 
-        $hall = $createHall->handle(HallTemplate::findOrFail($newScreening['hall_template_id']));
+        $screening = Screening::create($newScreening);
 
-        $screening = $hall->screenings()->create([
-            'movie_id' => $newScreening['movie_id'],
-            'start_time' => $newScreening['start_time'],
-            'end_time' => $newScreening['end_time'],
-            'standard_seat_price_in_cents' => $newScreening['standard_seat_price'],
-            'premium_seat_price_in_cents' => $newScreening['premium_seat_price'],
-        ]);
+        $createHall->handle($screening, HallTemplate::find($hallTemplateId));
 
-        return redirect()->route('admin.screenings.show', $screening);
+        return to_route('admin.screenings.show', $screening);
 
 
     }
@@ -81,6 +79,8 @@ class ScreeningController extends Controller
      */
     public function edit(Screening $screening): Response
     {
+        $screening->load('movie:id,slug,title,thumbnail,duration_in_minutes', 'hall:id,title,screening_id');
+
         return Inertia::render('Admin/Screenings/Edit', [
             'screening' => ScreeningItemResource::make($screening),
         ]);
@@ -89,16 +89,24 @@ class ScreeningController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Screening $screening)
+    public function update(UpdateScreeningRequest $request, Screening $screening): RedirectResponse
     {
-        //
+        $screening->update($request->validated());
+        return to_route('admin.screenings.show', $screening);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Screening $screening)
+    public function destroy(Screening $screening, FlashMessageService $flashMessageService): RedirectResponse
     {
-        //
+        if (Gate::allows('delete', $screening)) {
+            $screening->delete();
+            return to_route('admin.screenings.index');
+        }
+
+        $flashMessageService->failure('Неможливо видалити сеанс, оскільки вже були продані квитки.');
+
+        return to_route('admin.screenings.show', $screening);
     }
 }
