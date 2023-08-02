@@ -19,8 +19,8 @@ class StoreScreeningRequest extends FormRequest
         return [
             'movie_id' => ['required', 'string', 'exists:' . Movie::class . ',id'],
             'hall_template_id' => ['required', 'string', 'exists:' . HallTemplate::class . ',id'],
-            'start_time' => ['required', 'date_format:Y-m-d\TH:i'],
-            'end_time' => ['required', 'date_format:Y-m-d\TH:i'],
+            'start_time' => ['required', 'date', 'after:now'],
+            'end_time' => ['required', 'date', 'after:start_time'],
             'standard_seat_price' => ['required', 'numeric', 'min:0'],
             'premium_seat_price' => ['required', 'numeric', 'min:0'],
         ];
