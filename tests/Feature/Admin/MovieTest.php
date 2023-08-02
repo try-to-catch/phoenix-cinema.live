@@ -149,10 +149,7 @@ class MovieTest extends TestCase
         $this->actingAs($this->admin)
             ->post('/admin/movies', $newMovie)
             ->assertStatus(302)
-            ->assertSessionHasErrors([
-                'title',
-                'thumbnail',
-            ]);
+            ->assertSessionHasErrors(['title', 'thumbnail']);
     }
 
 
@@ -250,10 +247,7 @@ class MovieTest extends TestCase
         $this->actingAs($this->admin)
             ->put('/admin/movies/' . $movie->slug, $newMovie)
             ->assertStatus(302)
-            ->assertSessionHasErrors([
-                'title',
-                'thumbnail',
-            ]);
+            ->assertSessionHasErrors(['title', 'thumbnail']);
     }
 
 

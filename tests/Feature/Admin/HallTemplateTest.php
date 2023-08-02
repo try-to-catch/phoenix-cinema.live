@@ -115,10 +115,7 @@ class HallTemplateTest extends TestCase
         $this->actingAs($this->admin)
             ->post('/admin/hall-templates', $newHall)
             ->assertStatus(302)
-            ->assertSessionHasErrors([
-                'title',
-                'seats.*'
-            ]);
+            ->assertSessionHasErrors(['title', 'seats.*']);
     }
 
 
@@ -195,10 +192,7 @@ class HallTemplateTest extends TestCase
         $this->actingAs($this->admin)
             ->patch('/admin/hall-templates/' . $template->id, [...$template->toArray(), 'updated_seats' => $template->seats->toArray()])
             ->assertStatus(302)
-            ->assertSessionHasErrors([
-                'title',
-                'updated_seats.*.type'
-            ]);
+            ->assertSessionHasErrors(['title', 'updated_seats.*.type']);
     }
 
 
