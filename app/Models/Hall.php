@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Hall extends Model
@@ -15,6 +15,7 @@ class Hall extends Model
     public $timestamps = false;
     protected $fillable = [
         'title',
+        'screening_id'
     ];
 
     public function seats(): MorphMany
@@ -22,8 +23,8 @@ class Hall extends Model
         return $this->morphMany(Seat::class, 'seatable');
     }
 
-    public function screenings(): HasMany
+    public function screenings(): BelongsTo
     {
-        return $this->hasMany(Screening::class);
+        return $this->belongsTo(Screening::class);
     }
 }

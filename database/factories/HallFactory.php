@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Actions\Seats\StoreSeatsAction;
 use App\Models\Hall;
+use App\Models\Screening;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,7 @@ class HallFactory extends Factory
     {
         return [
             'title' => fake()->words(rand(1, 3), true),
+            'screening_id' => Screening::first()->id ?? ScreeningFactory::new(),
         ];
     }
 

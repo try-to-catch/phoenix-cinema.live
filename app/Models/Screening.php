@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 class Screening extends Model
@@ -32,9 +34,15 @@ class Screening extends Model
         return $this->belongsTo(Movie::class);
     }
 
-    public function hall(): BelongsTo
+    public function hall(): HasOne
     {
-        return $this->belongsTo(Hall::class);
+        return $this->hasOne(Hall::class);
+    }
+
+    public function seats(): HasManyThrough
+    {
+        return $this->hasManyThrough(Seat::class, Hall::class, 'screening_id', 'seatable_id', 'id', 'id')
+            ->where('seatable_type', Hall::class);
     }
 
     public function standardSeatPrice(): Attribute
