@@ -11,14 +11,15 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class HallTemplateFactory extends HallFactory
 {
     /**
-     * Extend the model's default state.
+     * Define the model's default state.
      *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
-        return tap(parent::definition(), function (array &$attributes) {
-            $attributes['is_available'] = true;
-        });
+        return [
+            'title' => fake()->words(rand(1, 3), true),
+            'is_available' => true,
+        ];
     }
 }
