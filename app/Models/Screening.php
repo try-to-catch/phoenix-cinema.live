@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 class Screening extends Model
 {
@@ -17,13 +18,13 @@ class Screening extends Model
         'hall_id',
         'start_time',
         'end_time',
-        'standard_seat_price_in_cents',
-        'premium_seat_price_in_cents',
+        'standard_seat_price',
+        'premium_seat_price',
     ];
 
     protected $casts = [
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
+        'start_time' => 'datetime:Y-m-d H:i',
+        'end_time' => 'datetime:Y-m-d H:i',
     ];
 
     public function movie(): BelongsTo
@@ -36,26 +37,26 @@ class Screening extends Model
         return $this->belongsTo(Hall::class);
     }
 
-    public function standardSeatPriceInCents(): Attribute
+    public function standardSeatPrice(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => $value / 100,
-            set: fn($value) => $value * 100,
+            get: fn($value, $attributes) => $attributes['standard_seat_price_in_cents'] / 100,
+            set: fn($value) => ['standard_seat_price_in_cents' => $value * 100],
         );
     }
 
-    public function premiumSeatPriceInCents(): Attribute
+    public function premiumSeatPrice(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => $value / 100,
-            set: fn($value) => $value * 100,
+            get: fn($value, $attributes) => $attributes['premium_seat_price_in_cents'] / 100,
+            set: fn($value) => ['premium_seat_price_in_cents' => $value * 100],
         );
     }
 
     public function isOver(): Attribute
     {
         return Attribute::make(
-            get: fn($value, $attributes) => $attributes['end_time']->isPast(),
+            get: fn($value, $attributes) => Carbon::parse($attributes['end_time'])->isPast(),
         );
     }
 }
