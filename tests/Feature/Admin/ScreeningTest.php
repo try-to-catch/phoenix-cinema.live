@@ -24,7 +24,6 @@ class ScreeningTest extends TestCase
         $this->seed(RoleSeeder::class);
 
         $this->movie = Movie::factory()->create(['end_showing' => now()->addDays()]);
-        $this->hall = Hall::factory()->create();
 
         $adminId = Role::admin()->pluck('id');
         $this->user = User::factory()->create();
@@ -47,12 +46,14 @@ class ScreeningTest extends TestCase
     }
 
 
-    private function createScreening()
+    private function createScreening($withHall = false)
     {
-        return Screening::factory()->create([
-            'movie_id' => $this->movie->id,
-            'hall_id' => $this->hall->id,
-        ]);
+        return tap(
+            Screening::factory()->create(),
+            fn(Screening $screening) => $withHall
+                ? Hall::factory()->create(['screening_id' => $screening->id])
+                : null
+        );
     }
 
 
@@ -60,7 +61,7 @@ class ScreeningTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $screening = $this->createScreening();
+        $screening = $this->createScreening(true);
 
         $this->actingAs($this->admin)->get('/admin/screenings')
             ->assertOk()
@@ -68,6 +69,7 @@ class ScreeningTest extends TestCase
                 ->component('Admin/Screenings/Index')
                 ->has('screenings.data', 1, fn(Assert $page) => $page
                     ->where('id', $screening->id)
+                    ->where('is_over', $screening->is_over)
                     ->where('start_time', $screening->start_time->format('Y-m-d H:i'))
                     ->where('end_time', $screening->end_time->format('Y-m-d H:i'))
                     ->has('movie', fn(Assert $page) => $page
@@ -154,7 +156,7 @@ class ScreeningTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $screening = $this->createScreening();
+        $screening = $this->createScreening(true);
 
         $this->actingAs($this->admin)->get('/admin/screenings/' . $screening->id . '/edit')
             ->assertOk()
@@ -164,8 +166,8 @@ class ScreeningTest extends TestCase
                     ->where('id', $screening->id)
                     ->where('start_time', $screening->start_time->format('Y-m-d H:i'))
                     ->where('end_time', $screening->end_time->format('Y-m-d H:i'))
-                    ->where('standard_seat_price', $screening->standard_seat_price_in_cents)
-                    ->where('premium_seat_price', $screening->premium_seat_price_in_cents)
+                    ->where('standard_seat_price', $screening->standard_seat_price)
+                    ->where('premium_seat_price', $screening->premium_seat_price)
                     ->has('movie', fn(Assert $page) => $page
                         ->where('id', $screening->movie->id)
                         ->where('slug', $screening->movie->slug)
@@ -179,5 +181,92 @@ class ScreeningTest extends TestCase
                     )
                 )
             );
+    }
+
+
+    public function test_screening_can_be_updated_by_admin()
+    {
+        $this->withoutExceptionHandling();
+
+        $screening = $this->createScreening();
+        $screening->start_time = $screening->start_time->addHour();
+        $screening->end_time = $screening->end_time->addHour();
+        $screening->standard_seat_price += 20;
+
+        $this->actingAs($this->admin)
+            ->put('/admin/screenings/' . $screening->id, $screening->toArray())
+            ->assertRedirect('/admin/screenings/' . $screening->id);
+
+        $this->assertDatabaseCount('screenings', 1)
+            ->assertDatabaseHas('screenings', [
+                'id' => $screening->id,
+                'start_time' => $screening->start_time->format('Y-m-d H:i'),
+                'premium_seat_price_in_cents' => $screening->premium_seat_price * 100,
+            ]);
+    }
+
+    public function test_screening_cannot_be_updated_with_invalid_data(): void
+    {
+        $screening = Screening::factory()->create();
+
+        $this->actingAs($this->admin)
+            ->put('/admin/screenings/' . $screening->id, [
+                'start_time' => '2021-05-05 35:00',
+                'standard_seat_price' => null,
+            ])
+            ->assertSessionHasErrors(['start_time', 'standard_seat_price']);
+    }
+
+    public function test_screening_can_be_deleted_by_admin()
+    {
+        $this->withoutExceptionHandling();
+
+        $screening = $this->createScreening(true);
+
+        $this->assertDatabaseCount('screenings', 1);
+
+        $this->actingAs($this->admin)
+            ->delete('/admin/screenings/' . $screening->id)
+            ->assertRedirect('/admin/screenings');
+
+        $this->assertDatabaseCount('screenings', 0);
+    }
+
+    public function test_screening_with_reservations_cannot_be_deleted()
+    {
+        $this->withoutExceptionHandling();
+
+        $screening = $this->createScreening(true);
+        $seat = $screening->seats()->first();
+        $seat->update(['is_taken' => true]);
+
+        $this->assertDatabaseCount('screenings', 1);
+
+        $this->actingAs($this->admin)
+            ->delete('/admin/screenings/' . $screening->id)
+            ->assertRedirect('/admin/screenings/' . $screening->id)
+            ->assertSessionHas('message', [
+                "type" => "failure",
+                "text" => "Неможливо видалити сеанс, оскільки вже були продані квитки."
+            ]);
+        
+        $this->assertDatabaseCount('screenings', 1);
+    }
+
+    public function test_non_admin_user_cannot_access_to_screening(): void
+    {
+        $screening = Screening::factory()->create();
+
+        $this->actingAs($this->user)
+            ->post('/admin/screenings')
+            ->assertStatus(403);
+
+        $this->actingAs($this->user)
+            ->put('/admin/screenings/' . $screening->id)
+            ->assertStatus(403);
+
+        $this->actingAs($this->user)
+            ->delete('/admin/screenings/' . $screening->id)
+            ->assertStatus(403);
     }
 }
