@@ -10,7 +10,7 @@ use App\Http\Resources\Admin\Movie\MovieItemResource;
 use App\Http\Resources\Admin\Movie\MovieListResource;
 use App\Models\Genre;
 use App\Models\Movie;
-use App\Services\ThumbnailService;
+use App\Services\ImageService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -19,7 +19,7 @@ class MovieController extends Controller
 {
 
 
-    public function __construct(public ThumbnailService $thumbnailService)
+    public function __construct(public ImageService $imageService)
     {
     }
 
@@ -63,7 +63,7 @@ class MovieController extends Controller
     public function store(StoreMovieRequest $request): RedirectResponse
     {
         $newMovie = $request->validated();
-        $newMovie['thumbnail'] = $this->thumbnailService->store($newMovie['thumbnail'], 'movie');
+        $newMovie['thumbnail'] = $this->imageService->store($newMovie['thumbnail'], 'images/movies');
         $genres = $newMovie['genres'];
         unset($newMovie['genres']);
 
@@ -101,7 +101,7 @@ class MovieController extends Controller
     {
         $newMovie = $request->validated();
 
-        $newMovie['thumbnail'] = $this->thumbnailService->update($newMovie['thumbnail'], $movie->thumbnail);
+        $newMovie['thumbnail'] = $this->imageService->update($newMovie['thumbnail'], $movie->thumbnail);
         $genres = $newMovie['genres'];
         unset($newMovie['genres']);
 
@@ -116,7 +116,7 @@ class MovieController extends Controller
      */
     public function destroy(Movie $movie): RedirectResponse
     {
-        $this->thumbnailService->destroy($movie->thumbnail);
+        $this->imageService->destroy($movie->thumbnail);
 
         $movie->delete();
 

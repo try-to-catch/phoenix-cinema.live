@@ -7,14 +7,14 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
-class ThumbnailService
+class ImageService
 {
     /**
      * Store a thumbnail in storage.
      */
     public function store(UploadedFile|File $thumbnail, string $directory, int $width = 320, int $height = 472): string
     {
-        $path = "images/$directory/" . $thumbnail->hashName();
+        $path = $directory . '/' . $thumbnail->hashName();
 
         $image = Image::make($thumbnail)->fit($width, $height)->encode();
         Storage::disk('public')->put($path, $image);
@@ -25,17 +25,11 @@ class ThumbnailService
     /**
      * Update a thumbnail in storage unless the new thumbnail is null.
      */
-    public function update(UploadedFile|File|null $thumbnail, string $oldThumbnailPath, int $width = 320, int $height = 472): string
+    public function update(UploadedFile|File|null $thumbnail, string $thumbnailPath, int $width = 320, int $height = 472): string
     {
-        if (is_null($thumbnail)) {
-            return $oldThumbnailPath;
-        }
+        $this->destroy($thumbnailPath);
 
-        $this->destroy($oldThumbnailPath);
-
-        $path = str_replace('images/', '', dirname($oldThumbnailPath));
-
-        return $this->store($thumbnail, $path, $width, $height);
+        return $this->store($thumbnail, dirname($thumbnailPath), $width, $height);
     }
 
     /**
