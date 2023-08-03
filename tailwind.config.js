@@ -14,6 +14,20 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                'sans-serif': ['Rubik', 'sans-serif'],
+                'serif': ['Roboto Slab', 'serif'],
+            },
+            colors: {
+                'primary': '#1D2024',
+                'secondary': '#F37515',
+                'tertiary': '#1F2226',
+            },
+            container: {
+                center: true,
+                padding: {
+                    DEFAULT: '1rem',
+                    sm: 0,
+                },
             },
         },
     },
