@@ -2,7 +2,7 @@
 import {Head} from '@inertiajs/vue3';
 import MainLayout from "@/Layouts/MainLayout.vue";
 import {ref} from "vue";
-import AnimatedCarousel from "@/Components/Icons/AnimatedCarousel.vue";
+import AnimatedCarousel from "@/Components/AnimatedCarousel.vue";
 
 const activeSlide = ref(0);
 
