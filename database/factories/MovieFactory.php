@@ -19,6 +19,11 @@ class MovieFactory extends Factory
     public function definition(): array
     {
         $thumbnailPath = public_path('/images/defaults/joker.jpg');
+
+        if (!file_exists(storage_path('app/public/images/movies'))) {
+            mkdir(storage_path('app/public/images/movies'), 0777, true);
+        }
+
         $storagePath = "images/movies/" . Str::random(24) . '.jpg';
         copy($thumbnailPath, storage_path("app/public/$storagePath"));
 
