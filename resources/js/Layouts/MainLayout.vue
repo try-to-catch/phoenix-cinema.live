@@ -14,7 +14,7 @@ import {Link} from "@inertiajs/vue3";
                     </Link>
                 </div>
 
-                <div class="text-secondary  space-x-2 flex">
+                <div class="text-secondary space-x-2 flex">
                     <Link :href="route('login')">Вхід</Link>
                     <div>|</div>
                     <Link :href="route('register')">Реєстрація</Link>
@@ -27,8 +27,8 @@ import {Link} from "@inertiajs/vue3";
             <slot/>
         </main>
 
-        <footer class="bg-tertiary w-full flex justify-center border-t border-secondary">
-            <div class="text-sm py-4 text-secondary">© 2022-2023 PX-Phoenix Holding. Всі права захищено</div>
+        <footer class="bg-tertiary w-full flex justify-center border-t border-gray-700">
+            <div class="text-sm py-4 text-gray-400">© 2022-2023 PX-Phoenix Holding. Всі права захищено</div>
         </footer>
     </div>
 </template>
