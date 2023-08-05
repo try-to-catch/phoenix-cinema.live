@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Movie extends Model
 {
@@ -33,6 +34,7 @@ class Movie extends Model
         'thumbnail',
         'release_year',
         'original_title',
+        'director',
         'production_country',
         'studio',
         'main_cast',
@@ -59,6 +61,11 @@ class Movie extends Model
         return $this->hasMany(Screening::class);
     }
 
+    public function banner(): HasOne
+    {
+        return $this->hasOne(MovieBanner::class, 'movie_id', 'id');
+    }
+
     public function getRouteKeyName(): string
     {
         return 'slug';
@@ -71,8 +78,30 @@ class Movie extends Model
         );
     }
 
-    public function scopeWithoutCompleted(Builder $query): Builder
+    public function formattedDuration(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                $hours = floor($attributes['duration_in_minutes'] / 60);
+                $minutes = $attributes['duration_in_minutes'] % 60;
+
+                return sprintf('%d г %02d хв', $hours, $minutes);
+            },
+        );
+    }
+
+    public function scopeMissingCompleted(Builder $query): Builder
     {
         return $query->where('end_showing', '>=', now());
+    }
+
+    public function scopeHasBanner(Builder $query): Builder
+    {
+        return $query->whereHas('banner');
+    }
+
+    public function scopeMissingBanner(Builder $query): Builder
+    {
+        return $query->whereDoesntHave('banner');
     }
 }
