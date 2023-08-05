@@ -10,8 +10,6 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        //genre_id
-        //movie_id
         Schema::create('genre_movie', function (Blueprint $table) {
             $table->foreignUuid('genre_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('movie_id')->constrained()->cascadeOnDelete();
