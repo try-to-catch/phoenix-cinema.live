@@ -9,10 +9,13 @@ use Intervention\Image\Facades\Image;
 
 class ImageService
 {
+    protected const DEFAULT_WIDTH = 320;
+    protected const DEFAULT_HEIGHT = 472;
+
     /**
      * Store a thumbnail in storage.
      */
-    public function store(UploadedFile|File $thumbnail, string $directory, int $width = 320, int $height = 472): string
+    public function store(UploadedFile|File $thumbnail, string $directory, int $width = self::DEFAULT_WIDTH, int $height = self::DEFAULT_HEIGHT): string
     {
         $path = $directory . '/' . $thumbnail->hashName();
 
@@ -25,7 +28,7 @@ class ImageService
     /**
      * Update a thumbnail in storage unless the new thumbnail is null.
      */
-    public function update(UploadedFile|File|null $thumbnail, string $thumbnailPath, int $width = 320, int $height = 472): string
+    public function update(UploadedFile|File|null $thumbnail, string $thumbnailPath, int $width = self::DEFAULT_WIDTH, int $height = self::DEFAULT_HEIGHT): string
     {
         $this->destroy($thumbnailPath);
 
