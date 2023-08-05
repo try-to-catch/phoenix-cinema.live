@@ -38,6 +38,7 @@ class MovieFactory extends Factory
             'thumbnail' => $storagePath,
             'release_year' => fake()->year(),
             'original_title' => fake()->words(rand(1, 3), true),
+            'director' => fake()->words(2, true),
             'production_country' => fake()->country(),
             'studio' => fake()->company(),
             'main_cast' => fake()->words(5, true),
