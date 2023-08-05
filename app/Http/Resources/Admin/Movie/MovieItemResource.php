@@ -26,6 +26,7 @@ class MovieItemResource extends JsonResource
             'age_restriction' => $this->age_restriction,
             'thumbnail' => $this->thumbnail_path,
             'release_year' => $this->release_year,
+            'director' => $this->director,
             'production_country' => $this->production_country,
             'studio' => $this->studio,
             'main_cast' => $this->main_cast,
