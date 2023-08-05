@@ -43,7 +43,7 @@ class ScreeningController extends Controller
     public function create(): Response
     {
         return Inertia::render('Admin/Screenings/Create', [
-            'movies' => MovieMinResource::collection(Movie::withoutCompleted()->get(['id', 'title'])),
+            'movies' => MovieMinResource::collection(Movie::missingCompleted()->get(['id', 'title'])),
             'hall_templates' => HallTemplateMinResource::collection(HallTemplate::available()->get(['id', 'title'])),
         ]);
     }
