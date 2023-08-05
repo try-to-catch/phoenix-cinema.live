@@ -5,9 +5,9 @@ import {Link} from "@inertiajs/vue3";
 </script>
 
 <template>
-    <div class="font-sans-serif w-full min-h-screen flex flex-col bg-primary">
-        <header>
-            <div class="container py-2 flex items-center justify-between">
+    <div class="font-sans-serif w-full min-h-screen flex flex-col bg-primary relative">
+        <header class="fixed w-full z-20 bg-primary h-[50px]800">
+            <div class="container py-2 flex items-center justify-between h-full">
                 <div>
                     <Link :href="route('home')">
                         <ApplicationLogo/>
@@ -23,12 +23,12 @@ import {Link} from "@inertiajs/vue3";
 
         </header>
 
-        <main class="flex-grow">
+        <main class="flex-grow mt-[50px]">
             <slot/>
         </main>
 
-        <footer class="bg-tertiary w-full flex justify-center border-t border-gray-700">
-            <div class="text-sm py-4 text-gray-400">© 2022-2023 PX-Phoenix Holding. Всі права захищено</div>
+        <footer class="bg-tertiary w-full flex justify-center border-t border-secondary">
+            <div class="text-sm py-4 text-secondary">© 2022-2023 PX-Phoenix Holding. Всі права захищено</div>
         </footer>
     </div>
 </template>
