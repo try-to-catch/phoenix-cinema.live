@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use App\Models\Genre;
 use App\Models\HallTemplate;
 use App\Models\Movie;
+use App\Models\MovieBanner;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -25,6 +26,9 @@ class DatabaseSeeder extends Seeder
                 });
 
             HallTemplate::factory(3)->create();
+
+            Movie::factory(10)->create();
+            MovieBanner::factory(3)->create();
 
         });
     }
