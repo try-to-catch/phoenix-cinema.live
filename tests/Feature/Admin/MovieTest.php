@@ -53,6 +53,7 @@ class MovieTest extends TestCase
             'thumbnail' => $this->createThumbnail(),
             'release_year' => '2021',
             'original_title' => 'Test Original Title',
+            'director' => '	Steven Spielberg',
             'production_country' => 'Test Production Country',
             'studio' => 'Test Studio',
             'main_cast' => 'Test Main Cast',
@@ -174,28 +175,27 @@ class MovieTest extends TestCase
             ->assertInertia(fn(Assert $page) => $page
                 ->component('Admin/Movies/Edit')
                 ->has('movie', fn(Assert $page) => $page
-                    ->has('data', fn(Assert $page) => $page
-                        ->where('id', $movie->id)
-                        ->where('title', $movie->title)
-                        ->where('slug', $movie->slug)
-                        ->where('description', $movie->description)
-                        ->where('duration_in_minutes', $movie->duration_in_minutes)
-                        ->where('age_restriction', $movie->age_restriction)
-                        ->where('thumbnail', $movie->thumbnail_path)
-                        ->where('release_year', $movie->release_year)
-                        ->where('production_country', $movie->production_country)
-                        ->where('studio', $movie->studio)
-                        ->where('main_cast', $movie->main_cast)
-                        ->where('start_showing', $movie->start_showing->format('d-m-Y'))
-                        ->where('end_showing', $movie->end_showing->format('d-m-Y'))
-                        ->has('genres', fn(Assert $page) => $page
-                            ->count($movie->genres->count())
-                            ->has('0.id')
-                            ->has('0.name')
-                            ->etc()
-                        )
+                    ->where('id', $movie->id)
+                    ->where('title', $movie->title)
+                    ->where('slug', $movie->slug)
+                    ->where('description', $movie->description)
+                    ->where('duration_in_minutes', $movie->duration_in_minutes)
+                    ->where('age_restriction', $movie->age_restriction)
+                    ->where('thumbnail', $movie->thumbnail_path)
+                    ->where('release_year', $movie->release_year)
+                    ->where('director', $movie->director)
+                    ->where('production_country', $movie->production_country)
+                    ->where('studio', $movie->studio)
+                    ->where('main_cast', $movie->main_cast)
+                    ->where('start_showing', $movie->start_showing->format('d-m-Y'))
+                    ->where('end_showing', $movie->end_showing->format('d-m-Y'))
+                    ->has('genres', fn(Assert $page) => $page
+                        ->count($movie->genres->count())
+                        ->has('0.id')
+                        ->has('0.name')
                         ->etc()
                     )
+                    ->etc()
                 )
             );
     }
