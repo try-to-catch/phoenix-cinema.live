@@ -8,10 +8,13 @@ use App\Http\Requests\Admin\Movie\UpdateMovieRequest;
 use App\Http\Resources\Admin\Genre\GenreResource;
 use App\Http\Resources\Admin\Movie\MovieItemResource;
 use App\Http\Resources\Admin\Movie\MovieListResource;
+use App\Http\Resources\Admin\MovieBanner\MovieBannerResource;
 use App\Models\Genre;
 use App\Models\Movie;
 use App\Services\ImageService;
+use App\Services\MovieBannerService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,7 +22,7 @@ class MovieController extends Controller
 {
 
 
-    public function __construct(public ImageService $imageService)
+    public function __construct(protected ImageService $imageService, protected MovieBannerService $bannerService)
     {
     }
 
@@ -65,12 +68,19 @@ class MovieController extends Controller
         $newMovie = $request->validated();
         $newMovie['thumbnail'] = $this->imageService->store($newMovie['thumbnail'], 'images/movies');
         $genres = $newMovie['genres'];
-        unset($newMovie['genres']);
+        $banner = $newMovie['banner'] ?? null;
 
-        $movie = tap(
-            Movie::query()->create($newMovie),
-            fn(Movie $movie) => $movie->genres()->attach($genres)
-        );
+        unset($newMovie['genres'], $newMovie['banner']);
+
+        DB::beginTransaction();
+        /** @var Movie $movie */
+        $movie = Movie::query()->create($newMovie);
+        $movie->genres()->attach($genres);
+
+        if (isset($newMovie['banner']['fact'])) {
+            $this->bannerService->create($movie, $banner);
+        }
+        DB::commit();
 
         return to_route('admin.movies.show', $movie);
     }
@@ -88,9 +98,11 @@ class MovieController extends Controller
      */
     public function edit(Movie $movie): Response
     {
+        $movie->load(['genres', 'banner']);
         return Inertia::render('Admin/Movies/Edit', [
-            'movie' => new MovieItemResource($movie->load('genres')),
-            'genres' => GenreResource::collection(Genre::all('id', 'name'))
+            'movie' => MovieItemResource::make($movie)->resolve(),
+            'genres' => GenreResource::collection(Genre::all('id', 'name'))->resolve(),
+            'banner' => $movie->banner()->exists() ? MovieBannerResource::make($movie->banner)->resolve() : null,
         ]);
     }
 
@@ -99,14 +111,21 @@ class MovieController extends Controller
      */
     public function update(UpdateMovieRequest $request, Movie $movie): RedirectResponse
     {
-        $newMovie = $request->validated();
+        $dataForUpdate = $request->validated();
 
-        $newMovie['thumbnail'] = $this->imageService->update($newMovie['thumbnail'], $movie->thumbnail);
-        $genres = $newMovie['genres'];
-        unset($newMovie['genres']);
+        $dataForUpdate['thumbnail'] = $this->imageService->update($dataForUpdate['thumbnail'], $movie->thumbnail);
+        $genres = $dataForUpdate['genres'];
+        $banner = $dataForUpdate['banner'] ?? null;
+        unset($dataForUpdate['genres'], $dataForUpdate['banner']);
 
-        $movie->update($newMovie);
-        $movie->genres()->sync($genres);
+        DB::transaction(function () use ($movie, $dataForUpdate, $genres, $banner) {
+            $movie->update($dataForUpdate);
+            $movie->genres()->sync($genres);
+
+            if (isset($banner['fact'])) {
+                $this->bannerService->create($movie, $banner);
+            }
+        });
 
         return to_route('admin.movies.show', $movie);
     }
@@ -118,7 +137,13 @@ class MovieController extends Controller
     {
         $this->imageService->destroy($movie->thumbnail);
 
-        $movie->delete();
+        DB::transaction(function () use ($movie) {
+            if ($movie->banner) {
+                $this->bannerService->destroy($movie);
+            }
+
+            $movie->delete();
+        });
 
         return to_route('admin.movies.index');
     }
