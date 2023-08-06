@@ -20,15 +20,14 @@ class DatabaseSeeder extends Seeder
         DB::transaction(function () {
             $this->call([GenreSeeder::class, RoleSeeder::class]);
 
-            Genre::query()->inRandomOrder()->take(10)
+            Genre::query()->inRandomOrder()->take(10)->get()
                 ->each(function (Genre $genre) {
-                    $genre->movies()->saveMany(Movie::factory()->count(2)->make());
+                    $genre->movies()->saveMany(Movie::factory()->count(10)->make());
                 });
 
             HallTemplate::factory(3)->create();
 
-            Movie::factory(10)->create();
-            MovieBanner::factory(3)->create();
+            MovieBanner::factory(7)->create();
 
         });
     }
