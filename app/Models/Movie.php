@@ -95,9 +95,21 @@ class Movie extends Model
         return $query->where('end_showing', '>=', now());
     }
 
+    public function scopeCurrentlyScreeningWithGenres(Builder $query): Builder
+    {
+        return $query->where('end_showing', '>=', now())->where('start_showing', '<=', now())
+            ->with('genres');
+    }
+
+    public function scopeScreeningSoonWithGenres(Builder $query): Builder
+    {
+        return $query->where('start_showing', '>=', now())
+            ->with('genres');
+    }
+
     public function scopeHasBanner(Builder $query): Builder
     {
-        return $query->whereHas('banner');
+        return $query->whereHas('banner')->where('end_showing', '>=', now());
     }
 
     public function scopeMissingBanner(Builder $query): Builder
