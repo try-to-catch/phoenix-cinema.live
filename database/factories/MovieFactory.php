@@ -27,7 +27,7 @@ class MovieFactory extends Factory
         $storagePath = "images/movies/" . Str::random(24) . '.jpg';
         copy($thumbnailPath, storage_path("app/public/$storagePath"));
 
-        $startingDate = now()->subMonths(rand(1, 3))->subDays(rand(1, 30));
+        $startingDate = now()->subMonths(rand(-6, 6))->subDays(rand(1, 30));
 
         return [
             'title' => fake()->sentence(rand(2, 4)),
