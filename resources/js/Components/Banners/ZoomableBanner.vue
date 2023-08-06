@@ -1,31 +1,28 @@
 <script setup lang="ts">
-
 import {ref} from "vue";
 
-import {Link} from "@inertiajs/vue3";
+defineProps<{ image: string }>()
 
-const isMouseOverBanner = ref(false);
+const isMouseOverBanner = ref(false)
 </script>
 
 <template>
-    <Link href="/public">
-        <div class="h-full relative scroll-smooth flex overflow-hidden rounded-3xl"
-             @mouseover="isMouseOverBanner = true"
-             @mouseleave="isMouseOverBanner = false">
-            <div :class="{'scale-105': isMouseOverBanner}"
-                 class="absolute bg-[url('/images/defaults/banner.jpg')] bg-center bg-cover w-full h-full bg-no-repeat rounded-3xl flex active duration-500 ease"
-            >
+    <div class="h-full relative scroll-smooth flex overflow-hidden rounded-3xl"
+         @mouseover="isMouseOverBanner = true"
+         @mouseleave="isMouseOverBanner = false">
+        <div :class="{'scale-105': isMouseOverBanner}" :style="`background-image: url(${image});`"
+             class="absolute bg-center bg-cover w-full h-full bg-no-repeat rounded-3xl flex active duration-500 ease"
+        >
 
-                <div class="absolute h-full w-full top-0 ">
-                    <div class="h-full w-full absolute rounded-[0.58rem]" :class="$style['gradient-0']"></div>
-                </div>
-            </div>
-
-            <div class="z-10 flex">
-                <slot/>
+            <div class="absolute h-full w-full top-0 ">
+                <div class="h-full w-full absolute rounded-[0.58rem]" :class="$style['gradient-0']"></div>
             </div>
         </div>
-    </Link>
+
+        <div class="z-10 flex">
+            <slot/>
+        </div>
+    </div>
 </template>
 
 

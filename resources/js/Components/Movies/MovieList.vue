@@ -1,20 +1,12 @@
-<script setup lang="ts">
-
+<script lang="ts" setup>
 import MovieItem from "@/Components/Movies/MovieItem.vue";
+import type {IMovieCard} from "@/types/movies/IMovieCard";
+
+const {movies} = defineProps<{ movies: readonly IMovieCard[] }>()
 </script>
 
 <template>
-    <ul class="overflow-hidden grid gap-5 2xl:grid-cols-6 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
-        <MovieItem title="Joker" image_src="/images/defaults/joker.jpg"/>
-        <MovieItem title="Joker" image_src="/images/defaults/joker.jpg"/>
-        <MovieItem title="Joker" image_src="/images/defaults/joker.jpg"/>
-        <MovieItem title="Joker" image_src="/images/defaults/joker.jpg"/>
-        <MovieItem title="Joker" image_src="/images/defaults/joker.jpg"/>
-        <MovieItem title="Joker" image_src="/images/defaults/joker.jpg"/>
-
-    </ul>
+  <ul class="overflow-hidden grid gap-5 2xl:grid-cols-6 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
+    <MovieItem v-for="movie in movies" :movie="movie" :key="movie.id"/>
+  </ul>
 </template>
-
-<style scoped>
-
-</style>
