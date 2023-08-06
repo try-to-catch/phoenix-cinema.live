@@ -5,9 +5,15 @@ import MovieBannerWithNotes from "@/Components/Banners/MovieBannerWithNotes.vue"
 import H3Title from "@/Components/Titles/H3Title.vue";
 import MovieList from "@/Components/Movies/MovieList.vue";
 import AdvantagesSection from "@/Components/Advantages/AdvantagesSection.vue";
+import type {IMovieCard} from "@/types/movies/IMovieCard";
+import type {IBanner} from "@/types/banners/IBanner";
 
-const props = defineProps<{ banner: any }>()
-console.log(props.banner)
+const {banner, movies, future_movies} = defineProps<{
+    banner: IBanner,
+    movies: readonly IMovieCard[],
+    future_movies: readonly IMovieCard[]
+}>()
+
 </script>
 
 <template>
@@ -18,7 +24,7 @@ console.log(props.banner)
     <MainLayout>
         <section class="pt-1">
             <div class="container">
-                <MovieBannerWithNotes class="h-[400px]"/>
+                <MovieBannerWithNotes :banner="banner" class="h-[400px]"/>
             </div>
         </section>
 
@@ -28,7 +34,7 @@ console.log(props.banner)
             <div class="container">
                 <H3Title>Зараз у кіно</H3Title>
 
-                <MovieList class="mt-5"/>
+                <MovieList class="mt-5" :movies="movies"/>
             </div>
         </section>
 
@@ -36,7 +42,7 @@ console.log(props.banner)
             <div class="container">
                 <H3Title>Скоро у кіно</H3Title>
 
-                <MovieList class="mt-5"/>
+                <MovieList class="mt-5" :movies="future_movies"/>
             </div>
         </section>
     </MainLayout>
