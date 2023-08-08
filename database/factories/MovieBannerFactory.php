@@ -29,10 +29,10 @@ class MovieBannerFactory extends Factory
         copy($thumbnailPath, storage_path("app/public/$storagePath"));
 
         return [
-            'movie_id' => Movie::missingBanner()->first()->id ?? MovieFactory::new(),
+            'movie_id' => Movie::missingBanner()->inRandomOrder()->first()->id ?? MovieFactory::new(),
             'image' => $storagePath,
-            'description' => fake()->sentences(2, true),
-            'fact' => fake()->sentences(1, true),
+            'description' => fake()->sentences(4, true),
+            'fact' => fake()->sentences(2, true),
         ];
     }
 }
