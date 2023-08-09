@@ -40,8 +40,7 @@ const formattedGenres = computed(() => {
           <NoteItem title="Країна:">{{ banner.production_country }}</NoteItem>
           <NoteItem title="Цікавий факт:">{{ banner.fact }}</NoteItem>
         </ul>
-        <!--TODO update endpoint -->
-        <Link :href="route('home')"
+        <Link :href="route('movies.show', {movie:banner.slug})"
               class="bg-secondary text-white font-semibold py-4 px-6 rounded-md text-center">
           Продивитися сеанси
         </Link>
