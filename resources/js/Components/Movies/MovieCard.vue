@@ -18,8 +18,7 @@ const formattedGenres = computed(() => {
       @mouseover="isHovered =true"
       @mouseleave="isHovered = false"
   >
-    <!--TODO update endpoint -->
-    <Link class="block" :href="route('home')">
+    <Link class="block" :href="route('movies.show', {movie: movie.slug})">
       <img :alt="`${movie.title} poster`" :src="movie.thumbnail" class="rounded-md">
 
       <div class="w-8 h-8 text-xs absolute rounded-md top-2 left-2 bg-white flex justify-center items-center">
@@ -44,7 +43,10 @@ const formattedGenres = computed(() => {
             </li>
           </ul>
 
-          <div class="text-xs  text-secondary font-medium">{{ movie.start_showing }} - {{ movie.end_showing }}</div>
+          <div class="text-xs  text-secondary font-medium">{{ movie.start_showing }} - {{
+              movie.end_showing
+            }}
+          </div>
         </div>
       </transition>
 
