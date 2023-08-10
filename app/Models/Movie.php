@@ -85,7 +85,7 @@ class Movie extends Model
                 $hours = floor($attributes['duration_in_minutes'] / 60);
                 $minutes = $attributes['duration_in_minutes'] % 60;
 
-                return sprintf('%d г %02d хв', $hours, $minutes);
+                return sprintf('%d год %02d хв', $hours, $minutes);
             },
         );
     }
