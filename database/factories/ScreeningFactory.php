@@ -18,10 +18,12 @@ class ScreeningFactory extends Factory
      */
     public function definition(): array
     {
+
+        $startTime = now()->addDays(rand(1, 14))->startOfHour()->addHours(rand(-23, 23));
         return [
             'movie_id' => Movie::first()->id ?? MovieFactory::new(),
-            'start_time' => fake()->dateTimeBetween('now', '+1 week'),
-            'end_time' => fake()->dateTimeBetween('+1 week', '+2 week'),
+            'start_time' => $startTime,
+            'end_time' => $startTime->addMinutes(rand(90, 180)),
             'standard_seat_price' => fake()->numberBetween(100, 200),
             'premium_seat_price' => fake()->numberBetween(200, 300),
         ];
