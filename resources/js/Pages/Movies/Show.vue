@@ -3,7 +3,7 @@
 import {Head} from "@inertiajs/vue3";
 import MainLayout from "@/Layouts/MainLayout.vue";
 import MovieDetailRow from "@/Components/Movies/MovieDetailRow.vue";
-import ScreeningListSlider from "@/Components/Screenings/ScreeningListSlider.vue";
+import ScreeningList from "@/Components/Screenings/ScreeningList.vue";
 </script>
 
 <template>
@@ -58,7 +58,7 @@ import ScreeningListSlider from "@/Components/Screenings/ScreeningListSlider.vue
     <section class="my-8">
       <div class="container">
         <div class="xl:w-4/5 2xl:w-3/4 xl:mx-auto">
-          <ScreeningListSlider/>
+          <ScreeningList/>
         </div>
       </div>
     </section>
