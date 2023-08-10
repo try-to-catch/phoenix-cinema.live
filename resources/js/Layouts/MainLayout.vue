@@ -27,8 +27,8 @@ import {Link} from "@inertiajs/vue3";
       <slot/>
     </main>
 
-    <footer class="bg-tertiary w-full flex justify-center border-t border-gray-800">
-      <div class="text-sm py-4 text-gray-400">© 2022-2023 PX-Phoenix Holding. Всі права захищено</div>
+    <footer class="bg-tertiary w-full flex justify-center border-t border-neutral-800">
+      <div class="text-sm py-4 text-neutral-400">© 2022-2023 PX-Phoenix Holding. Всі права захищено</div>
     </footer>
   </div>
 </template>
