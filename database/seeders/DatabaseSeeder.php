@@ -7,6 +7,7 @@ use App\Models\Genre;
 use App\Models\HallTemplate;
 use App\Models\Movie;
 use App\Models\MovieBanner;
+use App\Models\Screening;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -24,6 +25,10 @@ class DatabaseSeeder extends Seeder
                 ->each(function (Genre $genre) {
                     $genre->movies()->saveMany(Movie::factory()->count(10)->make());
                 });
+
+            Movie::all()->each(function (Movie $movie) {
+                $movie->screenings()->saveMany(Screening::factory()->count(30)->make());
+            });
 
             HallTemplate::factory(3)->create();
 
