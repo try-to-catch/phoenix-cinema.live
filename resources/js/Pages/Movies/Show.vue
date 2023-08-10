@@ -4,6 +4,13 @@ import {Head} from "@inertiajs/vue3";
 import MainLayout from "@/Layouts/MainLayout.vue";
 import MovieDetailRow from "@/Components/Movies/MovieDetailRow.vue";
 import ScreeningList from "@/Components/Screenings/ScreeningList.vue";
+import type {IMovie} from "@/types/movies/IMovie";
+import type {IScreeningEssentials} from "@/types/IScreeningEssentials";
+
+const {movie, screenings} = defineProps<{
+  movie: Readonly<IMovie>;
+  screenings: Readonly<IScreeningEssentials>
+}>()
 </script>
 
 <template>
