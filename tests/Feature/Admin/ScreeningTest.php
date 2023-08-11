@@ -190,7 +190,7 @@ class ScreeningTest extends TestCase
 
         $screening = $this->createScreening();
         $screening->start_time = $screening->start_time->addHour();
-        $screening->end_time = $screening->end_time->addHour();
+        $screening->end_time = $screening->end_time->addHours(2);
         $screening->standard_seat_price += 20;
 
         $this->actingAs($this->admin)
@@ -249,7 +249,7 @@ class ScreeningTest extends TestCase
                 "type" => "failure",
                 "text" => "Неможливо видалити сеанс, оскільки вже були продані квитки."
             ]);
-        
+
         $this->assertDatabaseCount('screenings', 1);
     }
 
