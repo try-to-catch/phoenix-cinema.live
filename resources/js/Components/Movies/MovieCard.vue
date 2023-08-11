@@ -16,7 +16,7 @@ const isHovered = ref(false)
       @mouseover="isHovered = true"
   >
     <Link :href="route('movies.show', {movie: movie.slug})" class="block">
-      <img :alt="`${movie.title} poster`" :src="movie.thumbnail" class="rounded-md">
+      <img :alt="`Постер ${movie.title}`" :src="movie.thumbnail" class="rounded-md">
 
       <div class="w-8 h-8 text-xs absolute rounded-md top-2 left-2 bg-white flex justify-center items-center">
         {{ movie.age_restriction }}
