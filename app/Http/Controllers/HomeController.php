@@ -18,7 +18,7 @@ class HomeController extends Controller
         $movieWithBanner = Movie::hasBanner()->inRandomOrder()->with(['banner', 'genres'])->first();
         $selectedColumns = ['id', 'title', 'slug', 'thumbnail', 'age_restriction', 'director', 'start_showing', 'end_showing'];
 
-        $movies = Movie::currentlyScreeningWithGenres()->orderBy('priority')->take(self::ROW_LENGTH)->get($selectedColumns);
+        $movies = Movie::currentlyScreeningWithGenres()->orderByDesc('priority')->take(self::ROW_LENGTH)->get($selectedColumns);
         $futureMovies = Movie::screeningSoonWithGenres()->orderBy('start_showing')->take(self::ROW_LENGTH)->get($selectedColumns);
 
         return Inertia::render('Home', [
