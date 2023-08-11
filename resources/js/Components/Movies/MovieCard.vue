@@ -1,24 +1,21 @@
 <script lang="ts" setup>
 import {Link} from '@inertiajs/vue3';
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import type {IMovieCard} from "@/types/movies/IMovieCard";
+import {formatGenres} from "@/services/formatGenres";
 
 const {movie} = defineProps<{ movie: IMovieCard }>()
 
 const isHovered = ref(false)
-
-const formattedGenres = computed(() => {
-  return movie.genres.map((genre) => genre.name).join(', ')
-})
 </script>
 
 <template>
   <li :title="movie.title"
       class="min-w-[218px] w-full flex justify-center min-h-[322px] cursor-pointer relative"
-      @mouseover="isHovered =true"
       @mouseleave="isHovered = false"
+      @mouseover="isHovered = true"
   >
-    <Link class="block" :href="route('movies.show', {movie: movie.slug})">
+    <Link :href="route('movies.show', {movie: movie.slug})" class="block">
       <img :alt="`${movie.title} poster`" :src="movie.thumbnail" class="rounded-md">
 
       <div class="w-8 h-8 text-xs absolute rounded-md top-2 left-2 bg-white flex justify-center items-center">
@@ -35,7 +32,7 @@ const formattedGenres = computed(() => {
           <ul class="my-6 space-y-2">
             <li class="leading-5">
               <div class="text-xs text-gray-400 mb-1 font-medium">Жанр</div>
-              <div class="text-xs text-white">{{ formattedGenres }}</div>
+              <div class="text-xs text-white">{{ formatGenres(movie.genres) }}</div>
             </li>
             <li class="leading-5">
               <div class="text-xs text-gray-400 mb-1 font-medium">Режисер</div>

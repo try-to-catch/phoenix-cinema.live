@@ -1,15 +1,11 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {Link} from "@inertiajs/vue3";
 import ZoomableBanner from "@/Components/Banners/ZoomableBanner.vue";
 import NoteItem from "@/Components/Banners/NoteItem.vue";
 import type {IBanner} from "@/types/banners/IBanner";
-import {computed} from "vue";
+import {formatGenres} from "@/services/formatGenres";
 
 const {banner} = defineProps<{ banner: IBanner }>()
-
-const formattedGenres = computed(() => {
-  return banner.genres.map(genre => genre.name).join(', ')
-})
 </script>
 
 <template>
@@ -35,7 +31,7 @@ const formattedGenres = computed(() => {
           class="bg-tertiary text-white w-full min-h-full rounded-3xl p-6 flex justify-between flex-col">
         <ul class="space-y-[5px]">
           <NoteItem title="Закінчення показу:">{{ banner.end_showing }}</NoteItem>
-          <NoteItem title="Жанр:">{{ formattedGenres }}</NoteItem>
+          <NoteItem title="Жанр:">{{ formatGenres(banner.genres) }}</NoteItem>
           <NoteItem title="В головних ролях:">{{ banner.main_cast }}</NoteItem>
           <NoteItem title="Країна:">{{ banner.production_country }}</NoteItem>
           <NoteItem title="Цікавий факт:">{{ banner.fact }}</NoteItem>
