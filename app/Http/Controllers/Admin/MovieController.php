@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Movie\StoreMovieRequest;
 use App\Http\Requests\Admin\Movie\UpdateMovieRequest;
 use App\Http\Resources\Admin\Genre\GenreResource;
-use App\Http\Resources\Admin\Movie\MovieItemResource;
 use App\Http\Resources\Admin\Movie\MovieListResource;
+use App\Http\Resources\Admin\Movie\MovieResource;
 use App\Http\Resources\Admin\MovieBanner\MovieBannerResource;
 use App\Models\Genre;
 use App\Models\Movie;
@@ -100,7 +100,7 @@ class MovieController extends Controller
     {
         $movie->load(['genres', 'banner']);
         return Inertia::render('Admin/Movies/Edit', [
-            'movie' => MovieItemResource::make($movie)->resolve(),
+            'movie' => MovieResource::make($movie)->resolve(),
             'genres' => GenreResource::collection(Genre::all('id', 'name'))->resolve(),
             'banner' => $movie->banner()->exists() ? MovieBannerResource::make($movie->banner)->resolve() : null,
         ]);

@@ -6,7 +6,7 @@ use App\Http\Resources\Admin\Genre\GenreResourceWithSlug;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MovieItemResource extends JsonResource
+class MovieResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
