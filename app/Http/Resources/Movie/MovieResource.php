@@ -21,7 +21,7 @@ class MovieResource extends JsonResource
             'original_title' => $this->original_title,
             'slug' => $this->slug,
             'description' => $this->description,
-            'duration_in_minutes' => $this->formatted_duration,
+            'duration' => $this->formatted_duration,
             'age_restriction' => $this->age_restriction,
             'thumbnail' => $this->thumbnail_path,
             'release_year' => $this->release_year,
@@ -29,8 +29,8 @@ class MovieResource extends JsonResource
             'production_country' => $this->production_country,
             'studio' => $this->studio,
             'main_cast' => $this->main_cast,
-            'start_showing' => $this->start_showing->format('d.m.Y'),
-            'end_showing' => $this->end_showing->format('d.m.Y'),
+            'start_showing' => $this->start_showing->isoFormat('D MMMM'),
+            'end_showing' => $this->end_showing->isoFormat('D MMMM'),
             'genres' => GenreResourceWithSlug::collection($this->genres)->resolve(),
         ];
     }
