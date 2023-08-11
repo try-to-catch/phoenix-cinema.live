@@ -30,19 +30,19 @@ const {banner, movies, future_movies} = defineProps<{
 
     <AdvantagesSection class="my-12"/>
 
-    <section class="mb-12">
+    <section v-if="movies.length" class="mb-12">
       <div class="container">
         <H3Title>Зараз у кіно</H3Title>
 
-        <MovieList class="mt-5" :movies="movies"/>
+        <MovieList :movies="movies" class="mt-5"/>
       </div>
     </section>
 
-    <section class="mb-12">
+    <section v-if="future_movies.length" class="mb-12">
       <div class="container">
         <H3Title>Скоро у кіно</H3Title>
 
-        <MovieList class="mt-5" :movies="future_movies"/>
+        <MovieList :movies="future_movies" class="mt-5"/>
       </div>
     </section>
   </MainLayout>
