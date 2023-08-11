@@ -2,6 +2,9 @@
 import ArrowRight from "@/Components/Icons/ArrowRight.vue";
 import {ref} from "vue";
 import {Link} from "@inertiajs/vue3";
+import type {IOrganizedScreening} from "@/types/screenings/IOrganizedScreening";
+
+const {screenings} = defineProps<{ screenings: Readonly<IOrganizedScreening>[] }>()
 
 const sliderRef = ref<HTMLUListElement | null>(null)
 
@@ -32,7 +35,6 @@ const updateScrollLeft = (value: number) => {
 
 const isRightArrowVisible = ref(true)
 const isLeftArrowVisible = ref(false)
-
 const updateArrowsVisibility = (currentScrollLeft: number) => {
   if (sliderRef.value) {
     const slider = sliderRef.value
@@ -43,26 +45,9 @@ const updateArrowsVisibility = (currentScrollLeft: number) => {
 }
 
 const activeScreeningDay = ref(0)
-
 const updateActiveScreeningDay = (id: number) => {
   activeScreeningDay.value = id
 }
-
-const mockScreeningList = [
-  {date: 'Сьогодні', screenings: ['10:00', '12:00', '14:00', '16:00', '18:00']},
-  {date: 'Завтра', screenings: ['10:30', '12:50', '14:20', '16:40',]},
-  {date: '23.03', screenings: ['10:30', '12:50', '14:20', '16:40', '18:40', '20:50']},
-  {date: '24.03', screenings: ['10:00', '16:00', '18:00', '20:00']},
-  {date: '25.03', screenings: ['10:00', '12:00', '14:00', '16:00', '18:00', '20:00']},
-  {date: '26.03', screenings: ['10:00', '12:00', '14:00', '16:00', '20:00']},
-  {date: '27.03', screenings: ['10:00', '12:00', '14:00', '16:00', '18:00', '20:00']},
-  {date: '28.03', screenings: ['10:00', '12:00', '14:00', '16:00', '18:00', '20:00']},
-  {date: '29.03', screenings: ['10:00', '12:00', '14:00', '18:00', '20:00']},
-  {date: '30.03', screenings: ['14:00', '16:00', '18:00', '20:00']},
-  {date: '01.04', screenings: ['10:00', '16:00', '18:00', '20:00']},
-  {date: '02.04', screenings: ['10:00', '12:00', '14:00', '16:00',]},
-
-]
 </script>
 
 <template>
@@ -72,7 +57,7 @@ const mockScreeningList = [
            class="overflow-x-auto lg:overflow-hidden z-10 scroll-smooth  border border-secondary rounded-md"
            @wheel="onWheelScroll">
         <ul class="flex md:h-10 h-8 w-fit slider scroll-m-10 font-sans">
-          <li v-for="(screeningDay, id) in mockScreeningList"
+          <li v-for="(screeningDay, id ) in screenings"
               :class="{
                         'bg-secondary-75 text-secondary font-bold backdrop-opacity-10': activeScreeningDay === id,
                         'text-secondary bg-tertiary md:hover:text-lg hover:text-base font-medium': activeScreeningDay !== id
@@ -101,10 +86,10 @@ const mockScreeningList = [
 
     <div class="w-full mt-6">
       <ul class="grid lg:grid-cols-12 md:grid-cols-10 sm:grid-cols-8 grid-cols-6 gap-1.5">
-        <li v-for="screening in mockScreeningList[activeScreeningDay].screenings"
+        <li v-for="screening in screenings[activeScreeningDay].screenings"
             class="text-center md:py-2 py-1.5 bg-tertiary text-secondary font-medium rounded-lg border border-secondary hover-bg-secondary-75 duration-300 md:text-base text-sm">
           <Link href="#">
-            {{ screening }}
+            {{ screening.time }}
           </Link>
         </li>
       </ul>
