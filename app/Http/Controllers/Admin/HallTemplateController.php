@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Seats\StoreSeatsAction;
-use App\Actions\Seats\UpdateSeatsAction;
+use App\Actions\Seat\StoreSeatsAction;
+use App\Actions\Seat\UpdateSeatsAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\HallTemplate\StoreHallTemplateRequest;
 use App\Http\Requests\Admin\HallTemplate\UpdateHallTemplateRequest;

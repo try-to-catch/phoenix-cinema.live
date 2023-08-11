@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Actions\Seats\StoreSeatsAction;
+use App\Actions\Seat\StoreSeatsAction;
 use App\Models\Hall;
 use App\Models\Screening;
 use Illuminate\Database\Eloquent\Factories\Factory;
