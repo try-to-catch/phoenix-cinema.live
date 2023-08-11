@@ -12,7 +12,7 @@ class OrganizeScreeningsAction
     public function handle(Collection $screenings)
     {
         $screenings = $screenings->sortBy('start_time')->groupBy(function ($screening) {
-            return $screening->start_time->format('d-m-Y');
+            return $screening->start_time->isoFormat('D MMMM');
         });
 
         return $screenings->map(function ($screening, $key) {
@@ -24,10 +24,10 @@ class OrganizeScreeningsAction
                 ];
             });
 
-            if ($key === now()->format('d-m-Y')) {
-                $key = 'Today';
-            } elseif ($key === now()->addDay()->format('d-m-Y')) {
-                $key = 'Tomorrow';
+            if ($key === now()->isoFormat('D MMMM')) {
+                $key = 'Сьогодні';
+            } elseif ($key === now()->addDay()->isoFormat('D MMMM')) {
+                $key = 'Завтра';
             }
 
             return [
