@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ScreeningController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -20,6 +21,10 @@ use Inertia\Inertia;
 Route::get('/', HomeController::class)->name('home');
 
 Route::resource('movies', MovieController::class)->only(['show']);
+
+Route::prefix('cart')->group(function () {
+    Route::get('/{screening}', [ScreeningController::class, 'show'])->name('screenings.show');
+});
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
