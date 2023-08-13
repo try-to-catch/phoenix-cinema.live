@@ -87,8 +87,9 @@ const updateActiveScreeningDay = (id: number) => {
     <div class="w-full mt-6">
       <ul class="grid lg:grid-cols-12 md:grid-cols-10 sm:grid-cols-8 grid-cols-6 gap-1.5">
         <li v-for="screening in screenings[activeScreeningDay].screenings"
-            class="text-center md:py-2 py-1.5 bg-tertiary text-secondary font-medium rounded-lg border border-secondary hover-bg-secondary-75 duration-300 md:text-base text-sm">
-          <Link href="#">
+            class="text-center bg-tertiary text-secondary font-medium rounded-lg border border-secondary hover-bg-secondary-75 duration-300 md:text-base text-sm">
+          <Link :href="route('screenings.show', {screening: screening.id})"
+                class="w-full h-full block md:py-2 py-1.5">
             {{ screening.time }}
           </Link>
         </li>

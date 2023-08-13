@@ -3,6 +3,7 @@ import {Link} from '@inertiajs/vue3';
 import {ref} from "vue";
 import type {IMovieCard} from "@/types/movies/IMovieCard";
 import {formatGenres} from "@/services/formatGenres";
+import MoviePoster from "@/Components/Movies/MoviePoster.vue";
 
 const {movie} = defineProps<{ movie: IMovieCard }>()
 
@@ -16,11 +17,7 @@ const isHovered = ref(false)
       @mouseover="isHovered = true"
   >
     <Link :href="route('movies.show', {movie: movie.slug})" class="block">
-      <img :alt="`Постер ${movie.title}`" :src="movie.thumbnail" class="rounded-md">
-
-      <div class="w-8 h-8 text-xs absolute rounded-md top-2 left-2 bg-white flex justify-center items-center">
-        {{ movie.age_restriction }}
-      </div>
+      <MoviePoster :title="movie.title" :thumbnail="movie.thumbnail" :age-restriction="movie.age_restriction"/>
 
       <transition name="liftUp">
         <div v-if="isHovered"
@@ -40,9 +37,8 @@ const isHovered = ref(false)
             </li>
           </ul>
 
-          <div class="text-xs  text-secondary font-medium">{{ movie.start_showing }} - {{
-              movie.end_showing
-            }}
+          <div class="text-xs  text-secondary font-medium">
+            {{ movie.start_showing }} - {{ movie.end_showing }}
           </div>
         </div>
       </transition>
