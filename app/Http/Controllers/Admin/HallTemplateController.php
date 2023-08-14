@@ -69,7 +69,7 @@ class HallTemplateController extends Controller
     public function edit(HallTemplate $template): Response
     {
         return Inertia::render('Admin/HallTemplates/Edit', [
-            'hall' => HallTemplateWithSeatsResource::make($template->load('seats')),
+            'hall_template' => HallTemplateWithSeatsResource::make($template->load('seats'))->resolve(),
         ]);
     }
 

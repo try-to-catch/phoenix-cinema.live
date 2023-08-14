@@ -140,19 +140,17 @@ class HallTemplateTest extends TestCase
             ->assertOk()
             ->assertInertia(fn(Assert $page) => $page
                 ->component('Admin/HallTemplates/Edit')
-                ->has('hall', fn(Assert $page) => $page
-                    ->has('data', fn(Assert $page) => $page
-                        ->where('id', $template->id)
-                        ->where('title', $template->title)
-                        ->where('is_available', $template->is_available)
-                        ->has('seats', fn(Assert $page) => $page
-                            ->count(count($this->getNewTemplate()['seats']))
-                            ->has('0.0.id')
-                            ->has('0.0.type')
-                            ->has('0.0.row_number')
-                            ->has('0.0.seat_number')
-                            ->etc()
-                        )
+                ->has('hall_template', fn(Assert $page) => $page
+                    ->where('id', $template->id)
+                    ->where('title', $template->title)
+                    ->where('is_available', $template->is_available)
+                    ->has('seats', fn(Assert $page) => $page
+                        ->count(count($this->getNewTemplate()['seats']))
+                        ->has('0.0.id')
+                        ->has('0.0.type')
+                        ->has('0.0.row_number')
+                        ->has('0.0.seat_number')
+                        ->etc()
                     )
                 )
             );
