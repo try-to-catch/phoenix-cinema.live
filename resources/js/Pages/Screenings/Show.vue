@@ -9,6 +9,12 @@ import ScreenArch from "@/Components/Screenings/ScreenArch.vue";
 import MoviePoster from "@/Components/Movies/MoviePoster.vue";
 import SeatCard from "@/Components/Screenings/SeatCard.vue";
 import SeatPlan from "@/Components/Screenings/SeatPlan.vue";
+import type {ISeat} from "@/types/seats/ISeat";
+import {ref} from "vue";
+
+defineProps<{ seating_plan: Readonly<ISeat>[][] }>()
+
+const selectedSeats = ref<Readonly<ISeat>[]>([])
 </script>
 
 <template>
@@ -73,7 +79,7 @@ import SeatPlan from "@/Components/Screenings/SeatPlan.vue";
             </div>
 
             <div class="w-full flex justify-center mt-12">
-              <SeatPlan/>
+              <SeatPlan :seating-plan="seating_plan" v-model:selected-seats="selectedSeats"/>
             </div>
 
           </div>
