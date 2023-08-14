@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Genre;
+use App\Models\Hall;
 use App\Models\HallTemplate;
 use App\Models\Movie;
 use App\Models\MovieBanner;
@@ -28,6 +29,10 @@ class DatabaseSeeder extends Seeder
 
             Movie::all()->each(function (Movie $movie) {
                 $movie->screenings()->saveMany(Screening::factory()->count(30)->make());
+            });
+
+            Screening::all()->each(function (Screening $screening) {
+                $screening->hall()->save(Hall::factory()->create());
             });
 
             HallTemplate::factory(3)->create();
