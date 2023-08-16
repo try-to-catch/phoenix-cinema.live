@@ -31,7 +31,8 @@ class HallTemplateTest extends TestCase
     private function getNewTemplate(): array
     {
         return [
-            'title' => 'Test Hall',
+            'address' => 'Test Address',
+            'number' => 1,
             'is_available' => true,
             'is_preset' => true,
             'seats' => [
@@ -53,7 +54,7 @@ class HallTemplateTest extends TestCase
     {
         $template = HallTemplate::factory()->create();
         return $template->load(['seats' => fn($query) => $query->inRandomOrder()->take(1)->get()])
-            ->first(['id', 'title', 'is_available']);
+            ->first(['id', 'address', 'number', 'is_available']);
     }
 
     public function test_hall_list_view_functions_properly()
@@ -69,7 +70,8 @@ class HallTemplateTest extends TestCase
                 ->has('hall_templates', fn(Assert $page) => $page
                     ->has('data', 1, fn(Assert $page) => $page
                         ->where('id', $template->id)
-                        ->where('title', $template->title)
+                        ->where('address', $template->address)
+                        ->where('number', $template->number)
                         ->where('is_available', $template->is_available)
                         ->where('seats_count', $template->seats()->count())
                     )->etc()
@@ -99,7 +101,8 @@ class HallTemplateTest extends TestCase
             ->assertRedirect('/admin/hall-templates/' . HallTemplate::first()->id);
 
         $this->assertDatabaseHas('hall_templates', [
-            'title' => 'Test Hall',
+            'address' => 'Test Address',
+            'number' => 1,
             'is_available' => true,
         ]);
     }
@@ -109,13 +112,13 @@ class HallTemplateTest extends TestCase
     {
         $newHall = $this->getNewTemplate();
 
-        $newHall['title'] = '';
+        $newHall['address'] = '';
         $newHall['seats'] = ['standard', 'premium'];
 
         $this->actingAs($this->admin)
             ->post('/admin/hall-templates', $newHall)
             ->assertStatus(302)
-            ->assertSessionHasErrors(['title', 'seats.*']);
+            ->assertSessionHasErrors(['address', 'seats.*']);
     }
 
 
@@ -142,7 +145,8 @@ class HallTemplateTest extends TestCase
                 ->component('Admin/HallTemplates/Edit')
                 ->has('hall_template', fn(Assert $page) => $page
                     ->where('id', $template->id)
-                    ->where('title', $template->title)
+                    ->where('address', $template->address)
+                    ->where('number', $template->number)
                     ->where('is_available', $template->is_available)
                     ->has('seats', fn(Assert $page) => $page
                         ->count(count($this->getNewTemplate()['seats']))
@@ -170,7 +174,8 @@ class HallTemplateTest extends TestCase
             ->assertRedirect('/admin/hall-templates/' . $template->id);
 
         $this->assertDatabaseHas('hall_templates', [
-            'title' => 'Test Hall',
+            'address' => 'Test Address',
+            'number' => 1,
             'is_available' => true,
         ]);
 
@@ -184,13 +189,13 @@ class HallTemplateTest extends TestCase
     {
         $template = $this->getTemplateWithRandomSeat();
 
-        $template->title = ''; //Title cannot be empty
+        $template->number = 'one'; //Address cannot string
         $template->seats[0]->type = 'VIP'; //There is no such a type
 
         $this->actingAs($this->admin)
             ->patch('/admin/hall-templates/' . $template->id, [...$template->toArray(), 'updated_seats' => $template->seats->toArray()])
             ->assertStatus(302)
-            ->assertSessionHasErrors(['title', 'updated_seats.*.type']);
+            ->assertSessionHasErrors(['number', 'updated_seats.*.type']);
     }
 
 

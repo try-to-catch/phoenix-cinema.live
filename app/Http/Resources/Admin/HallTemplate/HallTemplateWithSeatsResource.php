@@ -17,7 +17,8 @@ class HallTemplateWithSeatsResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'address' => $this->address,
+            'number' => $this->number,
             'is_available' => $this->is_available,
             'seats' => SeatResource::make($this->seats)->resolve(),
         ];

@@ -14,10 +14,12 @@ class HallTemplate extends Model
 
     protected $casts = [
         'is_available' => 'boolean',
+        'number' => 'integer',
     ];
 
     protected $fillable = [
-        'title',
+        'number',
+        'address',
         'is_available',
     ];
 

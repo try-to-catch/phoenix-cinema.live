@@ -16,7 +16,8 @@ class HallTemplateListResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'number' => $this->number,
+            'address' => $this->address,
             'is_available' => $this->is_available,
             'seats_count' => $this->seats_count,
         ];

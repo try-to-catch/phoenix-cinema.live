@@ -14,8 +14,13 @@ class Hall extends Model
 
     public $timestamps = false;
     protected $fillable = [
-        'title',
+        'number',
+        'address',
         'screening_id'
+    ];
+
+    protected $casts = [
+        'number' => 'integer',
     ];
 
     public function seats(): MorphMany

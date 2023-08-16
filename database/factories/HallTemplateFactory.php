@@ -18,7 +18,8 @@ class HallTemplateFactory extends HallFactory
     public function definition(): array
     {
         return [
-            'title' => fake()->words(rand(1, 3), true),
+            'number' => $this->faker->numberBetween(1, 10),
+            'address' => fake()->address(),
             'is_available' => true,
         ];
     }

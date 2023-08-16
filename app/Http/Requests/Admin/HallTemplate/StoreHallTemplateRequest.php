@@ -17,7 +17,8 @@ class StoreHallTemplateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:255'],
+            'number' => ['required', 'integer', 'min:1'],
+            'address' => ['required', 'string', 'max:255'],
             'is_available' => ['boolean', 'max:255'],
             'seats' => ['required', 'array'],
             'seats.*' => ['required', 'array'],
