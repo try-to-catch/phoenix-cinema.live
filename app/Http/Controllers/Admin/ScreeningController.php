@@ -28,7 +28,7 @@ class ScreeningController extends Controller
     {
         $screenings = Screening::query()
             ->select('id', 'movie_id', 'start_time', 'end_time')
-            ->with('movie:id,slug,title,thumbnail,duration_in_minutes', 'hall:id,title,screening_id')
+            ->with('movie:id,slug,title,thumbnail,duration_in_minutes', 'hall:id,address,number,screening_id')
             ->latest('start_time')
             ->paginate(10);
 
@@ -43,8 +43,10 @@ class ScreeningController extends Controller
     public function create(): Response
     {
         return Inertia::render('Admin/Screenings/Create', [
-            'movies' => MovieMinResource::collection(Movie::missingCompleted()->get(['id', 'title'])),
-            'hall_templates' => HallTemplateMinResource::collection(HallTemplate::available()->get(['id', 'title'])),
+            'movies' => MovieMinResource::collection(Movie::missingCompleted()->get(['id', 'title']))->resolve(),
+            'hall_templates' => HallTemplateMinResource::collection(
+                HallTemplate::available()->get(['id', 'address', 'number'])
+            )->resolve(),
         ]);
     }
 
@@ -79,10 +81,10 @@ class ScreeningController extends Controller
      */
     public function edit(Screening $screening): Response
     {
-        $screening->load('movie:id,slug,title,thumbnail,duration_in_minutes', 'hall:id,title,screening_id');
+        $screening->load('movie:id,slug,title,thumbnail,duration_in_minutes', 'hall:id,address,number,screening_id');
 
         return Inertia::render('Admin/Screenings/Edit', [
-            'screening' => ScreeningItemResource::make($screening),
+            'screening' => ScreeningItemResource::make($screening)->resolve(),
         ]);
     }
 

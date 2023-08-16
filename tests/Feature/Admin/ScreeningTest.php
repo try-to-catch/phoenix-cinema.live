@@ -17,46 +17,6 @@ class ScreeningTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->seed(RoleSeeder::class);
-
-        $this->movie = Movie::factory()->create(['end_showing' => now()->addDays()]);
-
-        $adminId = Role::admin()->pluck('id');
-        $this->user = User::factory()->create();
-
-        $this->admin = User::factory()->create();
-        $this->admin->roles()->attach($adminId);
-    }
-
-
-    private function getNewScreening(string $hallTemplateId): array
-    {
-        return [
-            'movie_id' => $this->movie->id,
-            'hall_template_id' => $hallTemplateId,
-            'start_time' => now()->addDays()->format('Y-m-d\TH:i'),
-            'end_time' => now()->addDays()->addHours(2)->format('Y-m-d\TH:i'),
-            'standard_seat_price' => 150,
-            'premium_seat_price' => 200,
-        ];
-    }
-
-
-    private function createScreening($withHall = false)
-    {
-        return tap(
-            Screening::factory()->create(),
-            fn(Screening $screening) => $withHall
-                ? Hall::factory()->create(['screening_id' => $screening->id])
-                : null
-        );
-    }
-
-
     public function test_movie_list_view_functions_properly(): void
     {
         $this->withoutExceptionHandling();
@@ -68,25 +28,41 @@ class ScreeningTest extends TestCase
             ->assertInertia(fn(Assert $page) => $page
                 ->component('Admin/Screenings/Index')
                 ->has('screenings.data', 1, fn(Assert $page) => $page
-                    ->where('id', $screening->id)
-                    ->where('is_over', $screening->is_over)
-                    ->where('start_time', $screening->start_time->format('Y-m-d H:i'))
-                    ->where('end_time', $screening->end_time->format('Y-m-d H:i'))
+                    ->whereAll([
+                        'id' => $screening->id,
+                        'is_over' => $screening->is_over,
+                        'start_time' => $screening->start_time->format('Y-m-d H:i'),
+                        'end_time' => $screening->end_time->format('Y-m-d H:i'),
+                    ])
                     ->has('movie', fn(Assert $page) => $page
-                        ->where('id', $screening->movie->id)
-                        ->where('slug', $screening->movie->slug)
-                        ->where('title', $screening->movie->title)
-                        ->where('thumbnail', $screening->movie->thumbnail_path)
-                        ->where('duration_in_minutes', $screening->movie->duration_in_minutes)
+                        ->whereAll([
+                            'id' => $screening->movie->id,
+                            'slug' => $screening->movie->slug,
+                            'title' => $screening->movie->title,
+                            'thumbnail' => $screening->movie->thumbnail_path,
+                            'duration_in_minutes' => $screening->movie->duration_in_minutes,
+                        ])
                     )
                     ->has('hall', fn(Assert $page) => $page
-                        ->where('id', $screening->hall->id)
-                        ->where('title', $screening->hall->title)
+                        ->whereAll([
+                            'id' => $screening->hall->id,
+                            'address' => $screening->hall->address,
+                            'number' => $screening->hall->number,
+                        ])
                     )
                 )
             );
     }
 
+    private function createScreening($withHall = false)
+    {
+        return tap(
+            Screening::factory()->create(),
+            fn(Screening $screening) => $withHall
+                ? Hall::factory()->create(['screening_id' => $screening->id])
+                : null
+        );
+    }
 
     public function test_screening_create_view_functions_properly(): void
     {
@@ -98,18 +74,20 @@ class ScreeningTest extends TestCase
             ->assertInertia(fn(Assert $page) => $page
                 ->component('Admin/Screenings/Create')
                 ->has('movies', 1, fn(Assert $page) => $page
-                    ->where('0.id', $this->movie->id)
-                    ->where('0.title', $this->movie->title)
-                    ->etc()
+                    ->whereAll([
+                        'id' => $this->movie->id,
+                        'title' => $this->movie->title,
+                    ])
                 )
                 ->has('hall_templates', 1, fn(Assert $page) => $page
-                    ->where('0.id', $hallTemplate->id)
-                    ->where('0.title', $hallTemplate->title)
-                    ->etc()
+                    ->whereAll([
+                        'id' => $hallTemplate->id,
+                        'address' => $hallTemplate->address,
+                        'number' => $hallTemplate->number
+                    ])
                 )
             );
     }
-
 
     public function test_screening_can_be_stored_by_admin()
     {
@@ -129,6 +107,17 @@ class ScreeningTest extends TestCase
             ]);
     }
 
+    private function getNewScreening(string $hallTemplateId): array
+    {
+        return [
+            'movie_id' => $this->movie->id,
+            'hall_template_id' => $hallTemplateId,
+            'start_time' => now()->addDays()->format('Y-m-d\TH:i'),
+            'end_time' => now()->addDays()->addHours(2)->format('Y-m-d\TH:i'),
+            'standard_seat_price' => 150,
+            'premium_seat_price' => 200,
+        ];
+    }
 
     public function test_screenings_cannot_be_stored_with_invalid_data()
     {
@@ -140,7 +129,6 @@ class ScreeningTest extends TestCase
             ->assertSessionHasErrors(array_keys($this->getNewScreening(HallTemplate::factory()->create()->id)));
     }
 
-
     public function test_show_returns_redirect_to_edit_page(): void
     {
         $this->withoutExceptionHandling();
@@ -150,7 +138,6 @@ class ScreeningTest extends TestCase
         $this->actingAs($this->admin)->get('/admin/screenings/' . $screening->id)
             ->assertRedirect('/admin/screenings/' . $screening->id . '/edit');
     }
-
 
     public function test_screening_edit_view_functions_properly(): void
     {
@@ -162,27 +149,33 @@ class ScreeningTest extends TestCase
             ->assertOk()
             ->assertInertia(fn(Assert $page) => $page
                 ->component('Admin/Screenings/Edit')
-                ->has('screening', 1, fn(Assert $page) => $page
-                    ->where('id', $screening->id)
-                    ->where('start_time', $screening->start_time->format('Y-m-d H:i'))
-                    ->where('end_time', $screening->end_time->format('Y-m-d H:i'))
-                    ->where('standard_seat_price', $screening->standard_seat_price)
-                    ->where('premium_seat_price', $screening->premium_seat_price)
+                ->has('screening', fn(Assert $page) => $page
+                    ->whereAll([
+                        'id' => $screening->id,
+                        'start_time' => $screening->start_time->format('Y-m-d H:i'),
+                        'end_time' => $screening->end_time->format('Y-m-d H:i'),
+                        'standard_seat_price' => $screening->standard_seat_price,
+                        'premium_seat_price' => $screening->premium_seat_price,
+                    ])
                     ->has('movie', fn(Assert $page) => $page
-                        ->where('id', $screening->movie->id)
-                        ->where('slug', $screening->movie->slug)
-                        ->where('title', $screening->movie->title)
-                        ->where('thumbnail', $screening->movie->thumbnail_path)
-                        ->where('duration_in_minutes', $screening->movie->duration_in_minutes)
+                        ->whereAll([
+                            'id' => $screening->movie->id,
+                            'slug' => $screening->movie->slug,
+                            'title' => $screening->movie->title,
+                            'thumbnail' => $screening->movie->thumbnail_path,
+                            'duration_in_minutes' => $screening->movie->duration_in_minutes,
+                        ])
                     )
                     ->has('hall', fn(Assert $page) => $page
-                        ->where('id', $screening->hall->id)
-                        ->where('title', $screening->hall->title)
+                        ->whereAll([
+                            'id' => $screening->hall->id,
+                            'address' => $screening->hall->address,
+                            'number' => $screening->hall->number,
+                        ])
                     )
                 )
             );
     }
-
 
     public function test_screening_can_be_updated_by_admin()
     {
@@ -268,5 +261,20 @@ class ScreeningTest extends TestCase
         $this->actingAs($this->user)
             ->delete('/admin/screenings/' . $screening->id)
             ->assertStatus(403);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(RoleSeeder::class);
+
+        $this->movie = Movie::factory()->create(['end_showing' => now()->addDays()]);
+
+        $adminId = Role::admin()->pluck('id');
+        $this->user = User::factory()->create();
+
+        $this->admin = User::factory()->create();
+        $this->admin->roles()->attach($adminId);
     }
 }
