@@ -13,7 +13,8 @@ return new class extends Migration {
         Schema::create('halls', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('screening_id')->constrained()->cascadeOnDelete();
-            $table->string('title');
+            $table->string('number');
+            $table->string('address');
         });
     }
 
