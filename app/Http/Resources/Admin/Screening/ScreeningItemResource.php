@@ -22,8 +22,8 @@ class ScreeningItemResource extends JsonResource
             'end_time' => $this->end_time->format('Y-m-d H:i'),
             'standard_seat_price' => $this->standard_seat_price,
             'premium_seat_price' => $this->premium_seat_price,
-            'movie' => MovieSummaryResource::make($this->movie),
-            'hall' => HallResource::make($this->hall)
+            'movie' => MovieSummaryResource::make($this->movie)->resolve(),
+            'hall' => HallResource::make($this->hall)->resolve()
         ];
     }
 }

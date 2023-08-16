@@ -56,7 +56,7 @@ class MovieController extends Controller
     public function create(): Response
     {
         return Inertia::render('Admin/Movies/Create', [
-            'genres' => GenreResource::collection(Genre::all('id', 'name'))
+            'genres' => GenreResource::collection(Genre::all('id', 'name'))->resolve()
         ]);
     }
 
