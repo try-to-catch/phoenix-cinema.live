@@ -76,16 +76,18 @@ class MovieTest extends TestCase
                 ->component('Admin/Movies/Index')
                 ->has('movies', fn(Assert $page) => $page
                     ->has('data', 1, fn(Assert $page) => $page
-                        ->where('id', $movie->id)
-                        ->where('title', $movie->title)
-                        ->where('slug', $movie->slug)
-                        ->where('duration_in_minutes', $movie->duration_in_minutes)
-                        ->where('age_restriction', $movie->age_restriction)
-                        ->where('thumbnail', $movie->thumbnail_path)
-                        ->where('start_showing', $movie->start_showing->format('d-m-Y'))
-                        ->where('end_showing', $movie->end_showing->format('d-m-Y'))
-                        ->etc()
-                    )->etc()
+                        ->whereAll([
+                            'id' => $movie->id,
+                            'title' => $movie->title,
+                            'slug' => $movie->slug,
+                            'duration_in_minutes' => $movie->duration_in_minutes,
+                            'age_restriction' => $movie->age_restriction,
+                            'thumbnail' => $movie->thumbnail_path,
+                            'start_showing' => $movie->start_showing->format('d-m-Y'),
+                            'end_showing' => $movie->end_showing->format('d-m-Y'),
+                        ])
+                    )
+                    ->hasAll(['links', 'meta'])
                 )
             );
     }
@@ -99,11 +101,8 @@ class MovieTest extends TestCase
             ->assertOk()
             ->assertInertia(fn(Assert $page) => $page
                 ->component('Admin/Movies/Create')
-                ->has('genres', 1, fn(Assert $page) => $page
-                    ->count(Genre::count())
-                    ->has('0.id')
-                    ->has('0.name')
-                    ->etc()
+                ->has('genres', Genre::count(), fn(Assert $page) => $page
+                    ->hasAll(['id', 'name'])
                 )
             );
     }
@@ -175,28 +174,32 @@ class MovieTest extends TestCase
             ->assertInertia(fn(Assert $page) => $page
                 ->component('Admin/Movies/Edit')
                 ->has('movie', fn(Assert $page) => $page
-                    ->where('id', $movie->id)
-                    ->where('title', $movie->title)
-                    ->where('slug', $movie->slug)
-                    ->where('description', $movie->description)
-                    ->where('duration_in_minutes', $movie->duration_in_minutes)
-                    ->where('age_restriction', $movie->age_restriction)
-                    ->where('thumbnail', $movie->thumbnail_path)
-                    ->where('release_year', $movie->release_year)
-                    ->where('director', $movie->director)
-                    ->where('production_country', $movie->production_country)
-                    ->where('studio', $movie->studio)
-                    ->where('main_cast', $movie->main_cast)
-                    ->where('start_showing', $movie->start_showing->format('d-m-Y'))
-                    ->where('end_showing', $movie->end_showing->format('d-m-Y'))
-                    ->has('genres', fn(Assert $page) => $page
-                        ->count($movie->genres->count())
-                        ->has('0.id')
-                        ->has('0.name')
-                        ->etc()
+                    ->whereAll([
+                        'id' => $movie->id,
+                        'title' => $movie->title,
+                        'slug' => $movie->slug,
+                        'description' => $movie->description,
+                        'priority' => $movie->priority,
+                        'director' => $movie->director,
+                        'duration_in_minutes' => $movie->duration_in_minutes,
+                        'age_restriction' => $movie->age_restriction,
+                        'thumbnail' => $movie->thumbnail_path,
+                        'release_year' => $movie->release_year,
+                        'original_title' => $movie->original_title,
+                        'production_country' => $movie->production_country,
+                        'studio' => $movie->studio,
+                        'main_cast' => $movie->main_cast,
+                        'start_showing' => $movie->start_showing->format('d-m-Y'),
+                        'end_showing' => $movie->end_showing->format('d-m-Y'),
+                    ])
+                    ->has('genres', $movie->genres->count(), fn(Assert $page) => $page
+                        ->hasAll(['id', 'name', 'slug'])
                     )
-                    ->etc()
                 )
+                ->has('genres', Genre::count(), fn(Assert $page) => $page
+                    ->hasAll(['id', 'name'])
+                )
+                ->has('banner')
             );
     }
 

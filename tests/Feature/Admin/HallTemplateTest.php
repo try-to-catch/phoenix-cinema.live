@@ -69,12 +69,14 @@ class HallTemplateTest extends TestCase
                 ->component('Admin/HallTemplates/Index')
                 ->has('hall_templates', fn(Assert $page) => $page
                     ->has('data', 1, fn(Assert $page) => $page
-                        ->where('id', $template->id)
-                        ->where('address', $template->address)
-                        ->where('number', $template->number)
-                        ->where('is_available', $template->is_available)
-                        ->where('seats_count', $template->seats()->count())
-                    )->etc()
+                        ->whereAll([
+                            'id' => $template->id,
+                            'address' => $template->address,
+                            'number' => $template->number,
+                            'is_available' => $template->is_available,
+                            'seats_count' => $template->seats()->count(),
+                        ])
+                    )
                 )
             );
     }
@@ -144,16 +146,14 @@ class HallTemplateTest extends TestCase
             ->assertInertia(fn(Assert $page) => $page
                 ->component('Admin/HallTemplates/Edit')
                 ->has('hall_template', fn(Assert $page) => $page
-                    ->where('id', $template->id)
-                    ->where('address', $template->address)
-                    ->where('number', $template->number)
-                    ->where('is_available', $template->is_available)
-                    ->has('seats', fn(Assert $page) => $page
-                        ->count(count($this->getNewTemplate()['seats']))
-                        ->has('0.0.id')
-                        ->has('0.0.type')
-                        ->has('0.0.row_number')
-                        ->has('0.0.seat_number')
+                    ->whereAll([
+                        'id' => $template->id,
+                        'address' => $template->address,
+                        'number' => $template->number,
+                        'is_available' => $template->is_available,
+                    ])
+                    ->has('seats', count($this->getNewTemplate()['seats']), fn(Assert $page) => $page
+                        ->hasAll(['0.id', '0.type', '0.row_number', '0.seat_number', '0.is_taken'])
                         ->etc()
                     )
                 )
