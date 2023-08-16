@@ -43,7 +43,7 @@ const formattedSeatPlan = computed(() => {
             if (isSelected && seat.type === SeatType.Standard) {
                 classes += 'border-blue-400 bg-blue-400'
             } else if (seat.is_taken) {
-                classes += 'bg-neutral-400 border-white after:content-[\'×\'] after:text-white relative after:translate-x-1/2 after:absolute after:right-1/2 hover:after:duration-300 '
+                classes += "border-white after:content-['×'] after:text-white relative after:translate-x-1/2 after:absolute after:right-1/2 hover:after:duration-300 "
                 if (seat.type === SeatType.Standard) {
                     classes += 'hover:border-blue-400 hover:after:text-blue-400 hover'
                 } else if (seat.type === SeatType.Premium) {
@@ -56,7 +56,7 @@ const formattedSeatPlan = computed(() => {
             } else if (seat.type === SeatType.Premium) {
                 classes += 'border-secondary hover:bg-secondary hover:bg-opacity-20'
             }
-            
+
             let title = ''
             if (seat.is_taken) {
                 title = 'Це місце зайнято'
