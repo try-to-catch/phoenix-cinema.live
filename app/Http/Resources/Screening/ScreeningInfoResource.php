@@ -21,7 +21,7 @@ class ScreeningInfoResource extends JsonResource
             'id' => $this['id'],
             'start_time' => $this['start_time']->format('H:i'),
             'end_time' => $this['end_time']->format('H:i'),
-            'start_date' => $this['start_time']->format('d-m-Y'),
+            'start_date' => $this['start_time']->format('d.m.Y'),
             'start_date_day_of_weak' => Str::ucfirst($this['start_time']->isoFormat('dddd')),
             'standard_seat_price' => $this['standard_seat_price'],
             'premium_seat_price' => $this['premium_seat_price'],
