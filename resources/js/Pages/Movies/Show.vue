@@ -21,7 +21,7 @@ const {movie, screenings} = defineProps<{
   </Head>
 
   <MainLayout>
-    <section class="pt-1">
+    <section class="pt-5 sm:pt-1">
       <div class="container">
         <div class="xl:w-4/5 2xl:w-3/4 xl:mx-auto">
           <div
@@ -58,7 +58,7 @@ const {movie, screenings} = defineProps<{
       </div>
     </section>
 
-    <section class="my-8">
+    <section class="py-8 pb-6 sm:pb-12">
       <div class="container">
         <div class="xl:w-4/5 2xl:w-3/4 xl:mx-auto">
           <ScreeningList :screenings="screenings"/>
@@ -69,4 +69,3 @@ const {movie, screenings} = defineProps<{
   </MainLayout>
 </template>
 
-<style scoped></style>
