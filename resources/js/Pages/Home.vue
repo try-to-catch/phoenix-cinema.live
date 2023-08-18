@@ -36,7 +36,8 @@ const {banner, movies, future_movies} = defineProps<{
         <div class="flex justify-between items-center">
           <H3Title>Зараз у кіно</H3Title>
 
-          <Link class="text-neutral-400 flex items-center space-x-4 sm:text-base text-sm" :href="'/'">
+          <Link :href="route('movies.index')"
+                class="text-neutral-400 flex items-center space-x-4 sm:text-base text-sm">
             Показати всі
             <AnglesRight class="ml-2 fill-current"/>
           </Link>
@@ -46,12 +47,13 @@ const {banner, movies, future_movies} = defineProps<{
       </div>
     </section>
 
-    <section v-if="future_movies.length" class="mb-12">
+    <section v-if="future_movies.length" class="pb-12">
       <div class="container">
         <div class="flex justify-between items-center">
           <H3Title>Скоро у кіно</H3Title>
 
-          <Link class="text-neutral-400 flex items-center space-x-4 sm:text-base text-sm" :href="'/'">
+          <Link :href="route('movies.index')"
+                class="text-neutral-400 flex items-center space-x-4 sm:text-base text-sm">
             Показати всі
             <AnglesRight class="ml-2 fill-current"/>
           </Link>
