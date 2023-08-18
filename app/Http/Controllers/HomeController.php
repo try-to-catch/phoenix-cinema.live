@@ -20,7 +20,7 @@ class HomeController extends Controller
 
         //TODO add caching of the movies and future movies
         $movies = Movie::currentlyScreeningWithGenres()->orderByDesc('priority')->take(self::ROW_LENGTH)->get($selectedColumns);
-        $futureMovies = Movie::screeningSoonWithGenres()->orderBy('start_showing')->take(self::ROW_LENGTH)->get($selectedColumns);
+        $futureMovies = Movie::screeningSoonWithGenres()->orderBy('start_showing')->take(self::ROW_LENGTH / 2)->get($selectedColumns);
 
         return Inertia::render('Home', [
             'banner' => MovieBannerResource::make($movieWithBanner)->resolve(),
