@@ -20,7 +20,7 @@ use Inertia\Inertia;
 
 Route::get('/', HomeController::class)->name('home');
 
-Route::resource('movies', MovieController::class)->only(['show']);
+Route::resource('movies', MovieController::class)->only(['index', 'show']);
 
 Route::prefix('cart')->group(function () {
     Route::get('/{screening}', [ScreeningController::class, 'show'])->name('screenings.show');
