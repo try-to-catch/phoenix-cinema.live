@@ -1,11 +1,23 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 
-const props = defineProps<{ styles?: string }>()
+withDefaults(
+    defineProps<{
+      styles?: string,
+      hasOnHoverAnimation?: boolean
+    }>(),
+    {
+      styles: '',
+      hasOnHoverAnimation: true,
+    }
+)
 </script>
 
 <template>
-  <div class="text-lg sm:text-xl md:text-2xl text-secondary font-semibold"
-       :class="[$style['text-shadow'],styles]">
+  <div :class="[
+              hasOnHoverAnimation?$style['text-shadow']:'',
+              styles
+           ]"
+       class="text-lg sm:text-xl md:text-2xl text-secondary font-semibold">
     PHOENIX
   </div>
 </template>

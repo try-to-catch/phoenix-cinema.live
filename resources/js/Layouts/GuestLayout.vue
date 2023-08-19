@@ -9,7 +9,7 @@ import ApplicationLogo from "@/Components/Icons/ApplicationLogo.vue";
     <div>
       <Link href="/" class="flex text-secondary items-center justify-center space-x-2">
         <ApplicationLogoImage class="h-8 fill-secondary bg-transparent text-gray-500"/>
-        <ApplicationLogo :with-on-hover-animation="false" styles="fill-current text-gray-500"/>
+        <ApplicationLogo :has-on-hover-animation="false" styles="fill-current text-gray-500"/>
       </Link>
     </div>
 
