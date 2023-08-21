@@ -21,6 +21,9 @@ export default {
                 'primary': '#1D2024',
                 'secondary': '#F37515',
                 'tertiary': '#1F2226',
+                'neutral': {
+                    850: 'rgb(35,35,35)',
+                },
             },
             container: {
                 center: true,
