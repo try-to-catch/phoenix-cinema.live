@@ -24,6 +24,9 @@ export default {
                 'neutral': {
                     850: 'rgb(35,35,35)',
                 },
+                'orange': {
+                    550: '#ff6902',
+                }
             },
             container: {
                 center: true,
