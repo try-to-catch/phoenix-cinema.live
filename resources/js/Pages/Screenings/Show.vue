@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {Head, router, usePage} from "@inertiajs/vue3";
+import {Head, usePage} from "@inertiajs/vue3";
 import MainLayout from "@/Layouts/MainLayout.vue";
 import LocationDot from "@/Components/Icons/LocationDot.vue";
 import CalendarDays from "@/Components/Icons/CalendarDays.vue";
@@ -14,13 +14,11 @@ import {computed, ref, watch} from "vue";
 import SelectedSeatCard from "@/Components/Screenings/SelectedSeatCard.vue";
 import type {IScreeningInfo} from "@/types/screenings/IScreeningInfo";
 import SeatTypePrice from "@/Components/Screenings/SeatTypePrice.vue";
-import Modal from "@/Components/Breeze/Modal.vue";
 import PrimaryButton from "@/Components/Breeze/PrimaryButton.vue";
-import SecondaryButton from "@/Components/Breeze/SecondaryButton.vue";
-import TextInput from "@/Components/Breeze/TextInput.vue";
-import NumberInput from "@/Components/Breeze/NumberInput.vue";
+import SummarizingRow from "@/Components/Payment/SummarizingRow.vue";
+import AuthSuggestionModal from "@/Components/Modals/AuthSuggestionModal.vue";
+import PaymentSection from "@/Components/Payment/PaymentSection.vue";
 
-const {props: globalProps} = usePage()
 const {seating_plan, screening} = defineProps<{
   seating_plan: Readonly<ISeat>[][],
   screening: Readonly<IScreeningInfo>
@@ -49,32 +47,26 @@ const orderTotalCount = computed(() => {
 })
 
 const isPaymentAvailable = ref(false)
-const isAuthSuggestionsModalOpen = ref(false)
+const authSuggestionModalRef = ref<InstanceType<typeof AuthSuggestionModal> | null>(null)
 const suggestAuth = () => {
+  const {props: globalProps} = usePage()
+
   if (globalProps.auth.user) {
     isPaymentAvailable.value = true
     return
   }
 
-  isAuthSuggestionsModalOpen.value = true
+  authSuggestionModalRef.value?.open().then(() => {
+    isPaymentAvailable.value = true
+  })
 }
-
-const redirectToLogin = () => {
-  router.visit(route('login'))
-}
-
-const rejectAuth = () => {
-  isAuthSuggestionsModalOpen.value = false
-  isPaymentAvailable.value = true
-}
-
-const tmp = ref(1)
 
 watch(selectedSeats, () => {
   if (!selectedSeats.value.length) {
     isPaymentAvailable.value = false
   }
 })
+
 </script>
 
 <template>
@@ -134,10 +126,10 @@ watch(selectedSeats, () => {
         <div class="xl:w-4/5 2xl:w-3/4 xl:mx-auto">
           <div class="flex flex-col justify-center">
             <div class="flex space-x-4 justify-center">
-              <SeatTypePrice :price="screening.standard_seat_price" :label="SeatType.Standard"
+              <SeatTypePrice :label="SeatType.Standard" :price="screening.standard_seat_price"
                              seat-color-class="bg-blue-400"/>
 
-              <SeatTypePrice :price="screening.premium_seat_price" :label="SeatType.Premium"
+              <SeatTypePrice :label="SeatType.Premium" :price="screening.premium_seat_price"
                              seat-color-class="bg-secondary"/>
             </div>
 
@@ -158,13 +150,7 @@ watch(selectedSeats, () => {
     <section v-if="selectedSeats.length" class="pt-12">
       <div class="container">
         <div class="xl:w-4/5 2xl:w-3/4 xl:mx-auto">
-          <div class="flex justify-between items-center">
-            <div class="font-medium text-white text-base sm:text-lg">Кількість місць</div>
-            <div class="font-medium text-white text-base sm:text-lg">
-              {{ orderTotalCount }}
-              <small class="text-xs">шт.</small>
-            </div>
-          </div>
+          <SummarizingRow :total="orderTotalCount" small-text="шт." title="Кількість місць"/>
 
           <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5 mt-4">
             <SelectedSeatCard v-for="seat in extendedSelectedSeats" :key="seat.id"
@@ -176,75 +162,23 @@ watch(selectedSeats, () => {
       </div>
     </section>
 
-    <section v-if="isPaymentAvailable" class="pt-12 pb-4">
-      <div class="container">
-        <div class="xl:w-4/5 2xl:w-3/4 xl:mx-auto">
-          <div class="font-medium text-white text-base sm:text-lg">Оплата</div>
-          <!--request card number, expire date and cvv code-->
-
-          <div class=" border-secondary mt-4 rounded-lg">
-            <TextInput id="card_number" label-inner="Номер картки" v-model="tmp" type="text"/>
-
-            <div class="grid grid-cols-3 gap-4 mt-4">
-              <NumberInput id="expire_month" label-inner="Місяць" :min="1" :max="12" v-model="tmp"/>
-              <NumberInput id="expire_year" label-inner="Рік" :min="2023" :max="2040" v-model="tmp"/>
-              <NumberInput id="cvv_code" label-inner="CVV код" :min="100" :max="999" v-model="tmp"/>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!--Total price and button-->
-    <section v-if="selectedSeats.length" class="pt-8 pb-6 sm:pb-12">
+    <section v-if="!isPaymentAvailable && selectedSeats.length" class="pt-8 pb-6 sm:pb-12">
       <div class="container">
         <div class="xl:w-4/5 2xl:w-3/4 xl:mx-auto">
-          <div class="flex justify-between items-center w-full">
-            <div class="font-medium text-white text-base sm:text-lg">Загальна сума</div>
-            <div class="font-medium text-white text-base sm:text-lg">
-              {{ orderTotalPrice }}
-              <small class="text-xs">грн</small>
-            </div>
-          </div>
+          <SummarizingRow :total="orderTotalPrice" small-text="грн" title="Загальна сума"/>
 
-          <div class="flex justify-center mt-4">
-            <button v-if="!isPaymentAvailable" @click="suggestAuth"
-                    class="text-sm sm:text-base   bg-secondary font-medium w-full py-2 rounded-md text-white">
-              Підтвердити
-            </button>
-
-            <button v-if="isPaymentAvailable" @click="console.log('payment')"
-                    class="text-sm sm:text-base   bg-secondary font-medium w-full py-2 rounded-md text-white">
-              Сплатити
-            </button>
-          </div>
+          <PrimaryButton class="sm:text-base mt-4" @click="suggestAuth">
+            Підтвердити
+          </PrimaryButton>
         </div>
       </div>
     </section>
 
-    <!--auth suggestions modal-->
-    <Modal :show="isAuthSuggestionsModalOpen" max-width="2xl">
-      <div class="p-6">
-        <div class="flex flex-col items-center">
-          <div class="w-32">
-            <img src="/images/emoji/thinking-face.png" alt="thinking face emoji" class="w-full h-full">
-          </div>
+    <!--Payment section-->
+    <PaymentSection v-if="isPaymentAvailable" :total-price="orderTotalPrice" class="pt-8 sm:pt-12 pb-6 sm:pb-12 "/>
 
-          <div class="font-medium text-white text-base sm:text-lg my-3">Бажаєте авторизуватися?</div>
-          <div class="text-sm sm:text-sm text-center text-neutral-400">
-            Авторизація дасть змогу зберігати квитки в особистому кабінеті, і отримувати доступ до них з
-            будь-якого пристрою
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mt-5">
-          <SecondaryButton @click="rejectAuth">Іншого разу</SecondaryButton>
-
-          <PrimaryButton @click="redirectToLogin">Так, звісно</PrimaryButton>
-        </div>
-
-
-      </div>
-    </Modal>
+    <!--Auth suggestions modal-->
+    <AuthSuggestionModal ref="authSuggestionModalRef"/>
   </MainLayout>
 </template>
