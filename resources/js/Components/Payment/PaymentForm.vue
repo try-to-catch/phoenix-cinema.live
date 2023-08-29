@@ -1,17 +1,19 @@
 <script lang="ts" setup>
-import TextInput from "@/Components/Breeze/TextInput.vue";
 import NumberInput from "@/Components/Breeze/NumberInput.vue";
 import SummarizingRow from "@/Components/Payment/SummarizingRow.vue";
 import PrimaryButton from "@/Components/Breeze/PrimaryButton.vue";
 import H5Title from "@/Components/Titles/H5Title.vue";
 import usePayment from "@/composables/payment";
+import CreditCardInput from "@/Components/Payment/CreditCardInput.vue";
+import CvvCodeInput from "@/Components/Payment/CvvCodeInput.vue";
 
-defineProps<{ totalPrice: number }>()
+defineProps<{
+  totalPrice: number
+}>()
 
 const currentYear = new Date().getFullYear()
 
 const {form} = usePayment()
-
 </script>
 
 <template>
@@ -20,13 +22,15 @@ const {form} = usePayment()
 
     <!--request card number, expire date and cvv code-->
     <form class="mt-4">
-      <TextInput id="card_number" v-model="form.cardNumber" label-inner="Номер картки" required type="text"/>
+      <CreditCardInput v-model="form.cardNumber" required/>
 
       <div class="grid grid-cols-3 gap-4 mt-4">
-        <NumberInput id="expire_month" v-model="form.expireMonth" :max="12" :min="1" label-inner="Місяць" required/>
-        <NumberInput id="expire_year" v-model="form.expireYear" :max="2040" :min="currentYear"
+        <NumberInput id="expire_month" v-model.trim="form.expireMonth" :max="12" :min="1" label-inner="Місяць"
+                     required/>
+        <NumberInput id="expire_year" v-model.trim="form.expireYear" :max="currentYear + 10" :min="currentYear"
                      label-inner="Рік" required/>
-        <NumberInput id="cvv_code" v-model="form.cvvCode" :max="999" :min="0" label-inner="CVV код" required/>
+
+        <CvvCodeInput v-model="form.cvvCode" required/>
       </div>
     </form>
 
