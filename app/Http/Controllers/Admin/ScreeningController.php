@@ -13,9 +13,7 @@ use App\Http\Resources\Admin\Screening\ScreeningListResource;
 use App\Models\HallTemplate;
 use App\Models\Movie;
 use App\Models\Screening;
-use App\Services\FlashMessageService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -100,15 +98,10 @@ class ScreeningController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Screening $screening, FlashMessageService $flashMessageService): RedirectResponse
+    public function destroy(Screening $screening): RedirectResponse
     {
-        if (Gate::allows('delete', $screening)) {
-            $screening->delete();
-            return to_route('admin.screenings.index');
-        }
+        $screening->delete();
+        return to_route('admin.screenings.index');
 
-        $flashMessageService->failure('Неможливо видалити сеанс, оскільки вже були продані квитки.');
-
-        return to_route('admin.screenings.show', $screening);
     }
 }

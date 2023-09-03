@@ -225,25 +225,25 @@ class ScreeningTest extends TestCase
         $this->assertDatabaseCount('screenings', 0);
     }
 
-    public function test_screening_with_reservations_cannot_be_deleted()
+    public function test_screening_with_reservations_can_be_deleted()
     {
         $this->withoutExceptionHandling();
 
         $screening = $this->createScreening(true);
         $seat = $screening->seats()->first();
-        $seat->update(['is_taken' => true]);
+        $seat->update(['order_id' => $screening->orders()->create()->id]);
 
         $this->assertDatabaseCount('screenings', 1);
 
         $this->actingAs($this->admin)
             ->delete('/admin/screenings/' . $screening->id)
-            ->assertRedirect('/admin/screenings/' . $screening->id)
+            ->assertRedirect('/admin/screenings/')
             ->assertSessionHas('message', [
-                "type" => "failure",
-                "text" => "Неможливо видалити сеанс, оскільки вже були продані квитки."
+                "type" => "success",
+                "text" => "Сеанс успішно видалено."
             ]);
 
-        $this->assertDatabaseCount('screenings', 1);
+        $this->assertDatabaseCount('screenings', 0);
     }
 
     public function test_non_admin_user_cannot_access_to_screening(): void

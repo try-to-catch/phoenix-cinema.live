@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->integer('seat_number');
             $table->integer('row_number');
             $table->string('type');
-            $table->boolean('is_taken')->default(false);
+            $table->foreignUuid('order_id')->nullable()->constrained();
         });
     }
 

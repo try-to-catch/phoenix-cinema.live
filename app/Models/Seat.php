@@ -20,15 +20,12 @@ class Seat extends Model
     ];
 
     public $timestamps = false;
-    protected $casts = [
-        'is_taken' => 'boolean',
-    ];
 
     protected $fillable = [
         'seat_number',
         'row_number',
         'type',
-        'is_taken',
+        'order_id',
     ];
 
     public function scopeOrderByPosition(Builder $query): Builder
@@ -46,6 +43,13 @@ class Seat extends Model
         return Attribute::make(
             get: fn($value) => self::SEAT_TYPES[$value] ?? null,
             set: fn($value) => array_search($value, self::SEAT_TYPES)
+        );
+    }
+
+    public function isTaken(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value, $attributes) => $attributes['order_id'] !== null,
         );
     }
 }
