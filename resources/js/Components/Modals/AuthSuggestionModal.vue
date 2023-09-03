@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import SecondaryButton from "@/Components/Breeze/SecondaryButton.vue";
 import Modal from "@/Components/Breeze/Modal.vue";
 import PrimaryButton from "@/Components/Breeze/PrimaryButton.vue";
@@ -33,11 +33,11 @@ defineExpose<{ open: () => Promise<boolean> | never }>({open})
 </script>
 
 <template>
-    <Modal max-width="2xl" :show="isOpen">
+    <Modal :show="isOpen" has-bg-blur max-width="2xl">
         <div class="p-6">
             <div class="flex flex-col items-center">
                 <div class="w-32">
-                    <img src="/images/emoji/thinking-face.png" alt="thinking face emoji" class="w-full h-full">
+                    <img alt="thinking face emoji" class="w-full h-full" src="/images/emoji/thinking-face.png">
                 </div>
 
                 <div class="font-medium text-white text-base sm:text-lg my-3">Бажаєте авторизуватися?</div>

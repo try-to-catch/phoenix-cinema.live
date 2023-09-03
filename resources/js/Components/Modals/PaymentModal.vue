@@ -12,15 +12,15 @@ const isOpen = ref(false)
 </script>
 
 <template>
-  <div>
-    <PrimaryButton class="sm:text-base" @click="isOpen = true">Сплатити</PrimaryButton>
+    <div>
+        <PrimaryButton class="sm:text-base" @click="isOpen = true">Сплатити</PrimaryButton>
 
-    <Modal :show="isOpen" closeable max-width="2xl" styles="relative" @close="isOpen = false">
-      <PaymentForm :total-price="totalPrice" class="p-8"/>
+        <Modal :show="isOpen" closeable has-bg-blur max-width="2xl" styles="relative" @close="isOpen = false">
+            <PaymentForm :total-price="totalPrice" class="p-8"/>
 
-      <XMark class="absolute top-4 right-4 cursor-pointer fill-white" @click="isOpen = false"/>
-    </Modal>
+            <XMark class="absolute top-4 right-4 cursor-pointer fill-white" @click="isOpen = false"/>
+        </Modal>
 
-  </div>
+    </div>
 
 </template>
