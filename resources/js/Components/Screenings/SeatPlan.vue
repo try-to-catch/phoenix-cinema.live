@@ -12,7 +12,10 @@ const props = defineProps<{
 }>()
 const {seatingPlan, selectedSeats} = toRefs(props)
 
-const emit = defineEmits<{ (e: 'update:selectedSeats', value: ISeat[]): void }>()
+const emit = defineEmits<{
+  'selectSeat': [value: ISeat]
+  'unselectSeat': [value: ISeat]
+}>()
 
 type formattedSeat = Readonly<ISeat> & {
     classes: string,
@@ -23,15 +26,11 @@ type formattedSeat = Readonly<ISeat> & {
 const updateSelectedSeats = (seat: formattedSeat) => {
     if (seat.is_taken) return
 
-    let newSelectedSeats = [...selectedSeats.value]
-
     if (seat.is_selected) {
-        newSelectedSeats = newSelectedSeats.filter(selectedSeat => selectedSeat.id !== seat.id)
+      emit('unselectSeat', seat)
     } else {
-        newSelectedSeats.push(seat as ISeat)
+      emit('selectSeat', seat)
     }
-
-    emit('update:selectedSeats', newSelectedSeats)
 }
 
 const formattedSeatPlan = computed(() => {

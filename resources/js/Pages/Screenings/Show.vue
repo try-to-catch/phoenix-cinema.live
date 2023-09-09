@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {Head, usePage} from "@inertiajs/vue3";
+import {Head, useForm, usePage} from "@inertiajs/vue3";
 import MainLayout from "@/Layouts/MainLayout.vue";
 import LocationDot from "@/Components/Icons/LocationDot.vue";
 import CalendarDays from "@/Components/Icons/CalendarDays.vue";
@@ -8,29 +8,51 @@ import ClockIcon from "@/Components/Icons/ClockIcon.vue";
 import ScreenArch from "@/Components/Screenings/ScreenArch.vue";
 import MoviePoster from "@/Components/Movies/MoviePoster.vue";
 import SeatPlan from "@/Components/Screenings/SeatPlan.vue";
-import type {ISeat} from "@/types/seats/ISeat";
-import {SeatType} from "@/types/seats/ISeat";
-import {computed, ref, watch} from "vue";
 import SelectedSeatCard from "@/Components/Screenings/SelectedSeatCard.vue";
-import type {IScreeningInfo} from "@/types/screenings/IScreeningInfo";
 import SeatTypePrice from "@/Components/Screenings/SeatTypePrice.vue";
 import PrimaryButton from "@/Components/Breeze/PrimaryButton.vue";
 import SummarizingRow from "@/Components/Payment/SummarizingRow.vue";
 import AuthSuggestionModal from "@/Components/Modals/AuthSuggestionModal.vue";
 import PaymentSection from "@/Components/Payment/PaymentSection.vue";
+import type {ISeat} from "@/types/seats/ISeat";
+import {SeatType} from "@/types/seats/ISeat";
+import type {IScreeningInfo} from "@/types/screenings/IScreeningInfo";
+import type {OrderFormType} from "@/types/orders/OrderFormType";
+import {computed, ref, watchEffect} from "vue";
 
 const {seating_plan, screening} = defineProps<{
   seating_plan: Readonly<ISeat>[][],
   screening: Readonly<IScreeningInfo>
 }>()
 
-const selectedSeats = ref<Readonly<ISeat>[]>([])
+const orderForm = useForm<OrderFormType>({
+  seat_ids: [],
+  card_data: {
+    card_number: '',
+    expire_month: null,
+    expire_year: null,
+    cvv_code: '',
+  }
+})
+
+const isSeatSelected = computed(() => orderForm.seat_ids.length > 0)
+
+const onSelectSeat = (newSeat: ISeat) => {
+  orderForm.seat_ids.push(newSeat.id)
+}
+
+const onUnselectSeat = (seat: ISeat) => {
+  orderForm.seat_ids = orderForm.seat_ids.filter(seatId => seatId !== seat.id)
+}
+
 const removeSeat = (seat: ISeat) => {
-  selectedSeats.value = selectedSeats.value.filter(selectedSeat => selectedSeat.id !== seat.id)
+  orderForm.seat_ids = orderForm.seat_ids.filter(seatId => seatId !== seat.id)
 }
 
 const extendedSelectedSeats = computed(() => {
-  return selectedSeats.value.map(seat => {
+  return orderForm.seat_ids.map(seatId => {
+    const seat = seating_plan.flat().find(seat => seat.id === seatId) as ISeat
+
     return {
       ...seat,
       price: seat.type === SeatType.Standard ? screening.standard_seat_price : screening.premium_seat_price
@@ -43,7 +65,7 @@ const orderTotalPrice = computed(() => {
 })
 
 const orderTotalCount = computed(() => {
-  return selectedSeats.value.length
+  return orderForm.seat_ids.length
 })
 
 const isPaymentAvailable = ref(false)
@@ -61,12 +83,15 @@ const suggestAuth = () => {
   })
 }
 
-watch(selectedSeats, () => {
-  if (!selectedSeats.value.length) {
+watchEffect(() => {
+  if (!isSeatSelected.value) {
     isPaymentAvailable.value = false
   }
 })
 
+const sendStoreOrderRequest = () => {
+  orderForm.post(route('orders.store'), {})
+}
 </script>
 
 <template>
@@ -74,7 +99,7 @@ watch(selectedSeats, () => {
     <title>Вибор місць</title>
   </Head>
 
-  <MainLayout>
+  <MainLayout>{{ orderForm.errors }}
     <!--screening info -->
     <section class="pt-5 sm:pt-1">
       <div class="container">
@@ -140,14 +165,15 @@ watch(selectedSeats, () => {
           </div>
 
           <div class="w-full flex justify-center sm:mt-12 mt-9">
-            <SeatPlan v-model:selected-seats="selectedSeats" :seating-plan="seating_plan"/>
+            <SeatPlan :seating-plan="seating_plan" :selected-seats="extendedSelectedSeats"
+                      @select-seat="onSelectSeat" @unselect-seat="onUnselectSeat"/>
           </div>
         </div>
       </div>
     </section>
 
     <!--selected seats-->
-    <section v-if="selectedSeats.length" class="pt-12">
+    <section v-if="isSeatSelected" class="pt-12">
       <div class="container">
         <div class="xl:w-4/5 2xl:w-3/4 xl:mx-auto">
           <SummarizingRow :total="orderTotalCount" small-text="шт." title="Кількість місць"/>
@@ -163,7 +189,7 @@ watch(selectedSeats, () => {
     </section>
 
     <!--Total price and button-->
-    <section v-if="!isPaymentAvailable && selectedSeats.length" class="pt-8 pb-6 sm:pb-12">
+    <section v-if="!isPaymentAvailable && isSeatSelected" class="pt-8 pb-6 sm:pb-12">
       <div class="container">
         <div class="xl:w-4/5 2xl:w-3/4 xl:mx-auto">
           <SummarizingRow :total="orderTotalPrice" small-text="грн" title="Загальна сума"/>
@@ -176,7 +202,11 @@ watch(selectedSeats, () => {
     </section>
 
     <!--Payment section-->
-    <PaymentSection v-if="isPaymentAvailable" :total-price="orderTotalPrice" class="pt-8 sm:pt-12 pb-6 sm:pb-12 "/>
+    <PaymentSection v-if="isPaymentAvailable"
+                    v-model="orderForm.card_data"
+                    :total-price="orderTotalPrice"
+                    class="pt-8 sm:pt-12 pb-6 sm:pb-12"
+                    @submit="sendStoreOrderRequest"/>
 
     <!--Auth suggestions modal-->
     <AuthSuggestionModal ref="authSuggestionModalRef"/>

@@ -3,41 +3,41 @@
 import {computed, ref, watchEffect} from "vue";
 import TextInput from "@/Components/Breeze/TextInput.vue";
 
-const {modelValue: cardNumber, required} = withDefaults(
+const {modelValue, required} = withDefaults(
     defineProps<{
-      modelValue: number | null,
+      modelValue: string,
       required?: boolean
     }>(),
     {required: false}
 )
 
+const cardNumber = ref(modelValue)
+
 const emit = defineEmits<{
-  'update:modelValue': [value: number | null]
+  'update:modelValue': [value: string]
 }>()
 
-const cardNumberString = ref(cardNumber?.toString().replace(/(.{4})/g, '$1 ') || '')
-
 const formattedCardNumber = computed(() => {
-  return cardNumberString.value.replace(/(.{4})/g, '$1 ').slice(0, 24) || ''
+  return cardNumber.value.replace(/(.{4})/g, '$1 ').slice(0, 23) || ''
 })
 
 const filterCardNumber = () => {
-  cardNumberString.value = formattedCardNumber.value.replace(/\D/g, '') || ''
+  cardNumber.value = formattedCardNumber.value.replace(/\D/g, '') || ''
 }
 
 const updateCardNumber = (value: string) => {
-  cardNumberString.value = value
+  cardNumber.value = value
 }
 
 watchEffect(() => {
-  emit('update:modelValue', Number(cardNumberString.value.replace(/\s/g, '')) || null)
+  emit('update:modelValue', cardNumber.value.replace(/\s/g, ''))
 })
 
 </script>
 
 <template>
-  <TextInput id="card_number" :model-value="formattedCardNumber" label-inner="Номер картки"
-             :required="required" type="text" @input="filterCardNumber" @update:model-value="updateCardNumber"/>
+  <TextInput id="card_number" :model-value="formattedCardNumber" :required="required"
+             label-inner="Номер картки" type="text" @input="filterCardNumber" @update:model-value="updateCardNumber"/>
 
 </template>
 
