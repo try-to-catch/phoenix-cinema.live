@@ -1,6 +1,6 @@
 /* eslint-env node */
 module.exports = {
-    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended-type-checked'],
+    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended-type-checked', 'plugin:vue/vue3-recommended'],
     parser: '@typescript-eslint/parser',
     plugins: ['@typescript-eslint'],
     parserOptions: {
