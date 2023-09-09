@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScreeningController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,7 @@ Route::resource('movies', MovieController::class)->only(['index', 'show']);
 
 Route::prefix('cart')->group(function () {
     Route::get('/{screening}', [ScreeningController::class, 'show'])->name('screenings.show');
+    Route::post('/checkout', [OrderController::class, 'store'])->name('orders.store');
 });
 
 Route::middleware('auth')->group(function () {
