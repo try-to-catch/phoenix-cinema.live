@@ -1,6 +1,6 @@
 export interface ICardData {
-    cardNumber: number | null;
-    expireMonth: number | null;
-    expireYear: number | null;
-    cvvCode: string;
+    card_number: string;
+    expire_month: number | null;
+    expire_year: number | null;
+    cvv_code: string;
 }
