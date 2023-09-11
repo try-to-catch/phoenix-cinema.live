@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import Checkbox from '@/Components/Breeze/Checkbox.vue'
 import GuestLayout from '@/Layouts/GuestLayout.vue'
 import InputError from '@/Components/Breeze/InputError.vue'
@@ -30,7 +30,6 @@ const submit = () => {
   <GuestLayout>
     <Head>
       <title>Log in</title>
-      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     </Head>
 
     <h1 class="text-xl font-bold leading-tight tracking-tight text-white mb-4">Sign in to your account</h1>
@@ -44,29 +43,29 @@ const submit = () => {
         <TextInput
           id="email"
           v-model="form.email"
-          label-inner="Email"
-          type="email"
-          styles="mt-1 block w-full"
-          required
-          autofocus
           autocomplete="username"
+          autofocus
+          label-inner="Email"
+          required
+          styles="mt-1 block w-full"
+          type="email"
         />
 
-        <InputError class="mt-2" :message="form.errors.email" />
+        <InputError :message="form.errors.email" class="mt-2" />
       </div>
 
       <div class="mt-4">
         <TextInput
           id="password"
           v-model="form.password"
-          label-inner="Password"
-          type="password"
-          styles="mt-1 block w-full"
-          required
           autocomplete="current-password"
+          label-inner="Password"
+          required
+          styles="mt-1 block w-full"
+          type="password"
         />
 
-        <InputError class="mt-2" :message="form.errors.password" />
+        <InputError :message="form.errors.password" class="mt-2" />
       </div>
 
       <div class="flex items-center justify-between mt-4">
