@@ -1,20 +1,20 @@
-<script setup lang="ts">
-import {computed} from 'vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import PrimaryButton from '@/Components/Breeze/PrimaryButton.vue';
-import {Head, Link, useForm} from '@inertiajs/vue3';
+<script lang="ts" setup>
+import { computed } from 'vue'
+import GuestLayout from '@/Layouts/GuestLayout.vue'
+import PrimaryButton from '@/Components/Breeze/PrimaryButton.vue'
+import { Head, Link, useForm } from '@inertiajs/vue3'
 
 const props = defineProps<{
-  status?: string;
-}>();
+  status?: string
+}>()
 
-const form = useForm({});
+const form = useForm({})
 
 const submit = () => {
-  form.post(route('verification.send'));
-};
+  form.post(route('verification.send'))
+}
 
-const verificationLinkSent = computed(() => props.status === 'verification-link-sent');
+const verificationLinkSent = computed(() => props.status === 'verification-link-sent')
 </script>
 
 <template>
@@ -22,11 +22,11 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
     <Head><title>Email Verification</title></Head>
 
     <div class="mb-4 text-sm text-neutral-600">
-      Thanks for signing up! Before getting started, could you verify your email address by clicking on the link
-      we just emailed to you? If you didn't receive the email, we will gladly send you another.
+      Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just
+      emailed to you? If you didn't receive the email, we will gladly send you another.
     </div>
 
-    <div class="mb-4 font-medium text-sm text-green-600" v-if="verificationLinkSent">
+    <div v-if="verificationLinkSent" class="mb-4 font-medium text-sm text-green-600">
       A new verification link has been sent to the email address you provided during registration.
     </div>
 
@@ -37,13 +37,13 @@ const verificationLinkSent = computed(() => props.status === 'verification-link-
         </PrimaryButton>
 
         <Link
-            :href="route('logout')"
-            method="post"
-            as="button"
-            class="underline text-sm text-neutral-600 hover:text-neutral-500 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary"
-        >Log Out
-        </Link
+          :href="route('logout')"
+          as="button"
+          class="underline text-sm text-neutral-600 hover:text-neutral-500 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary"
+          method="post"
         >
+          Log Out
+        </Link>
       </div>
     </form>
   </GuestLayout>

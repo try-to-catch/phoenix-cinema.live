@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import H5Title from "@/Components/Titles/H5Title.vue";
+import H5Title from '@/Components/Titles/H5Title.vue'
 
-defineProps<{ title: string, total: number, smallText?: string }>()
+defineProps<{ title: string; total: number; smallText?: string }>()
 </script>
 
 <template>
@@ -15,6 +15,4 @@ defineProps<{ title: string, total: number, smallText?: string }>()
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

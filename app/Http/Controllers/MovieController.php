@@ -26,7 +26,7 @@ class MovieController extends Controller
 
         return Inertia::render('Movies/Index', [
             'movies' => MovieListResource::collection($movies)->resolve(),
-            'future_movies' => MovieListResource::collection($futureMovies),
+            'futureMovies' => MovieListResource::collection($futureMovies),
         ]);
     }
 

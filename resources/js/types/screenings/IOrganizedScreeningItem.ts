@@ -1,4 +1,4 @@
 export interface IOrganizedScreeningItem {
-    id: string;
-    time: string;
+  id: string
+  time: string
 }

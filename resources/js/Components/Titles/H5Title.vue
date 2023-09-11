@@ -6,7 +6,7 @@ defineProps<{ text?: string }>()
   <h5 class="font-medium text-white text-base sm:text-lg">
     {{ text }}
     <template v-if="$slots.default && !text">
-      <slot/>
+      <slot />
     </template>
   </h5>
 </template>

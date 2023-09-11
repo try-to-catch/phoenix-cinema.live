@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-
-import ApplicationLogo from "@/Components/Icons/ApplicationLogo.vue";
-import {Link} from "@inertiajs/vue3";
-import DefaultDropdown from "@/Layouts/Shared/DefaultDropdown.vue";
+import ApplicationLogo from '@/Components/Icons/ApplicationLogo.vue'
+import { Link } from '@inertiajs/vue3'
+import DefaultDropdown from '@/Layouts/Shared/DefaultDropdown.vue'
 </script>
 
 <template>
@@ -11,25 +10,24 @@ import DefaultDropdown from "@/Layouts/Shared/DefaultDropdown.vue";
       <div class="container py-2 flex items-center justify-between h-full">
         <div>
           <Link :href="route('home')">
-            <ApplicationLogo/>
+            <ApplicationLogo />
           </Link>
         </div>
 
         <div v-if="!$page.props.auth.user" class="text-secondary space-x-2 flex text-sm md:text-base">
-          <Link :href="route('login')">Вхід</Link>
+          <Link :href="route('login')"> Вхід </Link>
           <div class="sm:block hidden">|</div>
-          <Link :href="route('register')">Реєстрація</Link>
+          <Link :href="route('register')"> Реєстрація </Link>
         </div>
 
         <div v-if="$page.props.auth.user" class="ml-3 relative">
-          <DefaultDropdown :user-name="$page.props.auth.user.name"/>
+          <DefaultDropdown :user-name="$page.props.auth.user.name" />
         </div>
       </div>
-
     </header>
 
     <main class="flex-grow mt-[50px]">
-      <slot/>
+      <slot />
     </main>
 
     <footer class="bg-tertiary w-full border-t border-neutral-800 text-center hidden sm:block">
@@ -38,6 +36,4 @@ import DefaultDropdown from "@/Layouts/Shared/DefaultDropdown.vue";
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,6 +1,6 @@
-import type {IOrganizedScreeningItem} from "@/types/screenings/IOrganizedScreeningItem";
+import type { IOrganizedScreeningItem } from '@/types/screenings/IOrganizedScreeningItem'
 
 export interface IOrganizedScreening {
-    date: string;
-    screenings: IOrganizedScreeningItem[];
+  date: string
+  screenings: IOrganizedScreeningItem[]
 }

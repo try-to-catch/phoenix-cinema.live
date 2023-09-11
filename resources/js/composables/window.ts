@@ -1,18 +1,18 @@
-import {onMounted, onUnmounted, ref} from "vue";
+import { onMounted, onUnmounted, ref } from 'vue'
 
 const width = ref(window.innerWidth)
 export default function useWindow() {
-    const resizeHandler = () => {
-        width.value = window.innerWidth
-    }
+  const resizeHandler = () => {
+    width.value = window.innerWidth
+  }
 
-    onMounted(() => {
-        window.addEventListener('resize', resizeHandler)
-    })
+  onMounted(() => {
+    window.addEventListener('resize', resizeHandler)
+  })
 
-    onUnmounted(() => {
-        window.removeEventListener('resize', resizeHandler)
-    })
+  onUnmounted(() => {
+    window.removeEventListener('resize', resizeHandler)
+  })
 
-    return {width}
+  return { width }
 }

@@ -1,15 +1,13 @@
 <script lang="ts" setup>
-
-import TextInput from "@/Components/Breeze/TextInput.vue";
-import {ref, watchEffect} from "vue";
-
+import TextInput from '@/Components/Breeze/TextInput.vue'
+import { ref, watchEffect } from 'vue'
 
 const props = withDefaults(
-    defineProps<{
-      modelValue: string,
-      required?: boolean
-    }>(),
-    {required: false}
+  defineProps<{
+    modelValue: string
+    required?: boolean
+  }>(),
+  { required: false }
 )
 const cvvCode = ref(props.modelValue)
 
@@ -27,11 +25,14 @@ watchEffect(() => {
 </script>
 
 <template>
-  <TextInput id="cvv_code" v-model="cvvCode" label-inner="CVV код"
-             :required="required" type="text" @input="filterCardNumber"/>
-
+  <TextInput
+    id="cvv_code"
+    v-model="cvvCode"
+    label-inner="CVV код"
+    :required="required"
+    type="text"
+    @input="filterCardNumber"
+  />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

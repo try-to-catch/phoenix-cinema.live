@@ -25,7 +25,7 @@ class HomeController extends Controller
         return Inertia::render('Home', [
             'banner' => MovieBannerResource::make($movieWithBanner)->resolve(),
             'movies' => MovieListResource::collection($movies)->resolve(),
-            'future_movies' => MovieListResource::collection($futureMovies)->resolve(),
+            'futureMovies' => MovieListResource::collection($futureMovies)->resolve(),
         ]);
     }
 }
