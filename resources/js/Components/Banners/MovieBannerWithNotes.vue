@@ -29,7 +29,7 @@ const { banner } = defineProps<{ banner: IBanner }>()
       </ZoomableBanner>
     </Link>
 
-    <div class="border border-gray-800 xl:w-full lg:w-1/2 min-h-full rounded-3xl hidden lg:block">
+    <div class="border border-neutral-800 xl:w-full lg:w-1/2 min-h-full rounded-3xl hidden lg:block">
       <div class="bg-tertiary text-white w-full min-h-full rounded-3xl p-6 flex justify-between flex-col">
         <ul class="space-y-[5px]">
           <NoteItem title="Закінчення показу:">

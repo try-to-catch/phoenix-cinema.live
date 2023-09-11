@@ -18,7 +18,7 @@ const isHovered = ref(false)
     @mouseover="isHovered = true"
   >
     <Link :href="route('movies.show', { movie: movie.slug })" class="block">
-      <MoviePoster :title="movie.title" :thumbnail="movie.thumbnail" :age-restriction="movie.age_restriction" />
+      <MoviePoster :age-restriction="movie.age_restriction" :thumbnail="movie.thumbnail" :title="movie.title" />
 
       <transition name="liftUp">
         <div
@@ -31,13 +31,13 @@ const isHovered = ref(false)
 
           <ul class="my-6 space-y-2">
             <li class="leading-5">
-              <div class="text-xs text-gray-400 mb-1 font-medium">Жанр</div>
+              <div class="text-xs text-neutral-400 mb-1 font-medium">Жанр</div>
               <div class="text-xs text-white">
                 {{ formatGenres(movie.genres) }}
               </div>
             </li>
             <li class="leading-5">
-              <div class="text-xs text-gray-400 mb-1 font-medium">Режисер</div>
+              <div class="text-xs text-neutral-400 mb-1 font-medium">Режисер</div>
               <div class="text-xs text-white">
                 {{ movie.director }}
               </div>

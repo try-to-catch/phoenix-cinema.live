@@ -1,10 +1,10 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 defineProps<{ title: string }>()
 </script>
 
 <template>
   <li
-    class="w-full h-full bg-tertiary rounded-md md:p-10 sm:p-8 p-6 border border-gray-800 relative hover:border-secondary duration-500 cursor-pointer"
+    class="w-full h-full bg-tertiary rounded-md md:p-10 sm:p-8 p-6 border border-neutral-800 relative hover:border-secondary duration-500 cursor-pointer"
   >
     <h5 class="md:text-xl text-lg font-medium sm:uppercase">
       {{ title }}
