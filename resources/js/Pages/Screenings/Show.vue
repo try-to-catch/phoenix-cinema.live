@@ -104,7 +104,6 @@ const sendStoreOrderRequest = () => {
   </Head>
 
   <MainLayout>
-    {{ orderForm.errors }}
     <!--screening info -->
     <section class="pt-5 sm:pt-1">
       <div class="container">
