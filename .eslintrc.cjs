@@ -1,13 +1,40 @@
 /* eslint-env node */
 module.exports = {
-    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended-type-checked', 'plugin:vue/vue3-recommended'],
+    root: true,
+    extends: [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended-type-checked",
+        "plugin:vue/vue3-recommended",
+        "plugin:prettier/recommended"
+    ],
     parser: 'vue-eslint-parser',
     plugins: ['@typescript-eslint'],
     parserOptions: {
-        parser: '@typescript-eslint/parser',
+        sourceType: "module",
+        ecmaVersion: "latest",
         project: true,
         tsconfigRootDir: __dirname,
-        extraFileExtensions: ['.vue'],
+        extraFileExtensions: [".vue"],
+        parser: "@typescript-eslint/parser",
+        semi: false,
+        singeQuote: true
     },
-    root: true,
+    globals: {
+        route: true
+    },
+    rules: {
+        "prettier/prettier": [
+            "error",
+            {
+                singleQuote: true,
+                semi: false,
+                printWidth: 120
+            },
+            {
+                usePrettierrc: true
+            }
+        ],
+        "vue/multi-word-component-names": "off",
+        "@typescript-eslint/no-redundant-type-constituents": "error"
+    }
 };
