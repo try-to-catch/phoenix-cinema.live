@@ -17,8 +17,6 @@ jobs:
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Update Composer Packages
-        run: composer update
-      - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Generate key
         run: php artisan key:generate
@@ -28,6 +26,8 @@ jobs:
         run: |
           mkdir -p database
           touch database/database.sqlite
+      - name: Install Dependencies
+        run: npm install
       - name: Build Project
         run: npm run build
       - name: Execute tests (Unit and Feature tests) via PHPUnit
@@ -47,8 +47,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install Dependencies
-        run: npm install
       - name: Run Pre-Commit Code Style Tests
         run: npm run test:pre-commit
 
