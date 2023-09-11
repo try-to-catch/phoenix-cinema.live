@@ -4,7 +4,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vue-tsc && vite build && vite build --ssr",
-        "check": "vue-tsc --noEmit && eslint --ext .ts,.vue --ignore-path .gitignore ."
+        "check": "vue-tsc --noEmit && eslint --ext .ts,.vue --ignore-path .gitignore .",
+        "lint": "eslint --ext .ts,.vue --ignore-path .gitignore . --fix"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^1.0.0",
