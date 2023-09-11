@@ -4,9 +4,12 @@
     "scripts": {
         "dev": "vite",
         "build": "vue-tsc && vite build && vite build --ssr",
-        "check": "vue-tsc --noEmit && eslint --ext .ts,.vue --ignore-path .gitignore .",
-        "lint": "eslint --ext .ts,.vue --ignore-path .gitignore . --fix",
-        "format": "prettier 'resources/js/**/*.{js,vue}' --write"
+        "test:ts": "vue-tsc --noEmit",
+        "test:lint": "eslint --ext .ts,.vue --ignore-path .gitignore .",
+        "test:prettier": "prettier 'resources/js/**/*.{js,vue}' --check",
+        "test:pre-commit": "npm run test:ts && npm run test:lint && npm run test:prettier",
+        "fix:lint": "eslint --ext .ts,.vue --ignore-path .gitignore . --fix",
+        "fix:prettier": "prettier 'resources/js/**/*.{js,vue}' --write"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^1.0.0",
