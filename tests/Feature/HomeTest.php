@@ -65,7 +65,7 @@ class HomeTest extends TestCase
                         ->hasAll(['id', 'name'])
                     )
                 )
-                ->has('future_movies', 1, fn(Assert $page) => $page
+                ->has('futureMovies', 1, fn(Assert $page) => $page
                     ->whereAll([
                         'id' => $futureMovie->id,
                         'title' => $futureMovie->title,
