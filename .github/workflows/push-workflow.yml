@@ -28,6 +28,8 @@ jobs:
         run: |
           mkdir -p database
           touch database/database.sqlite
+      - name: Build Project
+        run: npm run build
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
           DB_CONNECTION: sqlite
@@ -47,8 +49,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
         run: npm install
-      - name: Build Project
-        run: npm run build
       - name: Run Pre-Commit Code Style Tests
         run: npm run test:pre-commit
 
