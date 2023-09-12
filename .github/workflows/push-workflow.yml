@@ -35,9 +35,10 @@ jobs:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
         run: vendor/bin/phpunit
+      - name: run laravel pint test
+        run: vendor/bin/pint --test
   vue-tests:
     runs-on: ubuntu-latest
-    needs: laravel-tests
     strategy:
       matrix:
         node-version: [18.x]
