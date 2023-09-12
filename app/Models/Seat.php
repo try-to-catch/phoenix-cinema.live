@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Seat extends Model
@@ -27,6 +28,11 @@ class Seat extends Model
         'type',
         'order_id',
     ];
+
+    public function hall(): BelongsTo
+    {
+        return $this->belongsTo(Hall::class, 'seatable_id');
+    }
 
     public function scopeOrderByPosition(Builder $query): Builder
     {
