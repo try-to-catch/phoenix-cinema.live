@@ -38,4 +38,12 @@ class OrderController extends Controller
 
         return to_route('orders.show', $order);
     }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Order $order): Response
+    {
+        return Inertia::render('Orders/Show');
+    }
 }
