@@ -28,7 +28,7 @@ class Hall extends Model
         return $this->morphMany(Seat::class, 'seatable');
     }
 
-    public function screenings(): BelongsTo
+    public function screening(): BelongsTo
     {
         return $this->belongsTo(Screening::class);
     }
