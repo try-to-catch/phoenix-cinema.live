@@ -37,12 +37,8 @@ const orderForm = useForm<OrderFormType>({
 
 const isSeatSelected = computed(() => orderForm.seat_ids.length > 0)
 
-const onSelectSeat = (newSeat: ISeat) => {
+const selectSeat = (newSeat: ISeat) => {
   orderForm.seat_ids.push(newSeat.id)
-}
-
-const onUnselectSeat = (seat: ISeat) => {
-  orderForm.seat_ids = orderForm.seat_ids.filter(seatId => seatId !== seat.id)
 }
 
 const removeSeat = (seat: ISeat) => {
@@ -184,8 +180,8 @@ const sendStoreOrderRequest = () => {
             <SeatPlan
               :seating-plan="seatingPlan"
               :selected-seats="extendedSelectedSeats"
-              @select-seat="onSelectSeat"
-              @unselect-seat="onUnselectSeat"
+              @select-seat="selectSeat"
+              @unselect-seat="removeSeat"
             />
           </div>
         </div>
