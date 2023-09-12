@@ -20,11 +20,11 @@ class MovieFactory extends Factory
     {
         $thumbnailPath = public_path('/images/defaults/joker.jpg');
 
-        if (!file_exists(storage_path('app/public/images/movies'))) {
+        if (! file_exists(storage_path('app/public/images/movies'))) {
             mkdir(storage_path('app/public/images/movies'), 0777, true);
         }
 
-        $storagePath = "images/movies/" . Str::random(24) . '.jpg';
+        $storagePath = 'images/movies/'.Str::random(24).'.jpg';
         copy($thumbnailPath, storage_path("app/public/$storagePath"));
 
         $startingDate = now()->subMonths(rand(-6, 6))->subDays(rand(1, 30));

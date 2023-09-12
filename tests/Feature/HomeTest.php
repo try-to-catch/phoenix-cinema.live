@@ -30,9 +30,9 @@ class HomeTest extends TestCase
         $futureMovie->genres()->attach($genres);
 
         $this->get('/')->assertOk()
-            ->assertInertia(fn(Assert $page) => $page
+            ->assertInertia(fn (Assert $page) => $page
                 ->component('Home')
-                ->has('banner', fn(Assert $page) => $page
+                ->has('banner', fn (Assert $page) => $page
                     ->whereAll([
                         'id' => $movie->id,
                         'title' => $movie->title,
@@ -46,11 +46,11 @@ class HomeTest extends TestCase
                         'description' => $movie->banner->description,
                         'fact' => $movie->banner->fact,
                     ])
-                    ->has('genres', $movie->genres->count(), fn(Assert $page) => $page
+                    ->has('genres', $movie->genres->count(), fn (Assert $page) => $page
                         ->hasAll(['id', 'name'])
                     )
                 )
-                ->has('movies', 1, fn(Assert $page) => $page
+                ->has('movies', 1, fn (Assert $page) => $page
                     ->whereAll([
                         'id' => $movie->id,
                         'title' => $movie->title,
@@ -61,11 +61,11 @@ class HomeTest extends TestCase
                         'start_showing' => $movie->start_showing->isoFormat('D MMMM'),
                         'end_showing' => $movie->end_showing->isoFormat('D MMMM'),
                     ])
-                    ->has('genres', $movie->genres->count(), fn(Assert $page) => $page
+                    ->has('genres', $movie->genres->count(), fn (Assert $page) => $page
                         ->hasAll(['id', 'name'])
                     )
                 )
-                ->has('futureMovies', 1, fn(Assert $page) => $page
+                ->has('futureMovies', 1, fn (Assert $page) => $page
                     ->whereAll([
                         'id' => $futureMovie->id,
                         'title' => $futureMovie->title,
@@ -76,7 +76,7 @@ class HomeTest extends TestCase
                         'start_showing' => $futureMovie->start_showing->isoFormat('D MMMM'),
                         'end_showing' => $futureMovie->end_showing->isoFormat('D MMMM'),
                     ])
-                    ->has('genres', $futureMovie->genres->count(), fn(Assert $page) => $page
+                    ->has('genres', $futureMovie->genres->count(), fn (Assert $page) => $page
                         ->hasAll(['id', 'name'])
                     )
                 )

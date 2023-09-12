@@ -10,7 +10,6 @@ use Inertia\Response;
 
 class HomeController extends Controller
 {
-
     protected const ROW_LENGTH = 12;
 
     public function __invoke(): Response

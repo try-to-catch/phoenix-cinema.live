@@ -5,7 +5,6 @@ use App\Http\Controllers\Admin\MovieController;
 use App\Http\Controllers\Admin\ScreeningController;
 use Illuminate\Support\Facades\Route;
 
-
 //Movie model use getRouteKeyName() method to get movie by slug
 Route::resource('movies', MovieController::class);
 

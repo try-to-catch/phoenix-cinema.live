@@ -31,6 +31,6 @@ class HallFactory extends Factory
         /** @var StoreSeatsAction $storeSeats */
         $storeSeats = app(StoreSeatsAction::class);
 
-        return $this->afterCreating(fn($hall) => $storeSeats->handle($hall));
+        return $this->afterCreating(fn ($hall) => $storeSeats->handle($hall));
     }
 }

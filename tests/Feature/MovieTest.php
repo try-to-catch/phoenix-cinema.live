@@ -24,10 +24,10 @@ class MovieTest extends TestCase
         $movie = Movie::factory()->has(Screening::factory())->create();
         $movie->genres()->attach($genres);
 
-        $this->get('/movies/' . $movie->slug)->assertOk()
-            ->assertInertia(fn(Assert $page) => $page
+        $this->get('/movies/'.$movie->slug)->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
                 ->component('Movies/Show')
-                ->has('movie', fn(Assert $page) => $page
+                ->has('movie', fn (Assert $page) => $page
                     ->whereAll([
                         'id' => $movie->id,
                         'title' => $movie->title,
@@ -45,13 +45,13 @@ class MovieTest extends TestCase
                         'start_showing' => $movie->start_showing->isoFormat('D MMMM'),
                         'end_showing' => $movie->end_showing->isoFormat('D MMMM'),
                     ])
-                    ->has('genres', $movie->genres->count(), fn(Assert $page) => $page
+                    ->has('genres', $movie->genres->count(), fn (Assert $page) => $page
                         ->hasAll(['id', 'name', 'slug'])
                     )
                 )
-                ->has('screenings', 1, fn(Assert $page) => $page
+                ->has('screenings', 1, fn (Assert $page) => $page
                     ->has('date')
-                    ->has('screenings', 1, fn(Assert $page) => $page
+                    ->has('screenings', 1, fn (Assert $page) => $page
                         ->hasAll(['id', 'time'])
                     )
                 )

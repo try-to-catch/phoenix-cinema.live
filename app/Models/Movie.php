@@ -47,7 +47,7 @@ class Movie extends Model
         return [
             'slug' => [
                 'source' => 'title',
-            ]
+            ],
         ];
     }
 
@@ -74,7 +74,7 @@ class Movie extends Model
     public function thumbnailPath(): Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) => '/storage/' . $attributes['thumbnail'],
+            get: fn (mixed $value, array $attributes) => '/storage/'.$attributes['thumbnail'],
         );
     }
 

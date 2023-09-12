@@ -12,6 +12,7 @@ use Illuminate\Validation\Rules\Password;
 class CreateUserCommand extends Command
 {
     public const FAILURE = -1;
+
     public const SUCCESS = 0;
 
     /**
@@ -54,7 +55,7 @@ class CreateUserCommand extends Command
 
         $validator = Validator::make($user, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'unique:' . User::class],
+            'email' => ['required', 'string', 'email', 'unique:'.User::class],
             'password' => ['required', Password::defaults()],
         ]);
         if ($validator->fails()) {

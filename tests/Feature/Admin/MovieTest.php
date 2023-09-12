@@ -29,18 +29,15 @@ class MovieTest extends TestCase
         $this->admin->roles()->attach($adminId);
     }
 
-
     private function createThumbnail(): File
     {
         return File::image('thumbnail.jpg', 320, 472);
     }
 
-
     private function getRandomGenreIDs(int $number = 4): array
     {
         return Genre::query()->inRandomOrder()->take($number)->pluck('id')->toArray();
     }
-
 
     private function getNewMovie(): array
     {
@@ -63,7 +60,6 @@ class MovieTest extends TestCase
         ];
     }
 
-
     public function test_movie_list_view_functions_properly(): void
     {
         $this->withoutExceptionHandling();
@@ -72,10 +68,10 @@ class MovieTest extends TestCase
 
         $this->actingAs($this->admin)->get('/admin/movies')
             ->assertOk()
-            ->assertInertia(fn(Assert $page) => $page
+            ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/Movies/Index')
-                ->has('movies', fn(Assert $page) => $page
-                    ->has('data', 1, fn(Assert $page) => $page
+                ->has('movies', fn (Assert $page) => $page
+                    ->has('data', 1, fn (Assert $page) => $page
                         ->whereAll([
                             'id' => $movie->id,
                             'title' => $movie->title,
@@ -92,21 +88,19 @@ class MovieTest extends TestCase
             );
     }
 
-
     public function test_movie_create_view_functions_properly(): void
     {
         $this->withoutExceptionHandling();
 
         $this->actingAs($this->admin)->get('/admin/movies/create')
             ->assertOk()
-            ->assertInertia(fn(Assert $page) => $page
+            ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/Movies/Create')
-                ->has('genres', Genre::count(), fn(Assert $page) => $page
+                ->has('genres', Genre::count(), fn (Assert $page) => $page
                     ->hasAll(['id', 'name'])
                 )
             );
     }
-
 
     public function test_movie_can_be_stored_by_admin(): void
     {
@@ -138,7 +132,6 @@ class MovieTest extends TestCase
         $this->assertFileExists(storage_path("app/public/$movie->thumbnail"));
     }
 
-
     public function test_movie_cannot_be_stored_with_invalid_data(): void
     {
         $newMovie = $this->getNewMovie();
@@ -152,15 +145,14 @@ class MovieTest extends TestCase
             ->assertSessionHasErrors(['title', 'thumbnail']);
     }
 
-
     public function test_movie_show_returns_redirect_to_movies_edit(): void
     {
         $this->withoutExceptionHandling();
 
         $movie = Movie::factory()->create();
 
-        $this->actingAs($this->admin)->get('/admin/movies/' . $movie->slug)
-            ->assertRedirect('/admin/movies/' . $movie->slug . '/edit');
+        $this->actingAs($this->admin)->get('/admin/movies/'.$movie->slug)
+            ->assertRedirect('/admin/movies/'.$movie->slug.'/edit');
     }
 
     public function test_movie_edit_view_functions_properly(): void
@@ -170,10 +162,10 @@ class MovieTest extends TestCase
         $movie = Movie::factory()->create();
         $movie->genres()->attach($this->getRandomGenreIDs());
 
-        $this->actingAs($this->admin)->get('/admin/movies/' . $movie->slug . '/edit')
-            ->assertInertia(fn(Assert $page) => $page
+        $this->actingAs($this->admin)->get('/admin/movies/'.$movie->slug.'/edit')
+            ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/Movies/Edit')
-                ->has('movie', fn(Assert $page) => $page
+                ->has('movie', fn (Assert $page) => $page
                     ->whereAll([
                         'id' => $movie->id,
                         'title' => $movie->title,
@@ -192,17 +184,16 @@ class MovieTest extends TestCase
                         'start_showing' => $movie->start_showing->format('d-m-Y'),
                         'end_showing' => $movie->end_showing->format('d-m-Y'),
                     ])
-                    ->has('genres', $movie->genres->count(), fn(Assert $page) => $page
+                    ->has('genres', $movie->genres->count(), fn (Assert $page) => $page
                         ->hasAll(['id', 'name', 'slug'])
                     )
                 )
-                ->has('genres', Genre::count(), fn(Assert $page) => $page
+                ->has('genres', Genre::count(), fn (Assert $page) => $page
                     ->hasAll(['id', 'name'])
                 )
                 ->has('banner')
             );
     }
-
 
     public function test_movie_can_be_updated_by_admin(): void
     {
@@ -212,8 +203,8 @@ class MovieTest extends TestCase
         $movie->genres()->attach($this->getRandomGenreIDs());
 
         $this->actingAs($this->admin)
-            ->put('/admin/movies/' . $movie->slug, $this->getNewMovie())
-            ->assertRedirect('/admin/movies/' . $movie->slug);
+            ->put('/admin/movies/'.$movie->slug, $this->getNewMovie())
+            ->assertRedirect('/admin/movies/'.$movie->slug);
 
         $this->assertDatabaseCount('movies', 1)
             ->assertDatabaseHas('movies', [
@@ -237,7 +228,6 @@ class MovieTest extends TestCase
         $this->assertFileDoesNotExist(storage_path("app/public/$movie->thumbnail"));
     }
 
-
     public function test_movie_cannot_be_updated_with_invalid_data(): void
     {
         $movie = Movie::factory()->create();
@@ -248,11 +238,10 @@ class MovieTest extends TestCase
         $newMovie['thumbnail'] = 'string is not a file';
 
         $this->actingAs($this->admin)
-            ->put('/admin/movies/' . $movie->slug, $newMovie)
+            ->put('/admin/movies/'.$movie->slug, $newMovie)
             ->assertStatus(302)
             ->assertSessionHasErrors(['title', 'thumbnail']);
     }
-
 
     public function test_movie_can_be_deleted_by_admin(): void
     {
@@ -261,14 +250,13 @@ class MovieTest extends TestCase
         $movie = Movie::factory()->create();
 
         $this->actingAs($this->admin)
-            ->delete('/admin/movies/' . $movie->slug)
+            ->delete('/admin/movies/'.$movie->slug)
             ->assertRedirect('/admin/movies');
 
         $this->assertDatabaseCount('movies', 0);
 
         $this->assertFileDoesNotExist(storage_path("app/public/$movie->thumbnail"));
     }
-
 
     public function test_non_admin_user_cannot_access_to_movies(): void
     {
@@ -279,11 +267,11 @@ class MovieTest extends TestCase
             ->assertStatus(403);
 
         $this->actingAs($this->user)
-            ->put('/admin/movies/' . $movie->slug)
+            ->put('/admin/movies/'.$movie->slug)
             ->assertStatus(403);
 
         $this->actingAs($this->user)
-            ->delete('/admin/movies/' . $movie->slug)
+            ->delete('/admin/movies/'.$movie->slug)
             ->assertStatus(403);
     }
 }

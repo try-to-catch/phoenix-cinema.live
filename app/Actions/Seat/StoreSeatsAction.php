@@ -13,14 +13,14 @@ class StoreSeatsAction
 {
     protected array $seats = [
         [
-            ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard']
+            ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'],
         ],
         [
             ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'],
         ],
         [
             ['type' => 'premium'], ['type' => 'premium'], ['type' => 'premium'], ['type' => 'premium'],
-        ]
+        ],
     ];
 
     public function handle(HallTemplate|Hall $hall, array $seats = []): void

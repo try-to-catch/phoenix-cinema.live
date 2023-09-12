@@ -54,23 +54,23 @@ class Screening extends Model
     public function standardSeatPrice(): Attribute
     {
         return Attribute::make(
-            get: fn($value, $attributes) => $attributes['standard_seat_price_in_cents'] / 100,
-            set: fn($value) => ['standard_seat_price_in_cents' => $value * 100],
+            get: fn ($value, $attributes) => $attributes['standard_seat_price_in_cents'] / 100,
+            set: fn ($value) => ['standard_seat_price_in_cents' => $value * 100],
         );
     }
 
     public function premiumSeatPrice(): Attribute
     {
         return Attribute::make(
-            get: fn($value, $attributes) => $attributes['premium_seat_price_in_cents'] / 100,
-            set: fn($value) => ['premium_seat_price_in_cents' => $value * 100],
+            get: fn ($value, $attributes) => $attributes['premium_seat_price_in_cents'] / 100,
+            set: fn ($value) => ['premium_seat_price_in_cents' => $value * 100],
         );
     }
 
     public function isOver(): Attribute
     {
         return Attribute::make(
-            get: fn($value, $attributes) => Carbon::parse($attributes['end_time'])->isPast(),
+            get: fn ($value, $attributes) => Carbon::parse($attributes['end_time'])->isPast(),
         );
     }
 }

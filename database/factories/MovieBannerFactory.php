@@ -21,11 +21,11 @@ class MovieBannerFactory extends Factory
     {
         $thumbnailPath = public_path('/images/defaults/banner.jpg');
 
-        if (!file_exists(storage_path('app/public/banners/movies'))) {
+        if (! file_exists(storage_path('app/public/banners/movies'))) {
             mkdir(storage_path('app/public/banners/movies'), 0777, true);
         }
 
-        $storagePath = "banners/movies/" . Str::random(24) . '.jpg';
+        $storagePath = 'banners/movies/'.Str::random(24).'.jpg';
         copy($thumbnailPath, storage_path("app/public/$storagePath"));
 
         return [

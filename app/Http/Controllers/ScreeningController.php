@@ -16,10 +16,11 @@ class ScreeningController extends Controller
     public function show(Screening $screening): Response
     {
         $screening->load(['seats', 'movie', 'hall']);
+
         return Inertia::render('Screenings/Show',
             [
                 'seatingPlan' => SeatResource::make($screening->seats)->resolve(),
-                'screening' => ScreeningInfoResource::make($screening)->resolve()
+                'screening' => ScreeningInfoResource::make($screening)->resolve(),
             ]);
     }
 }

@@ -20,8 +20,6 @@ use Inertia\Response;
 
 class MovieController extends Controller
 {
-
-
     public function __construct(protected ImageService $imageService, protected MovieBannerService $bannerService)
     {
     }
@@ -56,7 +54,7 @@ class MovieController extends Controller
     public function create(): Response
     {
         return Inertia::render('Admin/Movies/Create', [
-            'genres' => GenreResource::collection(Genre::all('id', 'name'))->resolve()
+            'genres' => GenreResource::collection(Genre::all('id', 'name'))->resolve(),
         ]);
     }
 
@@ -99,6 +97,7 @@ class MovieController extends Controller
     public function edit(Movie $movie): Response
     {
         $movie->load(['genres', 'banner']);
+
         return Inertia::render('Admin/Movies/Edit', [
             'movie' => MovieResource::make($movie)->resolve(),
             'genres' => GenreResource::collection(Genre::all('id', 'name'))->resolve(),

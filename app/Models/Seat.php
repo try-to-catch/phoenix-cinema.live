@@ -47,15 +47,15 @@ class Seat extends Model
     public function type(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => self::SEAT_TYPES[$value] ?? null,
-            set: fn($value) => array_search($value, self::SEAT_TYPES)
+            get: fn ($value) => self::SEAT_TYPES[$value] ?? null,
+            set: fn ($value) => array_search($value, self::SEAT_TYPES)
         );
     }
 
     public function isTaken(): Attribute
     {
         return Attribute::make(
-            get: fn($value, $attributes) => $attributes['order_id'] !== null,
+            get: fn ($value, $attributes) => $attributes['order_id'] !== null,
         );
     }
 }

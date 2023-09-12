@@ -12,6 +12,7 @@ class MovieBanner extends Model
     use HasFactory, HasUuids;
 
     public $timestamps = false;
+
     protected $fillable = [
         'image',
         'short_description',
@@ -21,7 +22,7 @@ class MovieBanner extends Model
     public function imagePath(): Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) => '/storage/' . $attributes['image'],
+            get: fn (mixed $value, array $attributes) => '/storage/'.$attributes['image'],
         );
     }
 }

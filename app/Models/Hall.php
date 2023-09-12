@@ -13,10 +13,11 @@ class Hall extends Model
     use HasFactory, HasUuids;
 
     public $timestamps = false;
+
     protected $fillable = [
         'number',
         'address',
-        'screening_id'
+        'screening_id',
     ];
 
     protected $casts = [

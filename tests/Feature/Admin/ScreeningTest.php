@@ -25,16 +25,16 @@ class ScreeningTest extends TestCase
 
         $this->actingAs($this->admin)->get('/admin/screenings')
             ->assertOk()
-            ->assertInertia(fn(Assert $page) => $page
+            ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/Screenings/Index')
-                ->has('screenings.data', 1, fn(Assert $page) => $page
+                ->has('screenings.data', 1, fn (Assert $page) => $page
                     ->whereAll([
                         'id' => $screening->id,
                         'is_over' => $screening->is_over,
                         'start_time' => $screening->start_time->format('Y-m-d H:i'),
                         'end_time' => $screening->end_time->format('Y-m-d H:i'),
                     ])
-                    ->has('movie', fn(Assert $page) => $page
+                    ->has('movie', fn (Assert $page) => $page
                         ->whereAll([
                             'id' => $screening->movie->id,
                             'slug' => $screening->movie->slug,
@@ -43,7 +43,7 @@ class ScreeningTest extends TestCase
                             'duration_in_minutes' => $screening->movie->duration_in_minutes,
                         ])
                     )
-                    ->has('hall', fn(Assert $page) => $page
+                    ->has('hall', fn (Assert $page) => $page
                         ->whereAll([
                             'id' => $screening->hall->id,
                             'address' => $screening->hall->address,
@@ -58,7 +58,7 @@ class ScreeningTest extends TestCase
     {
         return tap(
             Screening::factory()->create(),
-            fn(Screening $screening) => $withHall
+            fn (Screening $screening) => $withHall
                 ? Hall::factory()->create(['screening_id' => $screening->id])
                 : null
         );
@@ -71,19 +71,19 @@ class ScreeningTest extends TestCase
 
         $this->actingAs($this->admin)->get('/admin/screenings/create')
             ->assertOk()
-            ->assertInertia(fn(Assert $page) => $page
+            ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/Screenings/Create')
-                ->has('movies', 1, fn(Assert $page) => $page
+                ->has('movies', 1, fn (Assert $page) => $page
                     ->whereAll([
                         'id' => $this->movie->id,
                         'title' => $this->movie->title,
                     ])
                 )
-                ->has('hall_templates', 1, fn(Assert $page) => $page
+                ->has('hall_templates', 1, fn (Assert $page) => $page
                     ->whereAll([
                         'id' => $hallTemplate->id,
                         'address' => $hallTemplate->address,
-                        'number' => $hallTemplate->number
+                        'number' => $hallTemplate->number,
                     ])
                 )
             );
@@ -97,7 +97,7 @@ class ScreeningTest extends TestCase
 
         $this->actingAs($this->admin)
             ->post('/admin/screenings', $newScreening)
-            ->assertRedirect('/admin/screenings/' . Screening::first()->id);
+            ->assertRedirect('/admin/screenings/'.Screening::first()->id);
 
         $this->assertDatabaseCount('screenings', 1)
             ->assertDatabaseHas('screenings', [
@@ -135,8 +135,8 @@ class ScreeningTest extends TestCase
 
         $screening = $this->createScreening();
 
-        $this->actingAs($this->admin)->get('/admin/screenings/' . $screening->id)
-            ->assertRedirect('/admin/screenings/' . $screening->id . '/edit');
+        $this->actingAs($this->admin)->get('/admin/screenings/'.$screening->id)
+            ->assertRedirect('/admin/screenings/'.$screening->id.'/edit');
     }
 
     public function test_screening_edit_view_functions_properly(): void
@@ -145,11 +145,11 @@ class ScreeningTest extends TestCase
 
         $screening = $this->createScreening(true);
 
-        $this->actingAs($this->admin)->get('/admin/screenings/' . $screening->id . '/edit')
+        $this->actingAs($this->admin)->get('/admin/screenings/'.$screening->id.'/edit')
             ->assertOk()
-            ->assertInertia(fn(Assert $page) => $page
+            ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/Screenings/Edit')
-                ->has('screening', fn(Assert $page) => $page
+                ->has('screening', fn (Assert $page) => $page
                     ->whereAll([
                         'id' => $screening->id,
                         'start_time' => $screening->start_time->format('Y-m-d H:i'),
@@ -157,7 +157,7 @@ class ScreeningTest extends TestCase
                         'standard_seat_price' => $screening->standard_seat_price,
                         'premium_seat_price' => $screening->premium_seat_price,
                     ])
-                    ->has('movie', fn(Assert $page) => $page
+                    ->has('movie', fn (Assert $page) => $page
                         ->whereAll([
                             'id' => $screening->movie->id,
                             'slug' => $screening->movie->slug,
@@ -166,7 +166,7 @@ class ScreeningTest extends TestCase
                             'duration_in_minutes' => $screening->movie->duration_in_minutes,
                         ])
                     )
-                    ->has('hall', fn(Assert $page) => $page
+                    ->has('hall', fn (Assert $page) => $page
                         ->whereAll([
                             'id' => $screening->hall->id,
                             'address' => $screening->hall->address,
@@ -187,8 +187,8 @@ class ScreeningTest extends TestCase
         $screening->standard_seat_price += 20;
 
         $this->actingAs($this->admin)
-            ->put('/admin/screenings/' . $screening->id, $screening->toArray())
-            ->assertRedirect('/admin/screenings/' . $screening->id);
+            ->put('/admin/screenings/'.$screening->id, $screening->toArray())
+            ->assertRedirect('/admin/screenings/'.$screening->id);
 
         $this->assertDatabaseCount('screenings', 1)
             ->assertDatabaseHas('screenings', [
@@ -203,7 +203,7 @@ class ScreeningTest extends TestCase
         $screening = Screening::factory()->create();
 
         $this->actingAs($this->admin)
-            ->put('/admin/screenings/' . $screening->id, [
+            ->put('/admin/screenings/'.$screening->id, [
                 'start_time' => '2021-05-05 35:00',
                 'standard_seat_price' => null,
             ])
@@ -219,7 +219,7 @@ class ScreeningTest extends TestCase
         $this->assertDatabaseCount('screenings', 1);
 
         $this->actingAs($this->admin)
-            ->delete('/admin/screenings/' . $screening->id)
+            ->delete('/admin/screenings/'.$screening->id)
             ->assertRedirect('/admin/screenings');
 
         $this->assertDatabaseCount('screenings', 0);
@@ -236,11 +236,11 @@ class ScreeningTest extends TestCase
         $this->assertDatabaseCount('screenings', 1);
 
         $this->actingAs($this->admin)
-            ->delete('/admin/screenings/' . $screening->id)
+            ->delete('/admin/screenings/'.$screening->id)
             ->assertRedirect('/admin/screenings/')
             ->assertSessionHas('message', [
-                "type" => "success",
-                "text" => "Сеанс успішно видалено."
+                'type' => 'success',
+                'text' => 'Сеанс успішно видалено.',
             ]);
 
         $this->assertDatabaseCount('screenings', 0);
@@ -255,11 +255,11 @@ class ScreeningTest extends TestCase
             ->assertStatus(403);
 
         $this->actingAs($this->user)
-            ->put('/admin/screenings/' . $screening->id)
+            ->put('/admin/screenings/'.$screening->id)
             ->assertStatus(403);
 
         $this->actingAs($this->user)
-            ->delete('/admin/screenings/' . $screening->id)
+            ->delete('/admin/screenings/'.$screening->id)
             ->assertStatus(403);
     }
 

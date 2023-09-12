@@ -63,7 +63,6 @@ class ScreeningController extends Controller
 
         return to_route('admin.screenings.show', $screening);
 
-
     }
 
     /**
@@ -92,6 +91,7 @@ class ScreeningController extends Controller
     public function update(UpdateScreeningRequest $request, Screening $screening): RedirectResponse
     {
         $screening->update($request->validated());
+
         return to_route('admin.screenings.show', $screening);
     }
 
@@ -101,6 +101,7 @@ class ScreeningController extends Controller
     public function destroy(Screening $screening): RedirectResponse
     {
         $screening->delete();
+
         return to_route('admin.screenings.index');
 
     }

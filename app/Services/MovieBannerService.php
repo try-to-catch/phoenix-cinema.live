@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class MovieBannerService
 {
     protected const DEFAULT_WIDTH = 1050;
+
     protected const DEFAULT_HEIGHT = 400;
 
     public function __construct(protected ImageService $imageService)
@@ -19,7 +20,7 @@ class MovieBannerService
      */
     public function create(Movie $movie, array $data, int $width = self::DEFAULT_WIDTH, int $height = self::DEFAULT_HEIGHT): Model
     {
-        $data['image'] = $this->imageService->store($data['image'], "banners/movies");
+        $data['image'] = $this->imageService->store($data['image'], 'banners/movies');
 
         return $movie->banner()->create([
             'image' => $data['image'],

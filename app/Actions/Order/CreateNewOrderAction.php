@@ -12,7 +12,7 @@ class CreateNewOrderAction
     /**
      * Create new order.
      */
-    public function handle(Request $request, $screeningId) : Builder|Model
+    public function handle(Request $request, $screeningId): Builder|Model
     {
         $newOrder = ['screening_id' => $screeningId];
 

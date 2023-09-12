@@ -20,7 +20,7 @@ class StoreMovieRequest extends FormRequest
             'description' => ['required', 'string'],
             'priority' => ['required', 'integer', 'between:1,100'],
             'duration_in_minutes' => ['required', 'integer', 'min:1'],
-            'age_restriction' => ['required', 'string', 'in:' . implode(',', Movie::AGE_RESTRICTIONS)],
+            'age_restriction' => ['required', 'string', 'in:'.implode(',', Movie::AGE_RESTRICTIONS)],
             'thumbnail' => ['required', 'image'],
             'director' => ['required', 'string', 'max:255'],
             'production_country' => ['required', 'string', 'max:255'],

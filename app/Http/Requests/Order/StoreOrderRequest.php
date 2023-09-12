@@ -22,13 +22,13 @@ class StoreOrderRequest extends FormRequest
             'seat_ids.*' => ['required', 'string', 'exists:seats,id'],
             'card_data' => ['required', 'array'],
             'card_data.card_number' => ['required', 'string', 'size:16'],
-            'card_data.expire_month' => ['required', 'integer', "min:1", "max:12",
+            'card_data.expire_month' => ['required', 'integer', 'min:1', 'max:12',
                 function ($attribute, $value, $fail) use ($currentMonth, $currentYear) {
                     if ($value < $currentMonth && $this->input('card_data.expire_year') === $currentYear) {
-                        $fail($attribute . ' has already passed for the current year.');
+                        $fail($attribute.' has already passed for the current year.');
                     }
                 }],
-            'card_data.expire_year' => ['required', 'integer', "min:" . $currentYear, "max:" . $currentYear + 10],
+            'card_data.expire_year' => ['required', 'integer', 'min:'.$currentYear, 'max:'.$currentYear + 10],
             'card_data.cvv_code' => ['required', 'string'],
         ];
     }

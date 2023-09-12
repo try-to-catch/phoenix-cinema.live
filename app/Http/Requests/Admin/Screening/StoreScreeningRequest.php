@@ -17,8 +17,8 @@ class StoreScreeningRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'movie_id' => ['required', 'string', 'exists:' . Movie::class . ',id'],
-            'hall_template_id' => ['required', 'string', 'exists:' . HallTemplate::class . ',id'],
+            'movie_id' => ['required', 'string', 'exists:'.Movie::class.',id'],
+            'hall_template_id' => ['required', 'string', 'exists:'.HallTemplate::class.',id'],
             'start_time' => ['required', 'date', 'after:now'],
             'end_time' => ['required', 'date', 'after:start_time'],
             'standard_seat_price' => ['required', 'numeric', 'min:0'],

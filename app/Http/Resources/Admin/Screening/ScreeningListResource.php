@@ -22,7 +22,7 @@ class ScreeningListResource extends JsonResource
             'end_time' => $this->end_time->format('Y-m-d H:i'),
             'is_over' => $this->is_over,
             'movie' => MovieSummaryResource::make($this->movie),
-            'hall' => HallResource::make($this->hall)
+            'hall' => HallResource::make($this->hall),
         ];
     }
 }

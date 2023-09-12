@@ -20,6 +20,7 @@ class ScreeningFactory extends Factory
     {
 
         $startTime = now()->addDays(rand(1, 14))->startOfHour()->addHours(rand(-23, 23));
+
         return [
             'movie_id' => Movie::first()->id ?? MovieFactory::new(),
             'start_time' => $startTime,

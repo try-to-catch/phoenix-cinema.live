@@ -27,7 +27,6 @@ class HallTemplateTest extends TestCase
         $this->admin->roles()->attach(Role::admin()->pluck('id'));
     }
 
-
     private function getNewTemplate(): array
     {
         return [
@@ -37,23 +36,23 @@ class HallTemplateTest extends TestCase
             'is_preset' => true,
             'seats' => [
                 [
-                    ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard']
+                    ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'],
                 ],
                 [
                     ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'],
                 ],
                 [
                     ['type' => 'premium'], ['type' => 'premium'], ['type' => 'premium'], ['type' => 'premium'],
-                ]
-            ]
+                ],
+            ],
         ];
     }
-
 
     private function getTemplateWithRandomSeat()
     {
         $template = HallTemplate::factory()->create();
-        return $template->load(['seats' => fn($query) => $query->inRandomOrder()->take(1)->get()])
+
+        return $template->load(['seats' => fn ($query) => $query->inRandomOrder()->take(1)->get()])
             ->first(['id', 'address', 'number', 'is_available']);
     }
 
@@ -65,10 +64,10 @@ class HallTemplateTest extends TestCase
 
         $this->actingAs($this->admin)->get('/admin/hall-templates')
             ->assertOk()
-            ->assertInertia(fn(Assert $page) => $page
+            ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/HallTemplates/Index')
-                ->has('hall_templates', fn(Assert $page) => $page
-                    ->has('data', 1, fn(Assert $page) => $page
+                ->has('hall_templates', fn (Assert $page) => $page
+                    ->has('data', 1, fn (Assert $page) => $page
                         ->whereAll([
                             'id' => $template->id,
                             'address' => $template->address,
@@ -81,26 +80,24 @@ class HallTemplateTest extends TestCase
             );
     }
 
-
     public function test_hall_create_view_functions_properly(): void
     {
         $this->withoutExceptionHandling();
 
         $this->actingAs($this->admin)->get('/admin/hall-templates/create')
             ->assertOk()
-            ->assertInertia(fn(Assert $page) => $page
+            ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/HallTemplates/Create')
                 ->whereContains('seat_types', Seat::SEAT_TYPES)
             );
     }
-
 
     public function test_hall_can_be_stored_by_admin(): void
     {
         $this->withoutExceptionHandling();
 
         $this->actingAs($this->admin)->post('/admin/hall-templates', $this->getNewTemplate())
-            ->assertRedirect('/admin/hall-templates/' . HallTemplate::first()->id);
+            ->assertRedirect('/admin/hall-templates/'.HallTemplate::first()->id);
 
         $this->assertDatabaseHas('hall_templates', [
             'address' => 'Test Address',
@@ -108,7 +105,6 @@ class HallTemplateTest extends TestCase
             'is_available' => true,
         ]);
     }
-
 
     public function test_movie_cannot_be_stored_with_invalid_data(): void
     {
@@ -123,17 +119,15 @@ class HallTemplateTest extends TestCase
             ->assertSessionHasErrors(['address', 'seats.*']);
     }
 
-
     public function test_show_returns_redirect_to_hall_templates_edit_page(): void
     {
         $this->withoutExceptionHandling();
 
         $template = HallTemplate::factory()->create();
 
-        $this->actingAs($this->admin)->get('/admin/hall-templates/' . $template->id)
-            ->assertRedirect('/admin/hall-templates/' . $template->id . '/edit');
+        $this->actingAs($this->admin)->get('/admin/hall-templates/'.$template->id)
+            ->assertRedirect('/admin/hall-templates/'.$template->id.'/edit');
     }
-
 
     public function test_hall_edit_view_functions_properly(): void
     {
@@ -141,25 +135,24 @@ class HallTemplateTest extends TestCase
 
         $template = HallTemplate::factory()->create();
 
-        $this->actingAs($this->admin)->get('/admin/hall-templates/' . $template->id . '/edit')
+        $this->actingAs($this->admin)->get('/admin/hall-templates/'.$template->id.'/edit')
             ->assertOk()
-            ->assertInertia(fn(Assert $page) => $page
+            ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/HallTemplates/Edit')
-                ->has('hall_template', fn(Assert $page) => $page
+                ->has('hall_template', fn (Assert $page) => $page
                     ->whereAll([
                         'id' => $template->id,
                         'address' => $template->address,
                         'number' => $template->number,
                         'is_available' => $template->is_available,
                     ])
-                    ->has('seats', count($this->getNewTemplate()['seats']), fn(Assert $page) => $page
+                    ->has('seats', count($this->getNewTemplate()['seats']), fn (Assert $page) => $page
                         ->hasAll(['0.id', '0.type', '0.row_number', '0.seat_number', '0.is_taken'])
                         ->etc()
                     )
                 )
             );
     }
-
 
     public function test_hall_can_be_updated_by_admin(): void
     {
@@ -170,8 +163,8 @@ class HallTemplateTest extends TestCase
         $template->seats[0]->type = $template->seats[0]->type !== 'premium' ? 'premium' : 'standard';
 
         $this->actingAs($this->admin)
-            ->patch('/admin/hall-templates/' . $template->id, [...$this->getNewTemplate(), 'updated_seats' => $template->seats->toArray()])
-            ->assertRedirect('/admin/hall-templates/' . $template->id);
+            ->patch('/admin/hall-templates/'.$template->id, [...$this->getNewTemplate(), 'updated_seats' => $template->seats->toArray()])
+            ->assertRedirect('/admin/hall-templates/'.$template->id);
 
         $this->assertDatabaseHas('hall_templates', [
             'address' => 'Test Address',
@@ -184,7 +177,6 @@ class HallTemplateTest extends TestCase
         $this->assertDatabaseHas('seats', $seat);
     }
 
-
     public function test_hall_cannot_be_updated_with_invalid_data(): void
     {
         $template = $this->getTemplateWithRandomSeat();
@@ -193,11 +185,10 @@ class HallTemplateTest extends TestCase
         $template->seats[0]->type = 'VIP'; //There is no such a type
 
         $this->actingAs($this->admin)
-            ->patch('/admin/hall-templates/' . $template->id, [...$template->toArray(), 'updated_seats' => $template->seats->toArray()])
+            ->patch('/admin/hall-templates/'.$template->id, [...$template->toArray(), 'updated_seats' => $template->seats->toArray()])
             ->assertStatus(302)
             ->assertSessionHasErrors(['number', 'updated_seats.*.type']);
     }
-
 
     public function test_hall_can_be_deleted_by_admin(): void
     {
@@ -205,13 +196,12 @@ class HallTemplateTest extends TestCase
 
         $template = HallTemplate::factory()->create();
 
-        $this->actingAs($this->admin)->delete('/admin/hall-templates/' . $template->id)
+        $this->actingAs($this->admin)->delete('/admin/hall-templates/'.$template->id)
             ->assertRedirect('/admin/hall-templates');
 
         $this->assertDatabaseMissing('hall_templates', ['id' => $template->id]);
         $this->assertDatabaseMissing('seats', ['hall_id' => $template->id]);
     }
-
 
     public function test_non_admin_user_cannot_access_to_movies(): void
     {
@@ -222,11 +212,11 @@ class HallTemplateTest extends TestCase
             ->assertStatus(403);
 
         $this->actingAs($this->user)
-            ->put('/admin/hall-templates/' . $template->id)
+            ->put('/admin/hall-templates/'.$template->id)
             ->assertStatus(403);
 
         $this->actingAs($this->user)
-            ->delete('/admin/hall-templates/' . $template->id)
+            ->delete('/admin/hall-templates/'.$template->id)
             ->assertStatus(403);
     }
 }
