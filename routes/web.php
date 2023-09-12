@@ -22,9 +22,11 @@ Route::get('/', HomeController::class)->name('home');
 
 Route::resource('movies', MovieController::class)->only(['index', 'show']);
 
-Route::prefix('cart')->group(function () {
-    Route::get('/{screening}', [ScreeningController::class, 'show'])->name('screenings.show');
-    Route::post('/checkout', [OrderController::class, 'store'])->name('orders.store');
+Route::get('screenings/{screening}', [ScreeningController::class, 'show'])->name('screenings.show');
+
+Route::prefix('orders')->group(function () {
+    Route::post('/', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/{order}/thank-you', [OrderController::class, 'show'])->name('orders.show');
 });
 
 Route::middleware('auth')->group(function () {
