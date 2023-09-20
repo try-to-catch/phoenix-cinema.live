@@ -5,7 +5,6 @@ use App\Http\Controllers\MovieController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScreeningController;
-use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,7 +28,8 @@ Route::prefix('orders')->group(function () {
     Route::post('/', [OrderController::class, 'store'])->name('orders.store');
     //add guard 4 show & download
     Route::get('/{order}/thank-you', [OrderController::class, 'show'])->name('orders.show');
-    Route::get('/{order}/tickets/download', [TicketController::class, 'download'])->name('orders.tickets.download');
+    Route::get('/{order}/download', [OrderController::class, 'download'])->name('orders.download');
+    Route::get('/{order}/{seat}/check', [OrderController::class, 'verification'])->name('orders.seats.check');
 });
 
 Route::middleware('auth')->group(function () {
