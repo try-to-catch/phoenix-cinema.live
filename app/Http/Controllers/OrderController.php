@@ -6,9 +6,12 @@ use App\Actions\Order\CreateNewOrderAction;
 use App\Actions\Payment\ProcessPaymentAction;
 use App\Actions\Seat\UpdateSeatsOrderIdAction;
 use App\Http\Requests\Order\StoreOrderRequest;
+use App\Http\Resources\Order\OrderPdfResource;
 use App\Models\Order;
 use App\Models\Seat;
 use App\Services\FlashMessageService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -44,6 +47,27 @@ class OrderController extends Controller
      */
     public function show(Order $order): Response
     {
-        return Inertia::render('Orders/Show');
+        return Inertia::render('Orders/Show', ['order' => $order]);
+    }
+
+    /**
+     * Download order as PDF.
+     */
+    public function download(Order $order): \Illuminate\Http\Response
+    {
+        $order->load('seats', 'screening.movie', 'screening.hall');
+        $pdf = Pdf::loadView('pdf.order', [
+            'order' => OrderPdfResource::make($order)->resolve(),
+        ]);
+
+        return $pdf->download($order['id'].'.pdf');
+    }
+
+    /**
+     * Verify if seat belongs to order.
+     */
+    public function verification(Order $order, Seat $seat): JsonResponse
+    {
+        return response()->json([]);
     }
 }
