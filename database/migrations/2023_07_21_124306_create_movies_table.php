@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->string('description');
+            $table->text('description');
             $table->tinyInteger('priority');
             $table->smallInteger('duration_in_minutes');
             $table->string('age_restriction');
