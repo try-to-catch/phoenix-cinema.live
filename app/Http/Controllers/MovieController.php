@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Screening\OrganizeScreeningsAction;
-use App\Actions\Shared\FormatPaginationMetaLinksAction;
 use App\Http\Resources\Movie\MovieListResource;
 use App\Http\Resources\Movie\MovieResource;
 use App\Http\Resources\Screening\OrganizedScreeningListResource;
@@ -16,7 +15,7 @@ class MovieController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(FormatPaginationMetaLinksAction $formatLinksAction): Response
+    public function index(): Response
     {
         $selectedColumns = ['id', 'title', 'slug', 'thumbnail', 'age_restriction', 'director', 'start_showing', 'end_showing'];
 
