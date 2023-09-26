@@ -3,7 +3,6 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScreeningController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,12 +29,6 @@ Route::prefix('orders')->group(function () {
     Route::get('/{order}/thank-you', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/{order}/download', [OrderController::class, 'download'])->name('orders.download');
     Route::get('/{order}/{seat}/check', [OrderController::class, 'verification'])->name('orders.seats.check');
-});
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__.'/auth.php';
