@@ -10,14 +10,14 @@ defineProps<{ order: { id: string } }>()
 <template>
   <Head title="Дякуємо за покупку!" />
   <MainLayout>
-    <section class="translate-y-1/2">
+    <section :class="$style['content']">
       <div class="container">
         <div class="text-white flex items-center flex-col">
-          <div class="mb-2">
-            <img alt="popcorn emoji" src="/images/emoji/popcorn.png" />
+          <div :class="$style['content__emoji']" class="mb-2">
+            <img alt="popcorn emoji" class="h-full" src="/images/emoji/popcorn.png" />
           </div>
           <div class="text-center space-y-3 max-w-[350px]">
-            <h1 class="text-2xl">Дякуємо за покупку!</h1>
+            <h1 class="md:text-2xl text-xl">Дякуємо за покупку!</h1>
             <p class="text-sm">Радимо приходити раніше, щоб всигнути купити попкорн та напої</p>
             <div class="grid grid-cols-1 gap-2.5">
               <a :href="route('orders.download', { order: order.id })">
@@ -34,4 +34,34 @@ defineProps<{ order: { id: string } }>()
   </MainLayout>
 </template>
 
-<style scoped></style>
+<style module>
+.content {
+  transform: translateY(50%);
+}
+
+@media (max-height: 700px) {
+  .content {
+    transform: translateY(30%);
+  }
+}
+
+@media (max-height: 570px) {
+  .content {
+    margin-top: 20px;
+    transform: translateY(0%);
+  }
+}
+
+@media (max-height: 570px) {
+  .content__emoji {
+    height: 100px;
+    overflow: hidden;
+  }
+}
+
+@media (max-height: 570px) {
+  .content__emoji {
+    height: 30px;
+  }
+}
+</style>
