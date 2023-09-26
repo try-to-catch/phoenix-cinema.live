@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import AngleDown from '@/Components/Icons/AngleDown.vue'
 import DropdownLink from '@/Components/Breeze/DropdownLink.vue'
 import Dropdown from '@/Components/Breeze/Dropdown.vue'
@@ -21,8 +21,11 @@ defineProps<{ userName: string; bgClass?: string }>()
     </template>
 
     <template #content>
-      <DropdownLink :href="route('profile.edit')"> Профіль </DropdownLink>
-      <DropdownLink :href="route('logout')" as="button" method="post"> Вийти </DropdownLink>
+      <slot name="content" />
+      <template v-if="!$slots['content']">
+        <DropdownLink :href="route('profile.orders.index')"> Профіль </DropdownLink>
+        <DropdownLink :href="route('logout')" as="button" method="post"> Вийти </DropdownLink>
+      </template>
     </template>
   </Dropdown>
 </template>

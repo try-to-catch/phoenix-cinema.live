@@ -10,7 +10,7 @@ import type { IBanner } from '@/types/banners/IBanner'
 import AnglesRight from '@/Components/Icons/AnglesRight.vue'
 
 const { banner, movies, futureMovies } = defineProps<{
-  banner: IBanner
+  banner: IBanner | null
   movies: readonly Readonly<IMovieCard>[]
   futureMovies: readonly Readonly<IMovieCard>[]
 }>()
@@ -22,7 +22,7 @@ const { banner, movies, futureMovies } = defineProps<{
   </Head>
 
   <MainLayout>
-    <section class="pt-5 sm:pt-1">
+    <section v-if="banner" class="pt-5 sm:pt-1">
       <div class="container">
         <MovieBannerWithNotes :banner="banner" class="h-[400px]" />
       </div>

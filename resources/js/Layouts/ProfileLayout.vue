@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import ApplicationLogo from '@/Components/Icons/ApplicationLogo.vue'
 import NavLink from '@/Components/Breeze/NavLink.vue'
 import ResponsiveNavLink from '@/Components/Breeze/ResponsiveNavLink.vue'
@@ -7,6 +7,7 @@ import { Link } from '@inertiajs/vue3'
 import DefaultDropdown from '@/Layouts/Shared/DefaultDropdown.vue'
 import Hamburger from '@/Components/Icons/Hamburger.vue'
 import useWindow from '@/composables/window'
+import DropdownLink from '@/Components/Breeze/DropdownLink.vue'
 
 const showingNavigationDropdown = ref(false)
 
@@ -26,12 +27,16 @@ watch(showingNavigationDropdown, () => {
 
   document.body.style.overflow = 'auto'
 })
+
+const activeRoute = computed(() => {
+  return route().current() as string
+})
 </script>
 
 <template>
-  <div>
-    <div class="min-h-screen bg-tertiary">
-      <nav class="bg-primary shadow-md border-b border-neutral-700 sm:border-none">
+  <div class="font-sans-serif">
+    <div class="min-h-screen bg-primary relative">
+      <nav class="bg-tertiary shadow-md border-b border-neutral-700 sm:border-none fixed top-0 right-0 left-0 z-20">
         <!-- Primary Navigation Menu -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between h-[50px]">
@@ -45,7 +50,15 @@ watch(showingNavigationDropdown, () => {
 
               <!-- Navigation Links -->
               <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                <NavLink :active="route().current('home')" :href="route('home')"> Dashboard </NavLink>
+                <NavLink :active="activeRoute.startsWith('profile.orders')" :href="route('profile.orders.index')">
+                  Замовлення
+                </NavLink>
+                <NavLink :active="activeRoute.startsWith('profile.ordesrs')" :href="route('home')">
+                  Особисті дані
+                </NavLink>
+                <NavLink :active="activeRoute.startsWith('profile.security')" :href="route('profile.security')">
+                  Безпека
+                </NavLink>
               </div>
             </div>
 
@@ -53,7 +66,11 @@ watch(showingNavigationDropdown, () => {
               <!-- Settings Dropdown -->
               <div class="ml-3 relative">
                 <div v-if="$page.props.auth.user.name" class="ml-3 relative">
-                  <DefaultDropdown :user-name="$page.props.auth.user.name" />
+                  <DefaultDropdown :user-name="$page.props.auth.user.name">
+                    <template #content>
+                      <DropdownLink :href="route('logout')" as="button" method="post"> Вийти </DropdownLink>
+                    </template>
+                  </DefaultDropdown>
                 </div>
               </div>
             </div>
@@ -76,10 +93,18 @@ watch(showingNavigationDropdown, () => {
             block: showingNavigationDropdown,
             hidden: !showingNavigationDropdown,
           }"
-          class="sm:hidden right-0 left-0 absolute h-full z-20 bg-primary"
+          class="sm:hidden right-0 left-0 sticky h-screen z-20 bg-primary"
         >
           <div class="pt-2 pb-3 space-y-1">
-            <ResponsiveNavLink :active="route().current('home')" :href="route('home')"> Dashboard </ResponsiveNavLink>
+            <ResponsiveNavLink :active="activeRoute.startsWith('profile.orders')" :href="route('profile.orders.index')">
+              Замовлення
+            </ResponsiveNavLink>
+            <ResponsiveNavLink :active="activeRoute.startsWith('profile.ordesrs')" :href="route('home')">
+              Особисті дані
+            </ResponsiveNavLink>
+            <ResponsiveNavLink :active="activeRoute.startsWith('profile.security')" :href="route('profile.security')">
+              Безпека
+            </ResponsiveNavLink>
           </div>
 
           <!-- Responsive Settings Options -->
@@ -94,7 +119,6 @@ watch(showingNavigationDropdown, () => {
             </div>
 
             <div class="mt-3 space-y-1">
-              <ResponsiveNavLink :href="route('profile.edit')"> Профіль </ResponsiveNavLink>
               <ResponsiveNavLink :href="route('logout')" as="button" method="post"> Вийти </ResponsiveNavLink>
             </div>
           </div>
@@ -102,7 +126,7 @@ watch(showingNavigationDropdown, () => {
       </nav>
 
       <!-- Page Content -->
-      <main>
+      <main class="mt-[50px]">
         <slot />
       </main>
     </div>

@@ -29,10 +29,10 @@ const submit = () => {
 <template>
   <GuestLayout>
     <Head>
-      <title>Log in</title>
+      <title>Вхід</title>
     </Head>
 
-    <h1 class="text-xl font-bold leading-tight tracking-tight text-white mb-4">Sign in to your account</h1>
+    <h1 class="text-xl font-bold leading-tight tracking-tight text-white mb-4">Увійдіть до свого акаунту</h1>
 
     <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
       {{ status }}
@@ -45,7 +45,7 @@ const submit = () => {
           v-model="form.email"
           autocomplete="username"
           autofocus
-          label-inner="Email"
+          label-inner="Ел. адреса"
           required
           styles="mt-1 block w-full"
           type="email"
@@ -59,7 +59,7 @@ const submit = () => {
           id="password"
           v-model="form.password"
           autocomplete="current-password"
-          label-inner="Password"
+          label-inner="Пароль"
           required
           styles="mt-1 block w-full"
           type="password"
@@ -72,7 +72,7 @@ const submit = () => {
         <div>
           <label class="flex items-center">
             <Checkbox v-model:checked="form.remember" name="remember" />
-            <span class="ml-2 text-sm text-neutral-500">Remember me</span>
+            <span class="ml-2 text-sm text-neutral-500">Запам'ятай мене</span>
           </label>
         </div>
 
@@ -81,17 +81,17 @@ const submit = () => {
           :href="route('password.request')"
           class="text-sm font-medium text-neutral-400 hover:underline"
         >
-          Forgot your password?
+          Забули пароль?
         </Link>
       </div>
 
       <div class="my-4">
-        <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing"> Log in </PrimaryButton>
+        <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing"> Увійти </PrimaryButton>
       </div>
 
       <div class="text-sm font-light text-neutral-500">
-        Don’t have an account yet?
-        <Link :href="route('register')" class="font-medium text-secondary hover:underline"> Sign up </Link>
+        Ще не маєте акаунта?
+        <Link :href="route('register')" class="font-medium text-secondary hover:underline"> Зареєструватися </Link>
       </div>
     </form>
   </GuestLayout>
