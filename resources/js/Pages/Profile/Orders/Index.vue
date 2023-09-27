@@ -4,7 +4,7 @@ import { Head } from '@inertiajs/vue3'
 </script>
 
 <template>
-  <Head title="Профіль - Замовлення" />
+  <Head title="Мої замовлення" />
   <ProfileLayout>
     <div class=""></div>
   </ProfileLayout>

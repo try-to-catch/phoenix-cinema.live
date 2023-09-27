@@ -31,7 +31,6 @@ const form = useForm({
           id="name"
           v-model="form.name"
           autocomplete="name"
-          autofocus
           class="mt-1 block w-full"
           label-inner="Ім'я"
           required
