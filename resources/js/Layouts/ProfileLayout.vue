@@ -53,7 +53,10 @@ const activeRoute = computed(() => {
                 <NavLink :active="activeRoute.startsWith('profile.orders')" :href="route('profile.orders.index')">
                   Замовлення
                 </NavLink>
-                <NavLink :active="activeRoute.startsWith('profile.ordesrs')" :href="route('home')">
+                <NavLink
+                  :active="activeRoute.startsWith('profile.personal_info')"
+                  :href="route('profile.personal_info')"
+                >
                   Особисті дані
                 </NavLink>
                 <NavLink :active="activeRoute.startsWith('profile.security')" :href="route('profile.security')">
@@ -99,7 +102,10 @@ const activeRoute = computed(() => {
             <ResponsiveNavLink :active="activeRoute.startsWith('profile.orders')" :href="route('profile.orders.index')">
               Замовлення
             </ResponsiveNavLink>
-            <ResponsiveNavLink :active="activeRoute.startsWith('profile.ordesrs')" :href="route('home')">
+            <ResponsiveNavLink
+              :active="activeRoute.startsWith('profile.personal_info')"
+              :href="route('profile.personal_info')"
+            >
               Особисті дані
             </ResponsiveNavLink>
             <ResponsiveNavLink :active="activeRoute.startsWith('profile.security')" :href="route('profile.security')">
@@ -126,7 +132,7 @@ const activeRoute = computed(() => {
       </nav>
 
       <!-- Page Content -->
-      <main class="mt-[50px]">
+      <main class="pt-[50px]">
         <slot />
       </main>
     </div>

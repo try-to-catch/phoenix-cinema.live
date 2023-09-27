@@ -26,7 +26,7 @@ import DefaultDropdown from '@/Layouts/Shared/DefaultDropdown.vue'
       </div>
     </header>
 
-    <main class="flex-grow mt-[50px]">
+    <main class="flex-grow pt-[50px]">
       <slot />
     </main>
 
