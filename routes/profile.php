@@ -4,7 +4,8 @@ use App\Http\Controllers\Profile\OrderController;
 use App\Http\Controllers\Profile\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/security', [ProfileController::class, 'edit'])->name('security');
+Route::get('/security', [ProfileController::class, 'security'])->name('security');
+Route::get('/personal-info', [ProfileController::class, 'personalInfo'])->name('personal_info');
 Route::patch('/', [ProfileController::class, 'update'])->name('update');
 Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
 
