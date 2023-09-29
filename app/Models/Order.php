@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,7 @@ class Order extends Model
         'user_id',
         'screening_id',
         'session_id',
+        'completed_at',
     ];
 
     public function seats(): HasMany
@@ -26,5 +28,12 @@ class Order extends Model
     public function screening(): BelongsTo
     {
         return $this->belongsTo(Screening::class);
+    }
+
+    public function isCompleted(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value, $attributes) => $attributes['completed_at'] !== null,
+        );
     }
 }
