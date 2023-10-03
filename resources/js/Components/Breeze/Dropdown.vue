@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 const props = withDefaults(
@@ -10,7 +10,7 @@ const props = withDefaults(
   {
     align: 'right',
     width: '48',
-    contentClasses: 'py-1 bg-tertiary rounded-md ring-1 ring-secondary ring-opacity-25 focus:outline-none',
+    contentClasses: 'py-1 bg-tertiary rounded-md ring-1 ring-neutral-800 focus:outline-none',
   }
 )
 
@@ -61,12 +61,12 @@ const open = ref(false)
     >
       <div
         v-show="open"
-        class="absolute z-50 mt-2 rounded-md shadow-lg"
         :class="[widthClass, alignmentClasses]"
+        class="absolute z-50 mt-2 rounded-md shadow-lg"
         style="display: none"
         @click="open = false"
       >
-        <div class="rounded-md ring-1 ring-black ring-opacity-5" :class="contentClasses">
+        <div :class="contentClasses" class="rounded-md ring-1 ring-black">
           <slot name="content" />
         </div>
       </div>

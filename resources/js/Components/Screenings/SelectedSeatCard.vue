@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import XMark from '@/Components/Icons/XMark.vue'
 
 defineProps<{
@@ -33,7 +33,7 @@ const emit = defineEmits<{ (e: 'remove'): void }>()
     <div>
       <div class="text-secondary font-semibold">
         <span class="md:text-xl text-lg">{{ price }}</span>
-        <small class="text-xs">грн</small>
+        <small class="text-xs ml-1">грн</small>
       </div>
 
       <div class="text-[0.625rem] text-neutral-400">

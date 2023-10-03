@@ -11,7 +11,7 @@ defineProps<{ links: IPaginationMetaLink[] }>()
       <!-- eslint-disable vue/no-v-html vue/no-v-text-v-html-on-component -->
       <span
         v-if="link.url === null"
-        class="border border-neutral-700 flex items-center justify-center px-3 h-8 leading-tight bg-tertiary hover:bg-neutral-900 text-white cursor-not-allowed"
+        class="border border-neutral-800 flex items-center justify-center px-3 h-8 leading-tight bg-tertiary hover:bg-primary text-white cursor-not-allowed"
         v-html="link.label"
       />
 
@@ -19,7 +19,7 @@ defineProps<{ links: IPaginationMetaLink[] }>()
         v-else
         :class="{
           'text-white bg-secondary border-secondary': link.active,
-          'border-neutral-700  leading-tight text-white bg-tertiary hover:bg-neutral-900': !link.active,
+          'border-neutral-800 leading-tight text-white bg-tertiary hover:bg-primary': !link.active,
         }"
         :href="link.url"
         class="border flex items-center justify-center px-3 h-8"
