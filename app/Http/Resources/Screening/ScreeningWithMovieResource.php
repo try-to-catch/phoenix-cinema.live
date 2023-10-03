@@ -17,8 +17,7 @@ class ScreeningWithMovieResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'movie_id' => $this->movie_id,
-            'start_time' => $this->start_time,
+            'startTime' => $this->start_time,
             'movie' => MovieTitleAndSlugResource::make($this->movie)->resolve(),
         ];
     }
