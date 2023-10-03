@@ -11,8 +11,10 @@ use App\Models\Order;
 use App\Models\Seat;
 use App\Services\FlashMessageService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -36,6 +38,8 @@ class OrderController extends Controller
             return redirect()->back()->with('errors', ['card_data' => 'Реквізити картки невірні']);
         }
 
+        //TODO FIX SEAT REORDERING ISSUE (priority *****)
+
         $order = $createNewOrderAction->handle($request, Seat::find($data['seat_ids'][0])->hall->screening_id);
         $updateSeatsOrderIdAction->handle($data['seat_ids'], $order->id);
 
@@ -45,28 +49,53 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Order $order): Response
+    public function show(Order $order): RedirectResponse|Response
     {
+        if (Gate::denies('view', $order)) {
+            return to_route('home');
+        }
+
         return Inertia::render('Orders/Show', ['order' => $order]);
     }
 
     /**
      * Download order as PDF.
      */
-    public function download(Order $order): \Illuminate\Http\Response
+    public function download(Order $order): RedirectResponse|Http\Response
     {
+        if (Gate::denies('view', $order)) {
+            return to_route('home');
+        }
+
         $order->load('seats', 'screening.movie', 'screening.hall');
         $pdf = Pdf::loadView('pdf.order', [
             'order' => OrderPdfResource::make($order)->resolve(),
         ]);
 
-        return $pdf->download($order['id'].'.pdf');
+        return $pdf->download($order['id'] . '-tickets.pdf');
+    }
+
+    /**
+     * Preview order as PDF.
+     */
+    public function preview(Order $order): RedirectResponse|Http\Response
+    {
+        if (Gate::denies('view', $order)) {
+            return to_route('home');
+        }
+
+        $order->load('seats', 'screening.movie', 'screening.hall');
+        $pdf = Pdf::loadView('pdf.order', [
+            'order' => OrderPdfResource::make($order)->resolve(),
+        ]);
+
+        return $pdf->stream($order['id'] . '-tickets.pdf');
     }
 
     /**
      * Verify if seat belongs to order.
      */
-    public function verification(Order $order, Seat $seat): JsonResponse
+    public function verification(Order $order): JsonResponse
     {
         return response()->json([]);
     }
