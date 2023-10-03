@@ -3,7 +3,7 @@ import type { IScreeningWithMovieTitleAndSlug } from '@/types/screenings/IScreen
 export interface IOrderWithScreening {
   readonly id: string
   screening: IScreeningWithMovieTitleAndSlug
-  readonly seat_count: number
+  readonly seatsCount: number
   readonly isCompleted: boolean
-  readonly created_at: string
+  readonly showDate: string
 }
