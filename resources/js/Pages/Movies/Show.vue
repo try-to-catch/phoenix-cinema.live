@@ -15,7 +15,7 @@ const { movie, screenings } = defineProps<{
 
 <template>
   <Head>
-    <title>Головна сторінка</title>
+    <title>{{ movie.title }}</title>
   </Head>
 
   <MainLayout>
@@ -28,8 +28,8 @@ const { movie, screenings } = defineProps<{
             >
               <img
                 :alt="`Постер ${movie.title}`"
-                class="w-full h-full bg-cover content-center"
                 :src="movie.thumbnail"
+                class="w-full h-full bg-cover content-center"
               />
             </div>
 
