@@ -24,7 +24,7 @@
 
                 <div class="ticket-main" style="position: relative">
                     <div class="ticket-main__qr-code" style="position: absolute; right: 1rem">
-                        <img src="data:image/png;base64,{{ $seat['qr_code'] }}" alt="QR Code">
+                        <img src="data:image/png;base64,{{ $order['qr_code'] }}" alt="QR Code">
                     </div>
                     <div class="ticket-main__item">
                         Зал <span>#{{ $order['screening']['hall']['number'] }}</span>
