@@ -25,10 +25,12 @@ Route::get('screenings/{screening}', [ScreeningController::class, 'show'])->name
 
 Route::prefix('orders')->group(function () {
     Route::post('/', [OrderController::class, 'store'])->name('orders.store');
-    //add guard 4 show & download
+
     Route::get('/{order}/thank-you', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/{order}/download', [OrderController::class, 'download'])->name('orders.download');
-    Route::get('/{order}/{seat}/check', [OrderController::class, 'verification'])->name('orders.seats.check');
+    Route::get('/{order}/preview', [OrderController::class, 'preview'])->name('orders.preview');
+
+    Route::get('/{order}/check', [OrderController::class, 'verification'])->middleware('role:admin,cashier')->name('orders.check');
 });
 
 require __DIR__.'/auth.php';
