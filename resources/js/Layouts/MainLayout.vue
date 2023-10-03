@@ -7,7 +7,6 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 const pagesWithLongHeader = ['home', 'movies.index']
 
 const isHeaderLong = computed(() => {
-  console.log(pagesWithLongHeader.includes(route().current()!))
   return pagesWithLongHeader.includes(route().current()!)
 })
 
@@ -37,7 +36,7 @@ const isHeaderFixed = computed(() => {
         'bg-tertiary shadow': isHeaderFixed,
         'sm:bg-primary bg-tertiary': !isHeaderFixed,
       }"
-      class="fixed w-full z-20 h-[50px] border-b border-neutral-700 sm:border-none duration-300 ease-in-out"
+      class="fixed w-full z-20 h-[50px] border-b border-neutral-800 sm:border-none duration-300 ease-in-out"
     >
       <div
         :class="{ container: isHeaderLong, 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8': !isHeaderLong }"
