@@ -19,7 +19,7 @@ class ProfileOrderListResource extends JsonResource
             'id' => $this->id,
             'screening' => ScreeningWithMovieResource::make($this->screening)->resolve(),
             'seatsCount' => $this->seats_count,
-            'isCompleted' => $this->isCompleted,
+            'isCompleted' => $this->screening->isOver(),
             'showDate' => $this->created_at->isoFormat("DD MMMM"),
         ];
     }

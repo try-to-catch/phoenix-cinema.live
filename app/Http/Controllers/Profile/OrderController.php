@@ -16,12 +16,12 @@ class OrderController extends Controller
     public function index(): Response
     {
         $orders = Order::query()
-            ->select('id', 'screening_id', 'completed_at', 'created_at')
+            ->select('id', 'screening_id', 'created_at')
             ->with([
                 'screening' => function ($query) {
                     $query
                         ->with(['movie' => fn ($query) => $query->select('id', 'title', 'slug')])
-                        ->select('id', 'movie_id', 'start_time');
+                        ->select('id', 'movie_id', 'start_time', 'end_time');
                 },
             ])
             ->withCount('seats')
