@@ -4,10 +4,12 @@ import useWindow from '@/composables/window'
 import PaymentModal from '@/Components/Modals/PaymentModal.vue'
 import type { ICardData } from '@/types/payments/ICardData'
 import { computed } from 'vue'
+import type { OrderFormType } from '@/types/orders/OrderFormType'
 
 defineProps<{
   totalPrice: number
   modelValue: ICardData
+  errors: Partial<Record<keyof OrderFormType, string>>
 }>()
 
 const emit = defineEmits<{
@@ -29,6 +31,7 @@ const onSubmit = () => {
       <div class="xl:w-4/5 2xl:w-3/4 xl:mx-auto">
         <PaymentForm
           v-if="isFormShouldBeShown"
+          :errors="errors"
           :model-value="modelValue"
           :total-price="totalPrice"
           @submit="onSubmit"
@@ -36,6 +39,7 @@ const onSubmit = () => {
         />
         <PaymentModal
           v-else
+          :errors="errors"
           :model-value="modelValue"
           :total-price="totalPrice"
           @submit="onSubmit"

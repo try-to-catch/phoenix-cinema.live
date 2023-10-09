@@ -7,10 +7,12 @@ import CardNumberInput from '@/Components/Payment/CardNumberInput.vue'
 import CvvCodeInput from '@/Components/Payment/CvvCodeInput.vue'
 import type { ICardData } from '@/types/payments/ICardData'
 import { toRefs, watch } from 'vue'
+import { OrderFormType } from '@/types/orders/OrderFormType'
 
 const props = defineProps<{
   totalPrice: number
   modelValue: ICardData
+  errors: Partial<Record<keyof OrderFormType, string>>
 }>()
 
 const emit = defineEmits<{
@@ -48,11 +50,14 @@ watch(form.value, () => {
         <CvvCodeInput v-model="form.cvv_code" required />
       </div>
     </div>
+    <div class="text-xs text-red-500 space-x-2">
+      <span v-for="(id, error) in errors" :key="id">{{ errors[error] }}</span>
+    </div>
 
-    <div class="mt-8">
+    <div class="mt-6">
       <SummarizingRow :total="totalPrice" small-text="грн" title="Загальна сума" />
 
-      <PrimaryButton class="sm:text-base mt-4"> Сплатити </PrimaryButton>
+      <PrimaryButton class="sm:text-base mt-4">Сплатити</PrimaryButton>
     </div>
   </form>
 </template>

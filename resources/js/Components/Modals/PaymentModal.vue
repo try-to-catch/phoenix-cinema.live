@@ -5,8 +5,9 @@ import PaymentForm from '@/Components/Payment/PaymentForm.vue'
 import PrimaryButton from '@/Components/Breeze/PrimaryButton.vue'
 import XMark from '@/Components/Icons/XMark.vue'
 import { ICardData } from '@/types/payments/ICardData'
+import { OrderFormType } from '@/types/orders/OrderFormType'
 
-defineProps<{ totalPrice: number; modelValue: ICardData }>()
+defineProps<{ totalPrice: number; modelValue: ICardData; errors: Partial<Record<keyof OrderFormType, string>> }>()
 const emit = defineEmits<{
   'update:modelValue': [value: ICardData]
   submit: []
@@ -16,10 +17,11 @@ const isOpen = ref(false)
 
 <template>
   <div>
-    <PrimaryButton class="sm:text-base" @click="isOpen = true"> Сплатити </PrimaryButton>
+    <PrimaryButton class="sm:text-base" @click="isOpen = true"> Сплатити</PrimaryButton>
 
     <Modal :show="isOpen" closeable has-bg-blur max-width="2xl" styles="relative" @close="isOpen = false">
       <PaymentForm
+        :errors="errors"
         :model-value="modelValue"
         :total-price="totalPrice"
         class="p-8"
