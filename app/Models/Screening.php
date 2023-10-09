@@ -67,8 +67,10 @@ class Screening extends Model
         );
     }
 
-    public function isOver(): bool
+    public function isOver(): Attribute
     {
-        return Carbon::parse($this['end_time'])->isPast();
+        return Attribute::make(
+            get: fn ($value, $attributes) => Carbon::parse($attributes['end_time'])->isPast(),
+        );
     }
 }
