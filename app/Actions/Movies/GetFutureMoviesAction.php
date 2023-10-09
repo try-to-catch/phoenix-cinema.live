@@ -10,7 +10,7 @@ class GetFutureMoviesAction
 {
     public function handle(array $columns, int $count = null): Collection
     {
-        return Cache::remember('movies:future', 60 * 60,
+        return Cache::remember('movies:screening_in_future', 60 * 60,
             function () use ($columns, $count) {
                 $query = Movie::screeningSoonWithGenres()->orderBy('start_showing');
 
