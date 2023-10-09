@@ -90,7 +90,7 @@ watchEffect(() => {
 })
 
 const sendStoreOrderRequest = () => {
-  orderForm.post(route('orders.store'), {})
+  orderForm.post(route('orders.store'))
 }
 </script>
 
@@ -215,7 +215,7 @@ const sendStoreOrderRequest = () => {
         <div class="xl:w-4/5 2xl:w-3/4 xl:mx-auto">
           <SummarizingRow :total="orderTotalPrice" small-text="грн" title="Загальна сума" />
 
-          <PrimaryButton class="sm:text-base mt-4" @click="suggestAuth"> Підтвердити </PrimaryButton>
+          <PrimaryButton class="sm:text-base mt-4" @click="suggestAuth"> Підтвердити</PrimaryButton>
         </div>
       </div>
     </section>
@@ -224,6 +224,7 @@ const sendStoreOrderRequest = () => {
     <PaymentSection
       v-if="isPaymentAvailable"
       v-model="orderForm.card_data"
+      :errors="orderForm.errors"
       :total-price="orderTotalPrice"
       class="pt-8 sm:pt-12 pb-6 sm:pb-12"
       @submit="sendStoreOrderRequest"
