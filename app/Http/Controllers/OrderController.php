@@ -24,16 +24,15 @@ class OrderController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(
-        StoreOrderRequest        $request,
-        ProcessPaymentAction     $paymentAction,
-        FlashMessageService      $flashMessageService,
+        StoreOrderRequest $request,
+        ProcessPaymentAction $paymentAction,
+        FlashMessageService $flashMessageService,
         UpdateSeatsOrderIdAction $updateSeatsOrderIdAction,
-        CreateNewOrderAction     $createNewOrderAction
-    ): RedirectResponse
-    {
+        CreateNewOrderAction $createNewOrderAction
+    ): RedirectResponse {
         $data = $request->validated();
 
-        if (!$paymentAction->handle($data['card_data'])) {
+        if (! $paymentAction->handle($data['card_data'])) {
             $flashMessageService->failure('Оплата не пройшла! Щось пішло не так');
 
             return redirect()->back()->with('errors', ['card_data' => 'Реквізити картки невірні']);
@@ -71,7 +70,7 @@ class OrderController extends Controller
             'order' => OrderPdfResource::make($order)->resolve(),
         ]);
 
-        return $pdf->download($order['id'] . '-tickets.pdf');
+        return $pdf->download($order['id'].'-tickets.pdf');
     }
 
     /**
@@ -88,7 +87,7 @@ class OrderController extends Controller
             'order' => OrderPdfResource::make($order)->resolve(),
         ]);
 
-        return $pdf->stream($order['id'] . '-tickets.pdf');
+        return $pdf->stream($order['id'].'-tickets.pdf');
     }
 
     /**

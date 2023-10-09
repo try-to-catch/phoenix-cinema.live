@@ -14,11 +14,10 @@ class HomeController extends Controller
     protected const ROW_LENGTH = 12;
 
     public function __invoke(
-        GetCurrentScreeningMoviesAction  $getMoviesAction,
-        GetFutureMoviesAction            $getFutureMoviesAction,
+        GetCurrentScreeningMoviesAction $getMoviesAction,
+        GetFutureMoviesAction $getFutureMoviesAction,
         GetMovieWithBannerResolvedAction $getMovieWithBannerAction
-    ): Response
-    {
+    ): Response {
         $selectedColumns = ['id', 'title', 'slug', 'thumbnail', 'age_restriction', 'director', 'start_showing', 'end_showing'];
 
         $movies = $getMoviesAction->handle($selectedColumns, self::ROW_LENGTH);

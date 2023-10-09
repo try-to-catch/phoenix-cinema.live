@@ -28,10 +28,10 @@ class StoreOrderRequest extends FormRequest
             'card_data.expire_month' => ['required', 'integer', 'min:1', 'max:12',
                 function ($attribute, $value, $fail) use ($currentMonth, $currentYear) {
                     if ($value < $currentMonth && $this->input('card_data.expire_year') === $currentYear) {
-                        $fail($attribute . ' has already passed for the current year.');
+                        $fail($attribute.' has already passed for the current year.');
                     }
                 }],
-            'card_data.expire_year' => ['required', 'integer', 'min:' . $currentYear, 'max:' . $currentYear + 10],
+            'card_data.expire_year' => ['required', 'integer', 'min:'.$currentYear, 'max:'.$currentYear + 10],
             'card_data.cvv_code' => ['required', 'string'],
         ];
     }

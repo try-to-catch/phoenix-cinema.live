@@ -10,6 +10,7 @@ class GetMovieWithBannerResolvedAction
     public function handle(): ?array
     {
         $movieWithBanner = Movie::query()->hasBanner()->inRandomOrder()->with(['banner', 'genres'])->first();
+
         return $movieWithBanner ? MovieBannerResource::make($movieWithBanner)->resolve() : null;
     }
 }

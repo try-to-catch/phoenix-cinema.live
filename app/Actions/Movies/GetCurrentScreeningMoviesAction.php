@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 
 class GetCurrentScreeningMoviesAction
 {
-    public function handle(array $columns, ?int $count = null): Collection
+    public function handle(array $columns, int $count = null): Collection
     {
         return Cache::remember('movies:current_screening', 60 * 60,
             function () use ($columns, $count) {

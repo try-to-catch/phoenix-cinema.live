@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 
 class GetFutureMoviesAction
 {
-    public function handle(array $columns, ?int $count = null): Collection
+    public function handle(array $columns, int $count = null): Collection
     {
         return Cache::remember('movies:future', 60 * 60,
             function () use ($columns, $count) {

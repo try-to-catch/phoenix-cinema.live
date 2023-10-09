@@ -21,12 +21,12 @@ class OrderPolicy
      */
     public function view(?User $user, Order $order): Response
     {
-        if (is_null($user)){
+        if (is_null($user)) {
             if ($order['session_id'] === request()->session()->getId()) {
                 return Response::allow();
             }
         }
-        
+
         if ($order['user_id'] === $user['id']) {
             return Response::allow();
         }
