@@ -7,7 +7,6 @@ import { Link } from '@inertiajs/vue3'
 import DefaultDropdown from '@/Layouts/Shared/DefaultDropdown.vue'
 import Hamburger from '@/Components/Icons/Hamburger.vue'
 import useWindow from '@/composables/window'
-import DropdownLink from '@/Components/Breeze/DropdownLink.vue'
 
 const showingNavigationDropdown = ref(false)
 
@@ -69,11 +68,7 @@ const activeRoute = computed(() => {
               <!-- Settings Dropdown -->
               <div class="ml-3 relative">
                 <div v-if="$page.props.auth.user.name" class="ml-3 relative">
-                  <DefaultDropdown :user-name="$page.props.auth.user.name">
-                    <template #content>
-                      <DropdownLink :href="route('logout')" as="button" method="post"> Вийти </DropdownLink>
-                    </template>
-                  </DefaultDropdown>
+                  <DefaultDropdown :user-name="$page.props.auth.user.name" />
                 </div>
               </div>
             </div>

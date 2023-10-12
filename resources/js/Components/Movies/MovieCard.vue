@@ -1,23 +1,39 @@
 <script lang="ts" setup>
 import { Link } from '@inertiajs/vue3'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { IMovieCard } from '@/types/movies/IMovieCard'
 import { formatGenres } from '@/services/formatGenres'
 import MoviePoster from '@/Components/Movies/MoviePoster.vue'
 
-const { movie } = defineProps<{ movie: IMovieCard }>()
+const { movie, routeName, size } = withDefaults(
+  defineProps<{
+    movie: IMovieCard
+    routeName?: string
+    size?: 'sm' | 'normal'
+  }>(),
+  { routeName: 'movies.show', size: 'normal' }
+)
 
 const isHovered = ref(false)
+
+const cardStyles = computed(() => {
+  if (size === 'sm') {
+    return ''
+  }
+
+  return 'min-w-[218px] min-h-[322px]'
+})
 </script>
 
 <template>
   <li
     :title="movie.title"
-    class="min-w-[218px] w-full flex justify-center min-h-[322px] cursor-pointer relative"
+    :class="cardStyles"
+    class="w-full flex justify-center cursor-pointer relative"
     @mouseleave="isHovered = false"
     @mouseover="isHovered = true"
   >
-    <Link :href="route('movies.show', { movie: movie.slug })" class="block">
+    <Link :href="route(routeName, { movie: movie.slug })" class="block">
       <MoviePoster :age-restriction="movie.age_restriction" :thumbnail="movie.thumbnail" :title="movie.title" />
 
       <transition name="liftUp">
