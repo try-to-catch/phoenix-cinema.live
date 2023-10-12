@@ -1,22 +1,25 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HallTemplateController;
 use App\Http\Controllers\Admin\MovieController;
 use App\Http\Controllers\Admin\ScreeningController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', DashboardController::class)->name('dashboard');
+
 //Movie model use getRouteKeyName() method to get movie by slug
 Route::resource('movies', MovieController::class);
 
-Route::prefix('hall-templates')->name('hall_templates.')->controller(HallTemplateController::class)
-    ->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
-        Route::get('/{template}/edit', 'edit')->name('edit');
-        Route::get('/{template}', 'show')->name('show');
-        Route::post('/', 'store')->name('store');
-        Route::match(['put', 'patch'], '/{template}', 'update')->name('update');
-        Route::delete('/{template}', 'destroy')->name('destroy');
-    });
+Route::resource('hall-templates', HallTemplateController::class)
+    ->names([
+        'index' => 'hall_templates.index',
+        'create' => 'hall_templates.create',
+        'store' => 'hall_templates.store',
+        'show' => 'hall_templates.show',
+        'edit' => 'hall_templates.edit',
+        'update' => 'hall_templates.update',
+        'destroy' => 'hall_templates.destroy',
+    ]);
 
 Route::resource('screenings', ScreeningController::class);
