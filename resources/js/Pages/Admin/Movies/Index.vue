@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
-import { IPaginatedMovieCards } from '@/types/movies/IPaginatedMovieCards'
+import type { IPaginatedMovieCards } from '@/types/movies/IPaginatedMovieCards'
 import PaginatedMovieList from '@/Components/Movies/PaginatedMovieList.vue'
 
 const { movies } = defineProps<{
-  movies: readonly Readonly<IPaginatedMovieCards>[]
+  movies: Readonly<IPaginatedMovieCards>
 }>()
 </script>
 
