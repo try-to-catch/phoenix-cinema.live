@@ -10,7 +10,9 @@ class GetCurrentScreeningMoviesAction
 {
     public function handle(array $columns, int $count = null): Collection
     {
-        return Cache::remember('movies:current_screening', 60 * 60,
+        $countStr = is_null($count) ? 'all' : $count;
+
+        return Cache::remember('movies:current_screening:'.$countStr, 60 * 60,
             function () use ($columns, $count) {
                 $query = Movie::currentlyScreeningWithGenres()->orderByDesc('priority');
 
