@@ -68,20 +68,21 @@ class MovieTest extends TestCase
 
         $this->actingAs($this->admin)->get('/admin/movies')
             ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page
+            ->assertInertia(fn(Assert $page) => $page
                 ->component('Admin/Movies/Index')
-                ->has('movies', fn (Assert $page) => $page
-                    ->has('data', 1, fn (Assert $page) => $page
+                ->has('movies', fn(Assert $page) => $page
+                    ->has('data', 1, fn(Assert $page) => $page
                         ->whereAll([
                             'id' => $movie->id,
                             'title' => $movie->title,
                             'slug' => $movie->slug,
-                            'duration_in_minutes' => $movie->duration_in_minutes,
+                            'director' => $movie->director,
                             'age_restriction' => $movie->age_restriction,
                             'thumbnail' => $movie->thumbnail_path,
-                            'start_showing' => $movie->start_showing->format('d-m-Y'),
-                            'end_showing' => $movie->end_showing->format('d-m-Y'),
+                            'start_showing' => $movie->start_showing->isoFormat('D MMMM'),
+                            'end_showing' => $movie->end_showing->isoFormat('D MMMM'),
                         ])
+                        ->has('genres')
                     )
                     ->hasAll(['links', 'meta'])
                 )
@@ -94,9 +95,9 @@ class MovieTest extends TestCase
 
         $this->actingAs($this->admin)->get('/admin/movies/create')
             ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page
+            ->assertInertia(fn(Assert $page) => $page
                 ->component('Admin/Movies/Create')
-                ->has('genres', Genre::count(), fn (Assert $page) => $page
+                ->has('genres', Genre::count(), fn(Assert $page) => $page
                     ->hasAll(['id', 'name'])
                 )
             );
@@ -151,8 +152,8 @@ class MovieTest extends TestCase
 
         $movie = Movie::factory()->create();
 
-        $this->actingAs($this->admin)->get('/admin/movies/'.$movie->slug)
-            ->assertRedirect('/admin/movies/'.$movie->slug.'/edit');
+        $this->actingAs($this->admin)->get('/admin/movies/' . $movie->slug)
+            ->assertRedirect('/admin/movies/' . $movie->slug . '/edit');
     }
 
     public function test_movie_edit_view_functions_properly(): void
@@ -162,10 +163,10 @@ class MovieTest extends TestCase
         $movie = Movie::factory()->create();
         $movie->genres()->attach($this->getRandomGenreIDs());
 
-        $this->actingAs($this->admin)->get('/admin/movies/'.$movie->slug.'/edit')
-            ->assertInertia(fn (Assert $page) => $page
+        $this->actingAs($this->admin)->get('/admin/movies/' . $movie->slug . '/edit')
+            ->assertInertia(fn(Assert $page) => $page
                 ->component('Admin/Movies/Edit')
-                ->has('movie', fn (Assert $page) => $page
+                ->has('movie', fn(Assert $page) => $page
                     ->whereAll([
                         'id' => $movie->id,
                         'title' => $movie->title,
@@ -184,11 +185,11 @@ class MovieTest extends TestCase
                         'start_showing' => $movie->start_showing->format('d-m-Y'),
                         'end_showing' => $movie->end_showing->format('d-m-Y'),
                     ])
-                    ->has('genres', $movie->genres->count(), fn (Assert $page) => $page
+                    ->has('genres', $movie->genres->count(), fn(Assert $page) => $page
                         ->hasAll(['id', 'name', 'slug'])
                     )
                 )
-                ->has('genres', Genre::count(), fn (Assert $page) => $page
+                ->has('genres', Genre::count(), fn(Assert $page) => $page
                     ->hasAll(['id', 'name'])
                 )
                 ->has('banner')
@@ -203,8 +204,8 @@ class MovieTest extends TestCase
         $movie->genres()->attach($this->getRandomGenreIDs());
 
         $this->actingAs($this->admin)
-            ->put('/admin/movies/'.$movie->slug, $this->getNewMovie())
-            ->assertRedirect('/admin/movies/'.$movie->slug);
+            ->put('/admin/movies/' . $movie->slug, $this->getNewMovie())
+            ->assertRedirect('/admin/movies/' . $movie->slug);
 
         $this->assertDatabaseCount('movies', 1)
             ->assertDatabaseHas('movies', [
@@ -238,7 +239,7 @@ class MovieTest extends TestCase
         $newMovie['thumbnail'] = 'string is not a file';
 
         $this->actingAs($this->admin)
-            ->put('/admin/movies/'.$movie->slug, $newMovie)
+            ->put('/admin/movies/' . $movie->slug, $newMovie)
             ->assertStatus(302)
             ->assertSessionHasErrors(['title', 'thumbnail']);
     }
@@ -250,7 +251,7 @@ class MovieTest extends TestCase
         $movie = Movie::factory()->create();
 
         $this->actingAs($this->admin)
-            ->delete('/admin/movies/'.$movie->slug)
+            ->delete('/admin/movies/' . $movie->slug)
             ->assertRedirect('/admin/movies');
 
         $this->assertDatabaseCount('movies', 0);
@@ -267,11 +268,11 @@ class MovieTest extends TestCase
             ->assertStatus(403);
 
         $this->actingAs($this->user)
-            ->put('/admin/movies/'.$movie->slug)
+            ->put('/admin/movies/' . $movie->slug)
             ->assertStatus(403);
 
         $this->actingAs($this->user)
-            ->delete('/admin/movies/'.$movie->slug)
+            ->delete('/admin/movies/' . $movie->slug)
             ->assertStatus(403);
     }
 }

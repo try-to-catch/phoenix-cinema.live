@@ -29,19 +29,10 @@ class MovieController extends Controller
      */
     public function index(): Response
     {
-        $movies = Movie::query()
-            ->select([
-                'id',
-                'title',
-                'slug',
-                'duration_in_minutes',
-                'age_restriction',
-                'thumbnail',
-                'start_showing',
-                'end_showing',
-            ])
+        $movies = Movie::with('genres')
+            ->select(['id', 'title', 'slug', 'thumbnail', 'age_restriction', 'director', 'start_showing', 'end_showing'])
             ->latest('updated_at')
-            ->paginate();
+            ->paginate()->onEachSide(1);
 
         return Inertia::render('Admin/Movies/Index', [
             'movies' => MovieListResource::collection($movies),
