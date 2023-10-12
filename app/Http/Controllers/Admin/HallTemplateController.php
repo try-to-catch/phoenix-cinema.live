@@ -22,10 +22,10 @@ class HallTemplateController extends Controller
      */
     public function index(): Response
     {
-        $templates = HallTemplate::query()->withCount('seats')->get();
+        $hall_templates = HallTemplate::query()->withCount('seats')->get();
 
         return Inertia::render('Admin/HallTemplates/Index', [
-            'hall_templates' => HallTemplateListResource::collection($templates),
+            'hall_templates' => HallTemplateListResource::collection($hall_templates),
         ]);
     }
 
@@ -49,51 +49,51 @@ class HallTemplateController extends Controller
         $seats = $newTemplate['seats'];
         unset($newTemplate['seats']);
 
-        $template = HallTemplate::create($newTemplate);
-        $storeSeats->handle($template, $seats);
+        $hall_template = HallTemplate::create($newTemplate);
+        $storeSeats->handle($hall_template, $seats);
 
-        return to_route('admin.hall_templates.show', $template);
+        return to_route('admin.hall_templates.show', $hall_template);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(HallTemplate $template): RedirectResponse
+    public function show(HallTemplate $hall_template): RedirectResponse
     {
-        return to_route('admin.hall_templates.edit', $template);
+        return to_route('admin.hall_templates.edit', $hall_template);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(HallTemplate $template): Response
+    public function edit(HallTemplate $hall_template): Response
     {
         return Inertia::render('Admin/HallTemplates/Edit', [
-            'hall_template' => HallTemplateWithSeatsResource::make($template->load('seats'))->resolve(),
+            'hall_template' => HallTemplateWithSeatsResource::make($hall_template->load('seats'))->resolve(),
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateHallTemplateRequest $request, HallTemplate $template, UpdateSeatsAction $updateSeats): RedirectResponse
+    public function update(UpdateHallTemplateRequest $request, HallTemplate $hall_template, UpdateSeatsAction $updateSeats): RedirectResponse
     {
         $updatedHall = $request->validated();
         $seats = $updatedHall['updated_seats'];
         unset($updatedHall['updated_seats']);
 
-        $template->update($updatedHall);
-        $updateSeats->handle($template, $seats);
+        $hall_template->update($updatedHall);
+        $updateSeats->handle($hall_template, $seats);
 
-        return to_route('admin.hall_templates.show', $template);
+        return to_route('admin.hall_templates.show', $hall_template);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(HallTemplate $template): RedirectResponse
+    public function destroy(HallTemplate $hall_template): RedirectResponse
     {
-        $template->delete();
+        $hall_template->delete();
 
         return to_route('admin.hall_templates.index');
     }
