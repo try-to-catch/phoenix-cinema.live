@@ -54,22 +54,3 @@ jobs:
         run: npm install
       - name: Run Pre-Commit Code Style Tests
         run: npm run test:pre-commit
-  deployment:
-    runs-on: ubuntu-latest
-    needs: [ laravel-tests, vue-tests ]
-    steps:
-      - name: Deploy using ssh
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            cd /var/www/phoenix-cinema/
-            git pull origin main
-            git status
-            composer install
-            npm install
-            npm run build
-
