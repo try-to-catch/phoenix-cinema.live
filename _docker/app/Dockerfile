@@ -30,7 +30,7 @@ COPY artisan            /var/www/artisan
 COPY package.json       /var/www/package.json
 COPY vite.config.js     /var/www/vite.config.js
 COPY tailwind.config.js /var/www/tailwind.config.js
-COPY tsconfig.js        /var/www/tsconfig.js
+COPY tsconfig.json      /var/www/tsconfig.json
 
 COPY composer.*  ./
 
