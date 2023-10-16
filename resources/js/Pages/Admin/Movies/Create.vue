@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div />
+  <div>Admin.Movies.Create</div>
 </template>
 
 <style scoped></style>
