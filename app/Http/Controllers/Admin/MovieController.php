@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Movie\MovieListRequest;
 use App\Http\Requests\Admin\Movie\StoreMovieRequest;
 use App\Http\Requests\Admin\Movie\UpdateMovieRequest;
 use App\Http\Resources\Admin\Genre\GenreResource;
@@ -27,12 +28,17 @@ class MovieController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(MovieListRequest $request): Response
     {
+        $data = $request->validated();
+        $searchQuery = $data['s'] ?? '';
+
         $movies = Movie::with('genres')
+            ->filtered($searchQuery)
             ->select(['id', 'title', 'slug', 'thumbnail', 'age_restriction', 'director', 'start_showing', 'end_showing'])
             ->latest('updated_at')
-            ->paginate()->onEachSide(1);
+            ->paginate(10)
+            ->onEachSide(1);
 
         return Inertia::render('Admin/Movies/Index', [
             'movies' => MovieListResource::collection($movies),

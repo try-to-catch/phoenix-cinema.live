@@ -74,7 +74,7 @@ class Movie extends Model
     public function thumbnailPath(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes) => '/storage/'.$attributes['thumbnail'],
+            get: fn(mixed $value, array $attributes) => '/storage/' . $attributes['thumbnail'],
         );
     }
 
@@ -115,5 +115,10 @@ class Movie extends Model
     public function scopeMissingBanner(Builder $query): Builder
     {
         return $query->whereDoesntHave('banner');
+    }
+
+    public function scopeFiltered(Builder $query, string $s): Builder
+    {
+        return $query->where('title', 'like', "%{$s}%");
     }
 }
