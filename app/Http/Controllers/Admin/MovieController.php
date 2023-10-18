@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Genres\getAllGenresAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Movie\MovieListRequest;
 use App\Http\Requests\Admin\Movie\StoreMovieRequest;
@@ -48,10 +49,12 @@ class MovieController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): Response
+    public function create(getAllGenresAction $getAllGenresAction): Response
     {
+        $genres = $getAllGenresAction->handle();
+
         return Inertia::render('Admin/Movies/Create', [
-            'genres' => GenreResource::collection(Genre::all('id', 'name'))->resolve(),
+            'genres' => GenreResource::collection($genres)->resolve(),
         ]);
     }
 
