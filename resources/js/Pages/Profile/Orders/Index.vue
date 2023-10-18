@@ -19,9 +19,13 @@ const { orders } = defineProps<{ orders: IPaginatedOrderWithScreening }>()
               <h2 class="text-lg font-medium text-white pl-5">Мої замовлення</h2>
             </div>
 
-            <div class="mt-6 flex flex-col items-center space-y-4">
+            <div v-if="orders.data.length > 0" class="mt-6 flex flex-col items-center space-y-4">
               <ProfileOrderList :orders="orders.data" />
               <Pagination :links="orders.meta.links" />
+            </div>
+
+            <div v-else class="flex flex-col items-center justify-center w-full h-32">
+              <p class="text-white text-lg">Ви ще не замовляли квитки :[</p>
             </div>
           </div>
         </div>
