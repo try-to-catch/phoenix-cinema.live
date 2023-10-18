@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue'
 
 withDefaults(
   defineProps<{
-    modelValue: string
+    modelValue: string | null
     id: string
     type: string
     labelInner: string
@@ -22,7 +22,9 @@ withDefaults(
   }
 )
 
-defineEmits(['update:modelValue'])
+defineEmits<{
+  'update:modelValue': [value: string | null]
+}>()
 
 const input = ref<HTMLInputElement | null>(null)
 

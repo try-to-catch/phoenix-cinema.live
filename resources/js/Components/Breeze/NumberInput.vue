@@ -24,7 +24,9 @@ const props = withDefaults(
   }
 )
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits<{
+  'update:modelValue': [value: number | null]
+}>()
 
 const input = ref<HTMLInputElement | null>(null)
 
@@ -35,7 +37,7 @@ onMounted(() => {
 })
 
 const inputValue = ref<number | null>(props.modelValue)
-const filterCardNumber = () => {
+const filterValue = () => {
   if (inputValue.value === null) return
 
   if (props.max) {
@@ -52,7 +54,8 @@ const filterCardNumber = () => {
 }
 
 watchEffect(() => {
-  emit('update:modelValue', inputValue)
+  inputValue.value = Number(inputValue.value?.toString().replace(/[^0-9]/g, '')) || null
+  emit('update:modelValue', inputValue.value)
 })
 
 defineExpose({ focus: () => input.value?.focus() })
@@ -63,7 +66,7 @@ defineExpose({ focus: () => input.value?.focus() })
     <input
       :id="id"
       ref="input"
-      v-model="inputValue"
+      v-model.number="inputValue"
       :autocomplete="autocomplete"
       :autofocus="autofocus"
       :class="[styles]"
@@ -73,7 +76,7 @@ defineExpose({ focus: () => input.value?.focus() })
       :required="required"
       class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-white bg-tertiary rounded-lg border-1 border-neutral-800 appearance-none focus:outline-none focus:ring-0 focus:border-secondary peer"
       type="number"
-      @input="filterCardNumber"
+      @input="filterValue"
     />
     <label
       :for="id"

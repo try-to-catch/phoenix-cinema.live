@@ -24,8 +24,8 @@ const filterCardNumber = () => {
   cardNumber.value = formattedCardNumber.value.replace(/\D/g, '') || ''
 }
 
-const updateCardNumber = (value: string) => {
-  cardNumber.value = value
+const updateCardNumber = (value: string | null) => {
+  cardNumber.value = value ?? ''
 }
 
 watchEffect(() => {
