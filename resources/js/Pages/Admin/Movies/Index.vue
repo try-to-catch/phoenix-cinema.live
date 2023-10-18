@@ -45,7 +45,7 @@ onMounted(() => {
 
 <template>
   <Head title="Фільми" />
-  <AdminLayout>
+  <AdminLayout :is-wide="true">
     <div class="py-12">
       <div class="container">
         <div class="space-y-6">

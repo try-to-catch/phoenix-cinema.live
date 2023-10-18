@@ -9,6 +9,10 @@ import Hamburger from '@/Components/Icons/Hamburger.vue'
 import useWindow from '@/composables/window'
 import useRole from '@/composables/role'
 
+withDefaults(defineProps<{ isWide?: boolean }>(), {
+  isWide: false,
+})
+
 const { isAdmin } = useRole()
 
 const showingNavigationDropdown = ref(false)
@@ -40,7 +44,13 @@ const activeRoute = computed(() => {
     <div class="min-h-screen bg-primary relative">
       <nav class="bg-tertiary shadow border-b border-neutral-800 sm:border-none fixed top-0 right-0 left-0 z-20">
         <!-- Primary Navigation Menu -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="px-4 sm:px-6 lg:px-8"
+          :class="{
+            'mx-auto max-w-7xl': !isWide,
+            container: isWide,
+          }"
+        >
           <div class="flex justify-between h-[50px]">
             <div class="flex">
               <!-- Logo -->
