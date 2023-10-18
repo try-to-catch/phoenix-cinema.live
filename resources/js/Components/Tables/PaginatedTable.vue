@@ -6,10 +6,11 @@ import { Link } from '@inertiajs/vue3'
 import type { IPaginationMetaLink } from '@/types/shared/pagination/IPaginationMetaLink'
 import Pagination from '@/Components/Shared/Pagination.vue'
 import PlusIcon from '@/Components/Icons/PlusIcon.vue'
+import PrimaryNavLink from '@/Components/Tables/PrimaryNavLink.vue'
 
 const { items, paginationMetaLinks, routeName, routeItemKey, searchInput } = defineProps<{
   items: ITableItem[]
-  paginationMetaLinks: IPaginationMetaLink
+  paginationMetaLinks: IPaginationMetaLink[]
   routeName: string
   routeItemKey: keyof ITableItem
   createLinkRouteName?: string
@@ -26,7 +27,6 @@ const hasThumbnail = computed(() => {
 })
 
 const itemKeys = computed(() => {
-  //exclude id and slug (if provided)
   return Object.keys(items[0]).filter(key => key !== 'id' && key !== 'slug' && key !== 'thumbnail')
 })
 </script>
@@ -46,19 +46,16 @@ const itemKeys = computed(() => {
             type="text"
             class="block p-2 pl-10 text-sm text-white border border-neutral-800 rounded-lg w-80 bg-primary focus:ring-0 focus:border-secondary placeholder-neutral-300"
             placeholder="Search for items"
-            @input="emit('update:searchInput', $event.target.value)"
+            @input="emit('update:searchInput', ($event.target as HTMLInputElement).value)"
           />
         </div>
       </div>
 
       <div v-if="createLinkRouteName">
-        <Link
-          :href="route(createLinkRouteName)"
-          class="py-2 text-sm text-white border border-neutral-800 rounded-lg px-6 bg-primary text-center flex items-center justify-center hover:border-secondary duration-300"
-        >
-          Сворити
+        <PrimaryNavLink :route-name="createLinkRouteName"
+          >Сворити
           <PlusIcon class="fill-current ml-2" />
-        </Link>
+        </PrimaryNavLink>
       </div>
     </div>
 
