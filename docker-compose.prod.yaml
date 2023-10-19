@@ -3,6 +3,7 @@ version: '3.8'
 services:
   nginx:
     image: nginx:latest
+    restart: always
     volumes:
       - ./:/var/www/phoenix-cinema.live
       - ./_docker/nginx/conf.d/:/etc/nginx/conf.d
