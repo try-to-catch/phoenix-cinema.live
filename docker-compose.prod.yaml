@@ -7,8 +7,11 @@ services:
     volumes:
       - ./:/var/www/phoenix-cinema.live
       - ./_docker/nginx/conf.d/:/etc/nginx/conf.d
+      - /etc/letsencrypt/ssl/fullchain.pem:/etc/nginx/ssl/fullchain.pem
+      - /etc/letsencrypt/ssl/privkey.pem:/etc/nginx/ssl/privkey.pem
     ports:
-      - "80:80"
+      - "${SSL_PORT}:443"
+      - "${HTTP_PORT}:80"
     depends_on:
       - app
     container_name: project_nginx
