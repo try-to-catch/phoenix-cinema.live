@@ -3,21 +3,18 @@ import { onMounted, ref } from 'vue'
 
 withDefaults(
   defineProps<{
-    modelValue: File | null
     id: string
     labelInner: string
+    accept?: string
     styles?: string
     required?: boolean
   }>(),
   {
     styles: '',
+    accept: '*/*',
     required: false,
   }
 )
-
-defineEmits<{
-  'update:modelValue': [value: File | null]
-}>()
 
 const input = ref<HTMLInputElement | null>(null)
 
@@ -35,10 +32,9 @@ onMounted(() => {
       ref="input"
       :class="[styles]"
       :required="required"
-      :value="modelValue"
       type="file"
+      :accept="accept"
       class="peer block px-2.5 py-2 w-full text-sm text-white bg-tertiary rounded-lg border-neutral-800 appearance-none border cursor-pointer focus:outline-none focus:ring-0 focus:border-secondary file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-1 file:border-neutral-800 file:border-solid file:text-sm file:font-semibold file:bg-primary file:text-neutral-200 hover:file:bg-neutral-900 file:duration-300 file:cursor-pointer file:ease-in-out"
-      @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
     />
 
     <label
