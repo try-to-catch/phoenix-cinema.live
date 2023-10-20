@@ -74,8 +74,7 @@ class MovieController extends Controller
         /** @var Movie $movie */
         $movie = Movie::query()->create($newMovie);
         $movie->genres()->attach($genres);
-
-        if (isset($newMovie['banner']['fact'])) {
+        if (isset($banner['fact'])) {
             $this->bannerService->create($movie, $banner);
         }
         DB::commit();
