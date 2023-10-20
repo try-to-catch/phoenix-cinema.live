@@ -66,7 +66,10 @@ const { movie, screenings } = defineProps<{
     <section class="py-8 pb-6 sm:pb-12">
       <div class="container">
         <div class="xl:w-4/5 2xl:w-3/4 xl:mx-auto">
-          <ScreeningList :screenings="screenings" />
+          <ScreeningList v-if="screenings.length" :screenings="screenings" />
+          <div v-else class="">
+            <p class="text-white text-xl">Поки що показів не заплановано, слідкуйте за ононсами :3</p>
+          </div>
         </div>
       </div>
     </section>
