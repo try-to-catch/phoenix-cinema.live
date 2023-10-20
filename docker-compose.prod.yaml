@@ -19,7 +19,7 @@ services:
     image: mysql:8.1
     restart: always
     volumes:
-      - ./tmp/db:/var/lib/mysql
+      - /var/lib/mysql:/var/lib/mysql
     environment:
       MYSQL_DATABASE: phoenix-cinema
       MYSQL_ROOT_PASSWORD: root
