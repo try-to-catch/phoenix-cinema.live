@@ -15,8 +15,8 @@ class MovieBanner extends Model
 
     protected $fillable = [
         'image',
-        'short_description',
-        'fascinating_fact',
+        'description',
+        'fact',
     ];
 
     public function imagePath(): Attribute
