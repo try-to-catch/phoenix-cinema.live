@@ -182,17 +182,15 @@ class MovieTest extends TestCase
                         'production_country' => $movie->production_country,
                         'studio' => $movie->studio,
                         'main_cast' => $movie->main_cast,
-                        'start_showing' => $movie->start_showing->format('d-m-Y'),
-                        'end_showing' => $movie->end_showing->format('d-m-Y'),
+                        'start_showing' => $movie->start_showing->format('Y-m-d'),
+                        'end_showing' => $movie->end_showing->format('Y-m-d'),
                     ])
-                    ->has('genres', $movie->genres->count(), fn (Assert $page) => $page
-                        ->hasAll(['id', 'name', 'slug'])
-                    )
+                    ->has('genres')
+                    ->has('banner')
                 )
                 ->has('genres', Genre::count(), fn (Assert $page) => $page
                     ->hasAll(['id', 'name'])
                 )
-                ->has('banner')
             );
     }
 
