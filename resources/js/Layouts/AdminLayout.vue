@@ -8,6 +8,7 @@ import DefaultDropdown from '@/Layouts/Shared/DefaultDropdown.vue'
 import Hamburger from '@/Components/Icons/Hamburger.vue'
 import useWindow from '@/composables/window'
 import useRole from '@/composables/role'
+import FleshMessage from '@/Components/Shared/FleshMessage.vue'
 
 withDefaults(defineProps<{ isWide?: boolean }>(), {
   isWide: false,
@@ -152,7 +153,8 @@ const activeRoute = computed(() => {
       </nav>
 
       <!-- Page Content -->
-      <main class="pt-[50px]">
+      <main class="pt-[50px] relative">
+        <FleshMessage v-if="$page.props.flash.message" :message="$page.props.flash.message.text" />
         <slot />
       </main>
     </div>
