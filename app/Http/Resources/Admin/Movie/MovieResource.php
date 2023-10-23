@@ -33,7 +33,7 @@ class MovieResource extends JsonResource
             'start_showing' => $this->start_showing->format('Y-m-d'),
             'end_showing' => $this->end_showing->format('Y-m-d'),
             'genres' => $this->genres->pluck('id'),
-            'banner' => $this->banner()->exists() ? MovieBannerResource::make($this->banner)->resolve() : null
+            'banner' => $this->banner()->exists() ? MovieBannerResource::make($this->banner)->resolve() : null,
         ];
     }
 }

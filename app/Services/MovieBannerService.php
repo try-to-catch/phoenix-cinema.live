@@ -31,7 +31,7 @@ class MovieBannerService
 
     public function update(Movie $movie, array $data, int $width = self::DEFAULT_WIDTH, int $height = self::DEFAULT_HEIGHT): Model
     {
-        if (!is_null($data['image'])) {
+        if (! is_null($data['image'])) {
             $data['image'] = $this->imageService->update($data['image'], $movie->banner->image, $width, $height);
         } else {
             $data['image'] = $movie->banner->image;
