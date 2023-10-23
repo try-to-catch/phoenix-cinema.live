@@ -1,5 +1,5 @@
 export interface INewBanner {
-  image: null | File
+  image: null | File | string
   description: string
   fact: string
 }

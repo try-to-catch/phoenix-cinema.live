@@ -6,7 +6,7 @@ export interface INewMovie {
   priority: number | null
   duration_in_minutes: number | null
   age_restriction: string
-  thumbnail: File | null
+  thumbnail: File | null | string
   director: string
   production_country: string
   main_cast: string
