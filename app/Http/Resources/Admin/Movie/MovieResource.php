@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Admin\Movie;
 
-use App\Http\Resources\Admin\Genre\GenreResourceWithSlug;
+use App\Http\Resources\Admin\MovieBanner\MovieBannerResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -30,9 +30,10 @@ class MovieResource extends JsonResource
             'production_country' => $this->production_country,
             'studio' => $this->studio,
             'main_cast' => $this->main_cast,
-            'start_showing' => $this->start_showing->format('d-m-Y'),
-            'end_showing' => $this->end_showing->format('d-m-Y'),
-            'genres' => GenreResourceWithSlug::collection($this->genres)->resolve(),
+            'start_showing' => $this->start_showing->format('Y-m-d'),
+            'end_showing' => $this->end_showing->format('Y-m-d'),
+            'genres' => $this->genres->pluck('id'),
+            'banner' => $this->banner()->exists() ? MovieBannerResource::make($this->banner)->resolve() : null
         ];
     }
 }
