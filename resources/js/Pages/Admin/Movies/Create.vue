@@ -145,7 +145,7 @@ watch(hasBanner, value => {
                       id="production_country"
                       v-model="form.production_country"
                       label-inner="Країна-виробник"
-                      autocomplete="production_country"
+                      autocomplete="country"
                       type="text"
                       required
                     />
