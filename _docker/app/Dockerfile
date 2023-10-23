@@ -45,14 +45,15 @@ RUN echo "alias a='artisan'" >> /root/.bashrc
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs
 
-RUN composer install \
-      --no-interaction \
-      --no-plugins \
-      --no-suggest \
-      --no-scripts \
-      --no-autoloader \
-      --prefer-dist
+RUN npm install
 
+RUN apt-get update; \
+    apt-get install -y libmagickwand-dev; \
+    pecl install imagick; \
+    docker-php-ext-enable imagick;
+
+RUN composer install
+RUN php artisan migrate
 
 RUN composer dump-autoload  --no-scripts --optimize && \
     chown -R root:www-data /var/www && \

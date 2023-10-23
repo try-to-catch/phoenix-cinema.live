@@ -5,7 +5,7 @@ services:
     image: nginx:latest
     volumes:
       - ./:/var/www/phoenix-cinema.live
-      - ./_docker/nginx/conf.d/:/etc/nginx/conf.d
+      - ./_docker/nginx/conf.d.prod/:/etc/nginx/conf.d
       - /etc/letsencrypt/ssl/fullchain.pem:/etc/nginx/ssl/fullchain.pem
       - /etc/letsencrypt/ssl/privkey.pem:/etc/nginx/ssl/privkey.pem
     ports:

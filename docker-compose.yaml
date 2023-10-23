@@ -16,9 +16,9 @@ services:
     image: mysql:8.1
     restart: always
     volumes:
-      - /var/lib/mysql:/var/lib/mysql
+      - ./tmp/mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: phoenix-cinema
+      MYSQL_DATABASE: phoenix
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3306:3306"
