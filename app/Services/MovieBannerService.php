@@ -31,12 +31,16 @@ class MovieBannerService
 
     public function update(Movie $movie, array $data, int $width = self::DEFAULT_WIDTH, int $height = self::DEFAULT_HEIGHT): Model
     {
-        $data['image'] = $this->imageService->update($data['image'], $movie->banner->image, $width, $height);
+        if (!is_null($data['image'])) {
+            $data['image'] = $this->imageService->update($data['image'], $movie->banner->image, $width, $height);
+        } else {
+            $data['image'] = $movie->banner->image;
+        }
 
-        return $movie->banner->update([
+        return $movie->banner()->updateOrCreate(['id' => $movie->banner->id], [
             'image' => $data['image'],
-            'description' => $data['description'],
-            'fact' => $data['fact'],
+            'description' => $data['description'] ?? $movie->banner->description,
+            'fact' => $data['fact'] ?? $movie->banner->fact,
         ]);
     }
 

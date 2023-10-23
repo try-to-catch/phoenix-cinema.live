@@ -10,7 +10,6 @@ use App\Http\Requests\Admin\Movie\UpdateMovieRequest;
 use App\Http\Resources\Admin\Genre\GenreResource;
 use App\Http\Resources\Admin\Movie\MovieListResource;
 use App\Http\Resources\Admin\Movie\MovieResource;
-use App\Http\Resources\Admin\MovieBanner\MovieBannerResource;
 use App\Models\Genre;
 use App\Models\Movie;
 use App\Services\ImageService;
@@ -100,7 +99,6 @@ class MovieController extends Controller
         return Inertia::render('Admin/Movies/Edit', [
             'movie' => MovieResource::make($movie)->resolve(),
             'genres' => GenreResource::collection(Genre::all('id', 'name'))->resolve(),
-            'banner' => $movie->banner()->exists() ? MovieBannerResource::make($movie->banner)->resolve() : null,
         ]);
     }
 
@@ -111,7 +109,12 @@ class MovieController extends Controller
     {
         $dataForUpdate = $request->validated();
 
-        $dataForUpdate['thumbnail'] = $this->imageService->update($dataForUpdate['thumbnail'], $movie->thumbnail);
+        if (!is_null($dataForUpdate['thumbnail'])) {
+            $dataForUpdate['thumbnail'] = $this->imageService->update($dataForUpdate['thumbnail'], $movie->thumbnail);
+        } else {
+            $dataForUpdate['thumbnail'] = $movie->thumbnail;
+        }
+
         $genres = $dataForUpdate['genres'];
         $banner = $dataForUpdate['banner'] ?? null;
         unset($dataForUpdate['genres'], $dataForUpdate['banner']);
@@ -120,12 +123,12 @@ class MovieController extends Controller
             $movie->update($dataForUpdate);
             $movie->genres()->sync($genres);
 
-            if (isset($banner['fact'])) {
-                $this->bannerService->create($movie, $banner);
+            if (!is_null($banner)) {
+                $this->bannerService->update($movie, $banner);
             }
         });
 
-        return to_route('admin.movies.show', $movie);
+        return to_route('admin.movies.edit', $movie);
     }
 
     /**
