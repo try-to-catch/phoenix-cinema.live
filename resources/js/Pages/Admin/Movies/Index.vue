@@ -22,12 +22,11 @@ const formattedMovies = computed(() => {
 
 const searchInput = ref('')
 
-const filterProducts = () => {
+const searchProducts = () => {
   const oldSearchInput = searchInput.value
 
   setTimeout(() => {
     if (searchInput.value === oldSearchInput) {
-      console.log('searchInput.value', oldSearchInput)
       router.reload({
         data: {
           s: oldSearchInput,
@@ -50,15 +49,15 @@ onMounted(() => {
       <div class="container">
         <div class="space-y-6">
           <div class="p-4 sm:p-8 bg-tertiary border border-neutral-800 shadow sm:rounded-lg">
-            <h2 class="text-lg font-medium text-white pb-4">Фільми ({{ movies.meta.total }}){{ searchInput }}</h2>
+            <h2 class="text-lg font-medium text-white pb-4">Фільми ({{ movies.meta.total }})</h2>
             <PaginatedTable
               v-model:search-input="searchInput"
               :items="formattedMovies"
               route-item-key="slug"
-              route-name="admin.movies.edit"
+              edit-route-name="admin.movies.edit"
               :pagination-meta-links="movies.meta.links"
               create-link-route-name="admin.movies.create"
-              @update:search-input="filterProducts"
+              @update:search-input="searchProducts"
             />
           </div>
         </div>
