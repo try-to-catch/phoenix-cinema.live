@@ -32,4 +32,9 @@ class HallTemplate extends Model
     {
         return $query->where('is_available', true);
     }
+
+    public function scopeSearched(Builder $query, string $s): Builder
+    {
+        return $query->where('address', 'like', "%{$s}%");
+    }
 }
