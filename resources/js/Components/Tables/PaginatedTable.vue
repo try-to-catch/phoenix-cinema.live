@@ -8,10 +8,10 @@ import Pagination from '@/Components/Shared/Pagination.vue'
 import PlusIcon from '@/Components/Icons/PlusIcon.vue'
 import PrimaryNavLink from '@/Components/Tables/PrimaryNavLink.vue'
 
-const { items, paginationMetaLinks, routeName, routeItemKey, searchInput } = defineProps<{
+const { items, paginationMetaLinks, editRouteName, routeItemKey, searchInput } = defineProps<{
   items: ITableItem[]
   paginationMetaLinks: IPaginationMetaLink[]
-  routeName: string
+  editRouteName: string
   routeItemKey: keyof ITableItem
   createLinkRouteName?: string
   searchInput?: string
@@ -80,8 +80,8 @@ const itemKeys = computed(() => {
           </td>
           <td v-for="(key, index) in itemKeys" :key="index" class="px-6 py-4">{{ item[key] }}</td>
           <td class="px-6 py-4">
-            <Link :href="route(routeName, item[routeItemKey])" class="font-medium text-secondary hover:underline"
-              >Edit
+            <Link :href="route(editRouteName, item[routeItemKey])" class="font-medium text-secondary hover:underline">
+              Edit
             </Link>
           </td>
         </tr>
