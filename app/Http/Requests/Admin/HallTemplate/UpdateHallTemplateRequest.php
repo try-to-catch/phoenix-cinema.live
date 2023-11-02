@@ -20,10 +20,9 @@ class UpdateHallTemplateRequest extends FormRequest
             'number' => ['required', 'integer', 'min:1'],
             'address' => ['required', 'string', 'max:255'],
             'is_available' => ['required', 'boolean'],
-            'updated_seats' => ['required', 'array'],
-            'updated_seats.*' => ['nullable', 'array'],
-            'updated_seats.*.id' => ['required', 'string'],
-            'updated_seats.*.type' => ['required', 'string', Rule::in(Seat::SEAT_TYPES)],
+            'seats' => ['required', 'array'],
+            'seats.*' => ['nullable', 'array'],
+            'seats.*.*.type' => ['required', 'string', Rule::in(Seat::SEAT_TYPES)],
         ];
     }
 }
