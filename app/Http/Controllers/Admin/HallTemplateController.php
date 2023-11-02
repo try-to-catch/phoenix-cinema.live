@@ -3,15 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Actions\Seat\StoreSeatsAction;
-use App\Actions\Seat\UpdateSeatsAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\HallTemplate\HallTemplateListRequest;
 use App\Http\Requests\Admin\HallTemplate\StoreHallTemplateRequest;
 use App\Http\Requests\Admin\HallTemplate\UpdateHallTemplateRequest;
 use App\Http\Resources\Admin\HallTemplate\HallTemplateListResource;
 use App\Http\Resources\Admin\HallTemplate\HallTemplateWithSeatsResource;
 use App\Models\HallTemplate;
-use App\Models\Seat;
+use App\Services\FlashMessageService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -20,12 +21,21 @@ class HallTemplateController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(HallTemplateListRequest $request): Response
     {
-        $hall_templates = HallTemplate::query()->withCount('seats')->get();
+        $data = $request->validated();
+        $searchQuery = $data['s'] ?? '';
+
+        $hall_templates = HallTemplate::query()
+            ->searched($searchQuery)
+            ->select(['id', 'number', 'address', 'is_available'])
+            ->withCount('seats')
+            ->latest('updated_at')
+            ->paginate(10)
+            ->onEachSide(1);
 
         return Inertia::render('Admin/HallTemplates/Index', [
-            'hall_templates' => HallTemplateListResource::collection($hall_templates),
+            'hallTemplates' => HallTemplateListResource::collection($hall_templates),
         ]);
     }
 
@@ -34,10 +44,7 @@ class HallTemplateController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Admin/HallTemplates/Create',
-            [
-                'seat_types' => Seat::SEAT_TYPES,
-            ]);
+        return Inertia::render('Admin/HallTemplates/Create');
     }
 
     /**
@@ -60,6 +67,10 @@ class HallTemplateController extends Controller
      */
     public function show(HallTemplate $hall_template): RedirectResponse
     {
+        if ($message = session('message')) {
+            session()->flash('message', $message);
+        }
+
         return to_route('admin.hall_templates.edit', $hall_template);
     }
 
@@ -69,21 +80,31 @@ class HallTemplateController extends Controller
     public function edit(HallTemplate $hall_template): Response
     {
         return Inertia::render('Admin/HallTemplates/Edit', [
-            'hall_template' => HallTemplateWithSeatsResource::make($hall_template->load('seats'))->resolve(),
+            'hallTemplate' => HallTemplateWithSeatsResource::make($hall_template->load('seats'))->resolve(),
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateHallTemplateRequest $request, HallTemplate $hall_template, UpdateSeatsAction $updateSeats): RedirectResponse
-    {
+    public function update(
+        UpdateHallTemplateRequest $request,
+        HallTemplate $hall_template,
+        StoreSeatsAction $storeSeatsAction,
+        FlashMessageService $flashMessageService
+    ): RedirectResponse {
         $updatedHall = $request->validated();
-        $seats = $updatedHall['updated_seats'];
-        unset($updatedHall['updated_seats']);
+        $seats = $updatedHall['seats'];
+        unset($updatedHall['seats']);
 
+        DB::beginTransaction();
         $hall_template->update($updatedHall);
-        $updateSeats->handle($hall_template, $seats);
+
+        $hall_template->seats()->delete();
+        $storeSeatsAction->handle($hall_template, $seats);
+        DB::commit();
+
+        $flashMessageService->success('Шаблон залу успішно оновлено.');
 
         return to_route('admin.hall_templates.show', $hall_template);
     }

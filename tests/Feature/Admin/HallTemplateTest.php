@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Http\Resources\Admin\Seat\SeatResource;
 use App\Models\HallTemplate;
 use App\Models\Role;
 use App\Models\Seat;
@@ -33,7 +34,6 @@ class HallTemplateTest extends TestCase
             'address' => 'Test Address',
             'number' => 1,
             'is_available' => true,
-            'is_preset' => true,
             'seats' => [
                 [
                     ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'], ['type' => 'standard'],
@@ -66,7 +66,7 @@ class HallTemplateTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/HallTemplates/Index')
-                ->has('hall_templates', fn (Assert $page) => $page
+                ->has('hallTemplates', fn (Assert $page) => $page
                     ->has('data', 1, fn (Assert $page) => $page
                         ->whereAll([
                             'id' => $template->id,
@@ -75,7 +75,7 @@ class HallTemplateTest extends TestCase
                             'is_available' => $template->is_available,
                             'seats_count' => $template->seats()->count(),
                         ])
-                    )
+                    )->hasAll(['links', 'meta'])
                 )
             );
     }
@@ -88,7 +88,6 @@ class HallTemplateTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/HallTemplates/Create')
-                ->whereContains('seat_types', Seat::SEAT_TYPES)
             );
     }
 
@@ -139,7 +138,7 @@ class HallTemplateTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Admin/HallTemplates/Edit')
-                ->has('hall_template', fn (Assert $page) => $page
+                ->has('hallTemplate', fn (Assert $page) => $page
                     ->whereAll([
                         'id' => $template->id,
                         'address' => $template->address,
@@ -163,7 +162,10 @@ class HallTemplateTest extends TestCase
         $template->seats[0]->type = $template->seats[0]->type !== 'premium' ? 'premium' : 'standard';
 
         $this->actingAs($this->admin)
-            ->patch('/admin/hall-templates/'.$template->id, [...$this->getNewTemplate(), 'updated_seats' => $template->seats->toArray()])
+            ->put('/admin/hall-templates/'.$template->id, [
+                ...$this->getNewTemplate(),
+                'seats' => SeatResource::make($template->seats)->resolve(),
+            ])
             ->assertRedirect('/admin/hall-templates/'.$template->id);
 
         $this->assertDatabaseHas('hall_templates', [
@@ -172,7 +174,7 @@ class HallTemplateTest extends TestCase
             'is_available' => true,
         ]);
 
-        $seat = $template->seats[0]->only(['id', 'type', 'row_number', 'seat_number']);
+        $seat = $template->seats[0]->only(['type', 'row_number', 'seat_number']);
         $seat['type'] = array_search($seat['type'], Seat::SEAT_TYPES);
         $this->assertDatabaseHas('seats', $seat);
     }
@@ -185,9 +187,12 @@ class HallTemplateTest extends TestCase
         $template->seats[0]->type = 'VIP'; //There is no such a type
 
         $this->actingAs($this->admin)
-            ->patch('/admin/hall-templates/'.$template->id, [...$template->toArray(), 'updated_seats' => $template->seats->toArray()])
+            ->patch('/admin/hall-templates/'.$template->id, [
+                ...$template->toArray(),
+                'seats' => SeatResource::make($template->seats)->resolve(),
+            ])
             ->assertStatus(302)
-            ->assertSessionHasErrors(['number', 'updated_seats.*.type']);
+            ->assertSessionHasErrors(['number', 'seats.*.*.type']);
     }
 
     public function test_hall_can_be_deleted_by_admin(): void
