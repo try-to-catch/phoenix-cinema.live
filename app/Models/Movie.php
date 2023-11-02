@@ -117,7 +117,7 @@ class Movie extends Model
         return $query->whereDoesntHave('banner');
     }
 
-    public function scopeFiltered(Builder $query, string $s): Builder
+    public function scopeSearched(Builder $query, string $s): Builder
     {
         return $query->where('title', 'like', "%{$s}%");
     }

@@ -33,7 +33,7 @@ class MovieController extends Controller
         $searchQuery = $data['s'] ?? '';
 
         $movies = Movie::with('genres')
-            ->filtered($searchQuery)
+            ->searched($searchQuery)
             ->select(['id', 'title', 'slug', 'thumbnail', 'age_restriction', 'director', 'start_showing', 'end_showing'])
             ->latest('updated_at')
             ->paginate(10)
@@ -85,6 +85,10 @@ class MovieController extends Controller
      */
     public function show(Movie $movie): RedirectResponse
     {
+        if ($message = session('message')) {
+            session()->flash('message', $message);
+        }
+
         return to_route('admin.movies.edit', $movie);
     }
 
@@ -128,7 +132,7 @@ class MovieController extends Controller
             }
         });
 
-        return to_route('admin.movies.edit', $movie);
+        return to_route('admin.movies.show', $movie);
     }
 
     /**
