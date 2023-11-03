@@ -6,11 +6,16 @@ RUN apt-get update && apt-get install -y \
       libpng-dev \
       libzip-dev \
       zip unzip \
+      libmagickwand-dev \
+      ghostscript \
       git && \
+      pecl install imagick && \
+      docker-php-ext-enable imagick && \
       docker-php-ext-install pdo_mysql && \
       docker-php-ext-install bcmath && \
       docker-php-ext-install gd && \
       docker-php-ext-install zip && \
+      apt-get purge -y ibmagickwand-dev && \
       apt-get clean && \
       rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -46,11 +51,6 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs
 
 RUN npm install
-
-RUN apt-get update; \
-    apt-get install -y libmagickwand-dev; \
-    pecl install imagick; \
-    docker-php-ext-enable imagick;
 
 RUN composer install
 RUN php artisan migrate
