@@ -21,8 +21,8 @@ RUN apt-get update && apt-get install -y \
       apt-get clean && \
       rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-CMD apt install imagemagick php8.2-Imagick
-docker-php-ext-enable imagick
+RUN apt install imagemagick php8.2-Imagick && \
+  docker-php-ext-enable imagick
 COPY ./_docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
 
 
