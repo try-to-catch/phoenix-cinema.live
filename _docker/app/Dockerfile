@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.1-fpm
 
 RUN apt-get update && apt-get install -y \
       apt-utils \
@@ -6,23 +6,15 @@ RUN apt-get update && apt-get install -y \
       libpng-dev \
       libzip-dev \
       zip unzip \
-      imagemagick \
-      imagemagick-doc \
-      libmagickwand-dev \
-      ghostscript \
       git && \
-      pecl install imagick && \
-      docker-php-ext-enable imagick && \
       docker-php-ext-install pdo_mysql && \
       docker-php-ext-install bcmath && \
       docker-php-ext-install gd && \
       docker-php-ext-install zip && \
-      apt-get purge -y ibmagickwand-dev && \
       apt-get clean && \
       rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN apt install imagemagick php8.2-Imagick && \
-  docker-php-ext-enable imagick
+
 COPY ./_docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
 
 
@@ -54,6 +46,12 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
 RUN apt-get install -y nodejs
 
 RUN npm install
+
+RUN apt-get update && apt-get install -y libmagickwand-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /usr/src/php/ext/imagick; \
+    curl -fsSL https://github.com/Imagick/imagick/archive/06116aa24b76edaf6b1693198f79e6c295eda8a9.tar.gz | tar xvz -C "/usr/src/php/ext/imagick" --strip 1; \
+    docker-php-ext-install imagick;
 
 RUN composer install
 RUN php artisan migrate
