@@ -69,7 +69,12 @@ const activeRoute = computed(() => {
                 <NavLink :active="activeRoute.startsWith('admin.movies')" :href="route('admin.movies.index')">
                   Фільми
                 </NavLink>
-                <NavLink :active="activeRoute.startsWith('admin.screenings')" :href="route('admin.screenings.index')">
+                <NavLink
+                  :active="
+                    activeRoute.startsWith('admin.screenings') || activeRoute.startsWith('admin.movie_screenings')
+                  "
+                  :href="route('admin.movie_screenings.index')"
+                >
                   Покази
                 </NavLink>
                 <NavLink :active="activeRoute.startsWith('admin.halls')" :href="route('admin.hall_templates.index')">
@@ -119,7 +124,7 @@ const activeRoute = computed(() => {
             </ResponsiveNavLink>
             <ResponsiveNavLink
               :active="activeRoute.startsWith('admin.screenings')"
-              :href="route('admin.screenings.index')"
+              :href="route('admin.movie_screenings.index')"
             >
               Покази
             </ResponsiveNavLink>
