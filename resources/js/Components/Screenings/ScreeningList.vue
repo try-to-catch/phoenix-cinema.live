@@ -4,9 +4,13 @@ import { ref } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import type { IOrganizedScreening } from '@/types/screenings/IOrganizedScreening'
 
-const { screenings } = defineProps<{
-  screenings: Readonly<IOrganizedScreening>[]
-}>()
+const { screenings, linkName } = withDefaults(
+  defineProps<{
+    screenings: Readonly<IOrganizedScreening>[]
+    linkName?: string
+  }>(),
+  { linkName: 'screenings.show' }
+)
 
 const sliderRef = ref<HTMLUListElement | null>(null)
 
@@ -102,10 +106,7 @@ const updateActiveScreeningDay = (id: number) => {
           :key="screening.id"
           class="text-center bg-tertiary text-secondary font-medium rounded-lg border border-secondary hover-bg-secondary-75 duration-300 md:text-base text-sm"
         >
-          <Link
-            :href="route('screenings.show', { screening: screening.id })"
-            class="w-full h-full block md:py-2 py-1.5"
-          >
+          <Link :href="route(linkName, { screening: screening.id })" class="w-full h-full block md:py-2 py-1.5">
             {{ screening.time }}
           </Link>
         </li>
