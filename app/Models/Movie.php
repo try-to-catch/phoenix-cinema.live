@@ -20,6 +20,7 @@ class Movie extends Model
 
     protected $casts = [
         'release_year' => 'integer',
+        'duration_in_minutes' => 'integer',
         'start_showing' => 'date',
         'end_showing' => 'date',
     ];
