@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Actions\Hall\CreateHallAction;
+use App\Actions\Movies\GetMoviesAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Screening\StoreScreeningRequest;
 use App\Http\Requests\Admin\Screening\UpdateScreeningRequest;
 use App\Http\Resources\Admin\HallTemplate\HallTemplateMinResource;
 use App\Http\Resources\Admin\Movie\MovieMinResource;
 use App\Http\Resources\Admin\Screening\ScreeningItemResource;
-use App\Http\Resources\Admin\Screening\ScreeningListResource;
 use App\Models\HallTemplate;
-use App\Models\Movie;
 use App\Models\Screening;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -20,29 +19,14 @@ use Inertia\Response;
 class ScreeningController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index(): Response
-    {
-        $screenings = Screening::query()
-            ->select('id', 'movie_id', 'start_time', 'end_time')
-            ->with('movie:id,slug,title,thumbnail,duration_in_minutes', 'hall:id,address,number,screening_id')
-            ->latest('start_time')
-            ->paginate(10);
-
-        return Inertia::render('Admin/Screenings/Index', [
-            'screenings' => ScreeningListResource::collection($screenings),
-        ]);
-    }
-
-    /**
      * Show the form for creating a new resource.
      */
-    public function create(): Response
+    public function create(GetMoviesAction $getMoviesAction): Response
     {
+        $movies = $getMoviesAction->handle(['id','title']);
         return Inertia::render('Admin/Screenings/Create', [
-            'movies' => MovieMinResource::collection(Movie::missingCompleted()->get(['id', 'title']))->resolve(),
-            'hall_templates' => HallTemplateMinResource::collection(
+            'movies' => MovieMinResource::collection($movies)->resolve(),
+            'hallTemplates' => HallTemplateMinResource::collection(
                 HallTemplate::available()->get(['id', 'address', 'number'])
             )->resolve(),
         ]);
@@ -102,7 +86,7 @@ class ScreeningController extends Controller
     {
         $screening->delete();
 
-        return to_route('admin.screenings.index');
+        return to_route('admin.movie_screenings.index');
 
     }
 }
