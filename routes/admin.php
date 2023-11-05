@@ -3,10 +3,16 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HallTemplateController;
 use App\Http\Controllers\Admin\MovieController;
+use App\Http\Controllers\Admin\MovieScreeningsController;
 use App\Http\Controllers\Admin\ScreeningController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', DashboardController::class)->name('dashboard');
+
+Route::controller(MovieScreeningsController::class)->name('movie_screenings.')->group(function (){
+    Route::get('/movies/screenings', 'index')->name('index');
+    Route::get('/movies/{movie}/screenings', 'show')->name('show');
+});
 
 //Movie model use getRouteKeyName() method to get movie by slug
 Route::resource('movies', MovieController::class);
@@ -22,4 +28,4 @@ Route::resource('hall-templates', HallTemplateController::class)
         'destroy' => 'hall_templates.destroy',
     ]);
 
-Route::resource('screenings', ScreeningController::class);
+Route::resource('screenings', ScreeningController::class)->except('index');
