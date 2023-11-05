@@ -28,6 +28,8 @@ COPY routes             /var/www/routes
 COPY storage            /var/www/storage
 COPY artisan            /var/www/artisan
 COPY package.json       /var/www/package.json
+COPY package-lock.json  /var/www/package-lock.json
+COPY postcss.config.js  /var/www/postcss.config.js
 COPY vite.config.js     /var/www/vite.config.js
 COPY tailwind.config.js /var/www/tailwind.config.js
 COPY tsconfig.json      /var/www/tsconfig.json

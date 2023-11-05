@@ -8,6 +8,7 @@ services:
       - ./_docker/nginx/conf.d/:/etc/nginx/conf.d
     ports:
       - "8876:80"
+      - "5173:5173"
     depends_on:
       - app
     container_name: project_nginx
@@ -16,7 +17,7 @@ services:
     image: mysql:8.1
     restart: always
     volumes:
-      - ./tmp/mysql:/var/lib/mysql
+      - ./tmp/db:/var/lib/mysql
     environment:
       MYSQL_DATABASE: phoenix
       MYSQL_ROOT_PASSWORD: root
