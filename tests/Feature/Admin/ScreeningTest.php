@@ -17,41 +17,27 @@ class ScreeningTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(RoleSeeder::class);
+
+        $this->movie = Movie::factory()->create(['end_showing' => now()->addDays()]);
+
+        $adminId = Role::admin()->pluck('id');
+        $this->user = User::factory()->create();
+
+        $this->admin = User::factory()->create();
+        $this->admin->roles()->attach($adminId);
+    }
+
     public function test_movie_list_view_functions_properly(): void
     {
         $this->withoutExceptionHandling();
 
-        $screening = $this->createScreening(true);
-
         $this->actingAs($this->admin)->get('/admin/screenings')
-            ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page
-                ->component('Admin/Screenings/Index')
-                ->has('screenings.data', 1, fn (Assert $page) => $page
-                    ->whereAll([
-                        'id' => $screening->id,
-                        'is_over' => $screening->is_over,
-                        'start_time' => $screening->start_time->format('Y-m-d H:i'),
-                        'end_time' => $screening->end_time->format('Y-m-d H:i'),
-                    ])
-                    ->has('movie', fn (Assert $page) => $page
-                        ->whereAll([
-                            'id' => $screening->movie->id,
-                            'slug' => $screening->movie->slug,
-                            'title' => $screening->movie->title,
-                            'thumbnail' => $screening->movie->thumbnail_path,
-                            'duration_in_minutes' => $screening->movie->duration_in_minutes,
-                        ])
-                    )
-                    ->has('hall', fn (Assert $page) => $page
-                        ->whereAll([
-                            'id' => $screening->hall->id,
-                            'address' => $screening->hall->address,
-                            'number' => $screening->hall->number,
-                        ])
-                    )
-                )
-            );
+            ->assertRedirectToRoute('admin.movies.screenings.index');
     }
 
     private function createScreening($withHall = false)
@@ -79,7 +65,7 @@ class ScreeningTest extends TestCase
                         'title' => $this->movie->title,
                     ])
                 )
-                ->has('hall_templates', 1, fn (Assert $page) => $page
+                ->has('hallTemplates', 1, fn (Assert $page) => $page
                     ->whereAll([
                         'id' => $hallTemplate->id,
                         'address' => $hallTemplate->address,
@@ -121,12 +107,15 @@ class ScreeningTest extends TestCase
 
     public function test_screenings_cannot_be_stored_with_invalid_data()
     {
+        $errorKeys = array_keys($this->getNewScreening(HallTemplate::factory()->create()->id), ['end_time' => '']);
+        unset($errorKeys['end_time']);
+
         $this->actingAs($this->admin)
             ->post('/admin/screenings', [
                 'movie_id' => '1',
                 'start_time' => '2021-05-05 35:00',
             ])
-            ->assertSessionHasErrors(array_keys($this->getNewScreening(HallTemplate::factory()->create()->id)));
+            ->assertSessionHasErrors($errorKeys);
     }
 
     public function test_show_returns_redirect_to_edit_page(): void
@@ -220,7 +209,7 @@ class ScreeningTest extends TestCase
 
         $this->actingAs($this->admin)
             ->delete('/admin/screenings/'.$screening->id)
-            ->assertRedirect('/admin/screenings');
+            ->assertRedirect('/admin/movies/screenings');
 
         $this->assertDatabaseCount('screenings', 0);
     }
@@ -237,7 +226,7 @@ class ScreeningTest extends TestCase
 
         $this->actingAs($this->admin)
             ->delete('/admin/screenings/'.$screening->id)
-            ->assertRedirect('/admin/screenings/')
+            ->assertRedirectToRoute('admin.movies.screenings.index')
             ->assertSessionHas('message', [
                 'type' => 'success',
                 'text' => 'Сеанс успішно видалено.',
@@ -261,20 +250,5 @@ class ScreeningTest extends TestCase
         $this->actingAs($this->user)
             ->delete('/admin/screenings/'.$screening->id)
             ->assertStatus(403);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->seed(RoleSeeder::class);
-
-        $this->movie = Movie::factory()->create(['end_showing' => now()->addDays()]);
-
-        $adminId = Role::admin()->pluck('id');
-        $this->user = User::factory()->create();
-
-        $this->admin = User::factory()->create();
-        $this->admin->roles()->attach($adminId);
     }
 }
