@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Actions\Genres\getAllGenresAction;
+use App\Actions\Session\SaveFlashMessageAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Movie\MovieListRequest;
 use App\Http\Requests\Admin\Movie\StoreMovieRequest;
@@ -83,11 +84,9 @@ class MovieController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Movie $movie): RedirectResponse
+    public function show(Movie $movie, SaveFlashMessageAction $saveFlashMessageAction): RedirectResponse
     {
-        if ($message = session('message')) {
-            session()->flash('message', $message);
-        }
+        $saveFlashMessageAction->handle();
 
         return to_route('admin.movies.edit', $movie);
     }

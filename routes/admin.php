@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', DashboardController::class)->name('dashboard');
 
-Route::controller(MovieScreeningsController::class)->name('movie_screenings.')->group(function (){
+Route::controller(MovieScreeningsController::class)->name('movies.screenings.')->group(function () {
     Route::get('/movies/screenings', 'index')->name('index');
     Route::get('/movies/{movie}/screenings', 'show')->name('show');
 });
@@ -28,4 +28,4 @@ Route::resource('hall-templates', HallTemplateController::class)
         'destroy' => 'hall_templates.destroy',
     ]);
 
-Route::resource('screenings', ScreeningController::class)->except('index');
+Route::resource('screenings', ScreeningController::class);

@@ -12,6 +12,7 @@ class GetMoviesAction
     {
         $safeCount = $count ?? 'all';
         $parsedColumns = implode(',', $columns);
+
         return Cache::remember("movies:$parsedColumns:$safeCount", 60 * 60,
             function () use ($columns, $count, $orderCol) {
                 $query = Movie::missingCompleted()->orderBy($orderCol);

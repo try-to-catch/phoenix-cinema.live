@@ -22,7 +22,7 @@ class MovieScreeningsController extends Controller
             ->latest('updated_at')
             ->paginate(10);
 
-        return Inertia::render('Admin/MovieScreenings/Index', [
+        return Inertia::render('Admin/Movies/Screenings/Index', [
             'movieScreenings' => MovieScreeningsListResource::collection($screenings),
         ]);
     }
@@ -30,7 +30,8 @@ class MovieScreeningsController extends Controller
     public function show(Movie $movie, GetOrganizedMovieScreeningsAction $getOrganizedMovieScreeningsAction): Response
     {
         $screenings = $getOrganizedMovieScreeningsAction->handle($movie);
-        return Inertia::render('Admin/MovieScreenings/Show', [
+
+        return Inertia::render('Admin/Movies/Screenings/Show', [
             'screenings' => OrganizedScreeningListResource::collection($screenings)->resolve(),
         ]);
     }

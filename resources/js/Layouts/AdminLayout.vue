@@ -66,18 +66,24 @@ const activeRoute = computed(() => {
                 <NavLink :active="activeRoute.startsWith('admin.dashboard')" :href="route('admin.dashboard')">
                   Dashboard
                 </NavLink>
-                <NavLink :active="activeRoute.startsWith('admin.movies')" :href="route('admin.movies.index')">
+                <NavLink
+                  :active="activeRoute.startsWith('admin.movies') && !activeRoute.includes('screenings')"
+                  :href="route('admin.movies.index')"
+                >
                   Фільми
                 </NavLink>
                 <NavLink
                   :active="
-                    activeRoute.startsWith('admin.screenings') || activeRoute.startsWith('admin.movie_screenings')
+                    activeRoute.startsWith('admin.screenings') || activeRoute.startsWith('admin.movies.screenings')
                   "
-                  :href="route('admin.movie_screenings.index')"
+                  :href="route('admin.movies.screenings.index')"
                 >
                   Покази
                 </NavLink>
-                <NavLink :active="activeRoute.startsWith('admin.halls')" :href="route('admin.hall_templates.index')">
+                <NavLink
+                  :active="activeRoute.startsWith('admin.hall_templates')"
+                  :href="route('admin.hall_templates.index')"
+                >
                   Зали
                 </NavLink>
                 <NavLink v-if="isAdmin" :active="activeRoute.startsWith('admin.personnel')" href="#">
@@ -119,17 +125,20 @@ const activeRoute = computed(() => {
             <ResponsiveNavLink :active="activeRoute.startsWith('admin.dashboard')" :href="route('admin.dashboard')">
               Dashboard
             </ResponsiveNavLink>
-            <ResponsiveNavLink :active="activeRoute.startsWith('admin.movies')" :href="route('admin.movies.index')">
+            <ResponsiveNavLink
+              :active="activeRoute.startsWith('admin.movies') && !activeRoute.includes('screenings')"
+              :href="route('admin.movies.index')"
+            >
               Фільми
             </ResponsiveNavLink>
             <ResponsiveNavLink
-              :active="activeRoute.startsWith('admin.screenings')"
-              :href="route('admin.movie_screenings.index')"
+              :active="activeRoute.startsWith('admin.screenings') || activeRoute.startsWith('admin.movies.screenings')"
+              :href="route('admin.movies.screenings.index')"
             >
               Покази
             </ResponsiveNavLink>
             <ResponsiveNavLink
-              :active="activeRoute.startsWith('admin.halls')"
+              :active="activeRoute.startsWith('admin.hall_templates')"
               :href="route('admin.hall_templates.index')"
             >
               Зали

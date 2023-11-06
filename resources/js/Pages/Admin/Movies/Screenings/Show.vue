@@ -17,7 +17,7 @@ const { screenings } = defineProps<{ screenings: IOrganizedScreening[] }>()
           <div class="p-4 sm:p-8 bg-tertiary border border-neutral-800 shadow sm:rounded-lg">
             <div class="flex justify-between items-center">
               <h2 class="sm:text-lg text-base font-medium text-white">Список показів</h2>
-              <PrimaryNavLink route-name="admin.movie_screenings.index">Повернутися</PrimaryNavLink>
+              <PrimaryNavLink route-name="admin.movies.screenings.index">Повернутися</PrimaryNavLink>
             </div>
             <section class="py-8 pb-6 sm:pb-12">
               <div class="lg:container">

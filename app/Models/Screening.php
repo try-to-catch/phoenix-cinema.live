@@ -18,7 +18,6 @@ class Screening extends Model
 
     protected $fillable = [
         'movie_id',
-        'hall_id',
         'start_time',
         'end_time',
         'standard_seat_price',

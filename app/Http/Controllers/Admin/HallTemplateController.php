@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Actions\Seat\StoreSeatsAction;
+use App\Actions\Session\SaveFlashMessageAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\HallTemplate\HallTemplateListRequest;
 use App\Http\Requests\Admin\HallTemplate\StoreHallTemplateRequest;
@@ -65,11 +66,9 @@ class HallTemplateController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(HallTemplate $hall_template): RedirectResponse
+    public function show(HallTemplate $hall_template, SaveFlashMessageAction $saveFlashMessageAction): RedirectResponse
     {
-        if ($message = session('message')) {
-            session()->flash('message', $message);
-        }
+        $saveFlashMessageAction->handle();
 
         return to_route('admin.hall_templates.edit', $hall_template);
     }
