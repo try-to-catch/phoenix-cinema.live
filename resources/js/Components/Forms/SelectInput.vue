@@ -1,15 +1,64 @@
 <script setup lang="ts">
-/*defineProps<{
-  id: string
-  fieldName: string
-}>()*/
-import { ref } from 'vue'
+import type { IOption } from '@/types/forms/IOption'
+import { computed, ref, toRefs } from 'vue'
 
-const updateScrollPosition = (e: KeyboardEvent) => {
-  console.log(e.key)
+const props = defineProps<{
+  modelValue: string | null
+  placeholder: string
+  searchKey: keyof IOption
+  items: IOption[]
+}>()
+const { searchKey, items, modelValue, placeholder } = toRefs(props)
+
+const emit = defineEmits<{
+  'update:modelValue': [val: string]
+}>()
+
+const updateBgColorTemporary = (el: HTMLLIElement, duration = 1000) => {
+  el.style.backgroundColor = '#404040'
+  setTimeout(() => {
+    if (!itemRefs.value) return
+    el.style.backgroundColor = '#1f2226'
+  }, duration)
 }
-const isFocused = ref(false)
-const toggleIsFocused = () => (isFocused.value = !isFocused.value)
+
+const searchString = ref('')
+const savePreviousKeysTemporary = (val: string, duration = 1000) => {
+  searchString.value = val
+
+  setTimeout(() => (searchString.value = ''), duration)
+}
+
+const listRef = ref<HTMLUListElement | null>(null)
+const itemRefs = ref<Array<HTMLLIElement> | null>(null)
+const updateScrollPosition = (e: KeyboardEvent) => {
+  const key = searchString.value + e.key
+  console.log(key)
+  if (!listRef.value || !itemRefs.value) return
+  const index = items.value.findIndex(item => {
+    return (item[searchKey.value] as string).slice(0, key.length).toLowerCase() === key.toLowerCase()
+  })
+
+  if (index === -1 || !itemRefs.value[index]) return
+  listRef.value.scrollTop = itemRefs.value[index].offsetTop
+
+  savePreviousKeysTemporary(key)
+  updateBgColorTemporary(itemRefs.value[index])
+}
+
+const isOpen = ref(false)
+const toggleIsOpen = (value?: boolean) => (isOpen.value = value ?? !isOpen.value)
+
+const buttonText = computed(() => {
+  if (modelValue.value === null) return placeholder.value
+
+  const matchedItem = items.value.find(item => item.id === modelValue.value)
+  return matchedItem ? matchedItem[searchKey.value] : placeholder.value
+})
+
+const selectItem = (id: string) => {
+  emit('update:modelValue', id)
+}
 </script>
 
 <template>
@@ -18,9 +67,10 @@ const toggleIsFocused = () => (isFocused.value = !isFocused.value)
       id="dropdownDefaultButton"
       class="px-2.5 pb-2.5 pt-4 w-full text-sm text-white bg-primary rounded-lg border border-primary focus:ring-1 focus:outline-none focus:ring-secondary font-medium py-2.5 text-center inline-flex items-center"
       type="button"
-      @click="toggleIsFocused"
+      @focusout="toggleIsOpen(false)"
+      @click="toggleIsOpen()"
     >
-      Dropdown button
+      {{ buttonText }}
       <svg
         class="w-2.5 h-2.5 ml-2.5"
         aria-hidden="true"
@@ -32,17 +82,25 @@ const toggleIsFocused = () => (isFocused.value = !isFocused.value)
       </svg>
     </button>
 
-    <div
-      v-if="isFocused"
-      id="dropdown"
-      class="bg-tertiary z-10 divide-y divide-gray-100 rounded-lg shadow w-full shadow-secondary absolute mt-2"
-    >
-      <ul class="py-2 text-sm text-gray-700">
-        <li class="block px-4 py-2 bg-tertiary hover:bg-neutral-800 focus:bg-neutral-800 text-white cursor-pointer">
-          Dashboard
-        </li>
-      </ul>
-    </div>
+    <Transition leave-active-class="duration-200">
+      <div
+        v-if="isOpen"
+        id="dropdown"
+        class="bg-tertiary z-20 divide-y divide-gray-100 rounded-lg shadow w-full shadow-secondary absolute mt-2"
+      >
+        <ul ref="listRef" class="py-2 text-sm text-gray-700 max-h-40 overflow-auto rounded-lg">
+          <li
+            v-for="item in items"
+            :key="item.id"
+            ref="itemRefs"
+            class="block px-4 py-2 bg-tertiary hover:bg-neutral-800 focus:bg-neutral-800 text-white cursor-pointer"
+            @click="selectItem(item.id)"
+          >
+            <slot :option="item">{{ item[searchKey] }}</slot>
+          </li>
+        </ul>
+      </div>
+    </Transition>
   </div>
 </template>
 

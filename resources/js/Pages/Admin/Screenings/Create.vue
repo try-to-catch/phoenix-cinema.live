@@ -3,31 +3,34 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 import { Head, useForm } from '@inertiajs/vue3'
 import PrimaryNavLink from '@/Components/Tables/PrimaryNavLink.vue'
 import PrimaryButton from '@/Components/Breeze/PrimaryButton.vue'
-import { IMovieTitleAndId } from '@/types/movies/IMovieTitleAndId'
-import { IHall } from '@/types/hall/IHall'
-import { INewScreening } from '@/types/screenings/INewScreening'
+import type { IMovieTitleAndId } from '@/types/movies/IMovieTitleAndId'
+import type { IHall } from '@/types/hall/IHall'
+import type { INewScreening } from '@/types/screenings/INewScreening'
 import SelectInput from '@/Components/Forms/SelectInput.vue'
+import { IOption } from '@/types/forms/IOption'
+import InputError from '@/Components/Breeze/InputError.vue'
+import NumberInput from '@/Components/Breeze/NumberInput.vue'
+import DateTimeInput from '@/Components/Forms/DateTimeInput.vue'
 
 defineProps<{
   movies: Readonly<IMovieTitleAndId>[]
-  hallTemplates: Readonly<IHall[]>
+  hallTemplates: Readonly<IHall>[]
 }>()
 const form = useForm<INewScreening>({
   movie_id: null,
   hall_template_id: null,
   start_time: '',
-  end_time: '',
   standard_seat_price: 0,
   premium_seat_price: 0,
 })
 
 const submitForm = () => {
-  form.post(route('admin.hall_templates.store'))
+  form.post(route('admin.screenings.store'))
 }
 </script>
 
 <template>
-  <Head title="Фільми" />
+  <Head title="Покази" />
   <AdminLayout :is-wide="false">
     <div class="py-12">
       <div class="container">
@@ -40,9 +43,54 @@ const submitForm = () => {
             </div>
             <div>
               <form class="mt-4 space-y-3" @submit.prevent="submitForm">
-                <div class="">
-                  <SelectInput />
+                <div class="grid grid-cols-2 gap-2.5">
+                  <SelectInput
+                    v-model="form.movie_id"
+                    :items="movies"
+                    search-key="title"
+                    placeholder="Виберіть фільм"
+                  />
+
+                  <SelectInput
+                    v-slot="{ option }: { option: IOption }"
+                    v-model="form.hall_template_id"
+                    :items="hallTemplates"
+                    search-key="address"
+                    placeholder="Виберіть зал"
+                  >
+                    {{ option.address }} #{{ option.number }}
+                  </SelectInput>
                 </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                  <div>
+                    <NumberInput
+                      id="standard_seat_price"
+                      v-model="form.standard_seat_price"
+                      label-inner="Ціна за стандартне місце"
+                      required
+                      :max="2000"
+                    />
+                    <InputError :message="form.errors.standard_seat_price" class="mt-1.5" />
+                  </div>
+
+                  <div>
+                    <NumberInput
+                      id="premium_seat_price"
+                      v-model="form.premium_seat_price"
+                      label-inner="Ціна за преміум місце"
+                      required
+                      :max="2000"
+                    />
+                    <InputError :message="form.errors.premium_seat_price" class="mt-1.5" />
+                  </div>
+                </div>
+
+                <div>
+                  <DateTimeInput id="start_time" v-model="form.start_time" label-inner="Початок показу" required />
+                  <InputError :message="form.errors.start_time" class="mt-1.5" />
+                </div>
+
                 <PrimaryButton type="submit">Створити</PrimaryButton>
               </form>
             </div>
