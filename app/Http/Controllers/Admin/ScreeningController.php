@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Actions\Hall\CreateHallAction;
 use App\Actions\Movies\GetMoviesAction;
+use App\Actions\Screening\CreateScreeningAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Screening\StoreScreeningRequest;
 use App\Http\Requests\Admin\Screening\UpdateScreeningRequest;
@@ -13,17 +14,24 @@ use App\Http\Resources\Admin\Screening\ScreeningItemResource;
 use App\Models\HallTemplate;
 use App\Models\Screening;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ScreeningController extends Controller
 {
+    public function index(): RedirectResponse
+    {
+        return to_route('admin.movies.screenings.index');
+    }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create(GetMoviesAction $getMoviesAction): Response
     {
-        $movies = $getMoviesAction->handle(['id','title']);
+        $movies = $getMoviesAction->handle(['id', 'title']);
+
         return Inertia::render('Admin/Screenings/Create', [
             'movies' => MovieMinResource::collection($movies)->resolve(),
             'hallTemplates' => HallTemplateMinResource::collection(
@@ -35,15 +43,18 @@ class ScreeningController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreScreeningRequest $request, CreateHallAction $createHall): RedirectResponse
-    {
-        $newScreening = $request->validated();
-        $hallTemplateId = $newScreening['hall_template_id'];
-        unset($newScreening['hall_template_id']);
+    public function store(
+        StoreScreeningRequest $request,
+        CreateHallAction $createHallAction,
+        CreateScreeningAction $createScreeningAction
+    ): RedirectResponse {
+        $hallTemplateId = $request->input('hall_template_id');
 
-        $screening = Screening::create($newScreening);
-
-        $createHall->handle($screening, HallTemplate::find($hallTemplateId));
+        //TODO add validation that there are not other screenings at the same time in the same hall | priority 3.5/5
+        DB::beginTransaction();
+        $screening = $createScreeningAction->handle($request);
+        $createHallAction->handle($screening, HallTemplate::find($hallTemplateId));
+        DB::commit();
 
         return to_route('admin.screenings.show', $screening);
 
@@ -84,9 +95,10 @@ class ScreeningController extends Controller
      */
     public function destroy(Screening $screening): RedirectResponse
     {
+        //TODO if there are orders for this screening, send email to users that the screening is canceled, and refund them | priority 4/5
         $screening->delete();
 
-        return to_route('admin.movie_screenings.index');
+        return to_route('admin.movies.screenings.index');
 
     }
 }
