@@ -14,26 +14,21 @@ const emit = defineEmits<{
   'update:modelValue': [val: string]
 }>()
 
-const updateBgColorTemporary = (el: HTMLLIElement, duration = 1000) => {
-  el.style.backgroundColor = '#404040'
-  setTimeout(() => {
-    if (!itemRefs.value) return
-    el.style.backgroundColor = '#1f2226'
-  }, duration)
-}
-
 const searchString = ref('')
-const savePreviousKeysTemporary = (val: string, duration = 1000) => {
+const rememberPressedKeysTemporary = (val: string, duration = 1000) => {
   searchString.value = val
 
   setTimeout(() => (searchString.value = ''), duration)
 }
 
+const focusedItemId = ref('')
+
 const listRef = ref<HTMLUListElement | null>(null)
 const itemRefs = ref<Array<HTMLLIElement> | null>(null)
+
 const updateScrollPosition = (e: KeyboardEvent) => {
   const key = searchString.value + e.key
-  console.log(key)
+
   if (!listRef.value || !itemRefs.value) return
   const index = items.value.findIndex(item => {
     return (item[searchKey.value] as string).slice(0, key.length).toLowerCase() === key.toLowerCase()
@@ -41,9 +36,9 @@ const updateScrollPosition = (e: KeyboardEvent) => {
 
   if (index === -1 || !itemRefs.value[index]) return
   listRef.value.scrollTop = itemRefs.value[index].offsetTop
+  focusedItemId.value = items.value[index].id
 
-  savePreviousKeysTemporary(key)
-  updateBgColorTemporary(itemRefs.value[index])
+  rememberPressedKeysTemporary(key)
 }
 
 const isOpen = ref(false)
@@ -69,6 +64,7 @@ const selectItem = (id: string) => {
       type="button"
       @focusout="toggleIsOpen(false)"
       @click="toggleIsOpen()"
+      @keydown.enter="selectItem(focusedItemId)"
     >
       {{ buttonText }}
       <svg
@@ -93,7 +89,9 @@ const selectItem = (id: string) => {
             v-for="item in items"
             :key="item.id"
             ref="itemRefs"
-            class="block px-4 py-2 bg-tertiary hover:bg-neutral-800 focus:bg-neutral-800 text-white cursor-pointer"
+            class="block px-4 py-2 text-white cursor-pointer"
+            :class="[focusedItemId === item.id ? 'bg-neutral-800' : 'bg-tertiary']"
+            @mouseover="focusedItemId = item.id"
             @click="selectItem(item.id)"
           >
             <slot :option="item">{{ item[searchKey] }}</slot>
