@@ -10,12 +10,14 @@ withDefaults(
     placeholder?: string
     required?: boolean
     autofocus?: boolean
+    disabled?: boolean
   }>(),
   {
     styles: '',
     placeholder: '',
     required: false,
     autofocus: false,
+    disabled: false,
   }
 )
 
@@ -43,6 +45,7 @@ defineExpose({ focus: () => input.value?.focus() })
       :class="[styles]"
       :placeholder="placeholder"
       :required="required"
+      :disabled="disabled"
       type="datetime-local"
       :value="modelValue"
       class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-white bg-tertiary rounded-lg border-1 border-neutral-800 appearance-none focus:outline-none focus:ring-0 focus:border-secondary peer"

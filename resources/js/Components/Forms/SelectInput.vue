@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import type { IOption } from '@/types/forms/IOption'
 import { computed, ref, toRefs } from 'vue'
+import AngleDown from '@/Components/Icons/AngleDown.vue'
 
 const props = defineProps<{
   modelValue: string | null
   placeholder: string
   searchKey: keyof IOption
   items: IOption[]
+  disabled?: boolean
 }>()
-const { searchKey, items, modelValue, placeholder } = toRefs(props)
+const { searchKey, items, modelValue, placeholder, disabled } = toRefs(props)
 
 const emit = defineEmits<{
   'update:modelValue': [val: string]
@@ -42,7 +44,10 @@ const updateScrollPosition = (e: KeyboardEvent) => {
 }
 
 const isOpen = ref(false)
-const toggleIsOpen = (value?: boolean) => (isOpen.value = value ?? !isOpen.value)
+const toggleIsOpen = (value?: boolean) => {
+  if (disabled.value) return
+  isOpen.value = value ?? !isOpen.value
+}
 
 const buttonText = computed(() => {
   if (modelValue.value === null) return placeholder.value
@@ -60,27 +65,20 @@ const selectItem = (id: string) => {
   <div class="relative" @keydown="updateScrollPosition">
     <button
       id="dropdownDefaultButton"
-      class="px-2.5 pb-2.5 pt-4 w-full text-sm text-white bg-primary rounded-lg border border-primary focus:ring-1 focus:outline-none focus:ring-secondary font-medium py-2.5 text-center inline-flex items-center"
+      :class="{ 'focus:ring-1 focus:outline-none focus:ring-secondary': !disabled }"
+      class="px-2.5 pb-2.5 pt-4 w-full text-sm text-white bg-primary rounded-lg border border-primary font-medium py-2.5 text-center inline-flex items-center"
       type="button"
       @focusout="toggleIsOpen(false)"
       @click="toggleIsOpen()"
       @keydown.enter="selectItem(focusedItemId)"
     >
       {{ buttonText }}
-      <svg
-        class="w-2.5 h-2.5 ml-2.5"
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 10 6"
-      >
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
-      </svg>
+      <AngleDown v-if="!disabled" />
     </button>
 
     <Transition leave-active-class="duration-200">
       <div
-        v-if="isOpen"
+        v-if="isOpen && items.length > 0"
         id="dropdown"
         class="bg-tertiary z-20 divide-y divide-gray-100 rounded-lg shadow w-full shadow-secondary absolute mt-2"
       >
