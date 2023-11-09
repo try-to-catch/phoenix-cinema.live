@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import AdminLayout from '@/Layouts/AdminLayout.vue'
 import { Head, useForm } from '@inertiajs/vue3'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
 import PrimaryNavLink from '@/Components/Tables/PrimaryNavLink.vue'
 import PrimaryButton from '@/Components/Breeze/PrimaryButton.vue'
-import type { IMovieTitleAndId } from '@/types/movies/IMovieTitleAndId'
-import type { IHall } from '@/types/hall/IHall'
-import type { INewScreening } from '@/types/screenings/INewScreening'
 import SelectInput from '@/Components/Forms/SelectInput.vue'
-import { IOption } from '@/types/forms/IOption'
 import InputError from '@/Components/Breeze/InputError.vue'
 import NumberInput from '@/Components/Breeze/NumberInput.vue'
 import DateTimeInput from '@/Components/Forms/DateTimeInput.vue'
+import type { IMovieTitleAndId } from '@/types/movies/IMovieTitleAndId'
+import type { INewScreening } from '@/types/screenings/INewScreening'
+import type { IHall } from '@/types/hall/IHall'
+import type { IOption } from '@/types/forms/IOption'
 
 defineProps<{
   movies: Readonly<IMovieTitleAndId>[]
   hallTemplates: Readonly<IHall>[]
 }>()
+
 const form = useForm<INewScreening>({
   movie_id: null,
   hall_template_id: null,
@@ -39,30 +40,35 @@ const submitForm = () => {
             <div class="flex justify-between items-center">
               <h2 class="sm:text-lg text-base font-medium text-white">Створення залу</h2>
 
-              <PrimaryNavLink route-name="admin.movies.index">Повернутися</PrimaryNavLink>
+              <PrimaryNavLink route-name="admin.movies.screenings.index">Повернутися</PrimaryNavLink>
             </div>
             <div>
               <form class="mt-4 space-y-3" @submit.prevent="submitForm">
-                <div class="grid grid-cols-2 gap-2.5">
-                  <SelectInput
-                    v-model="form.movie_id"
-                    :items="movies"
-                    search-key="title"
-                    placeholder="Виберіть фільм"
-                  />
-
-                  <SelectInput
-                    v-slot="{ option }: { option: IOption }"
-                    v-model="form.hall_template_id"
-                    :items="hallTemplates"
-                    search-key="address"
-                    placeholder="Виберіть зал"
-                  >
-                    {{ option.address }} #{{ option.number }}
-                  </SelectInput>
+                <div class="grid sm:grid-cols-2 gap-2.5">
+                  <div>
+                    <SelectInput
+                      v-model="form.movie_id"
+                      :items="movies"
+                      search-key="title"
+                      placeholder="Виберіть фільм"
+                    />
+                    <InputError :message="form.errors.movie_id" class="mt-1.5" />
+                  </div>
+                  <div>
+                    <SelectInput
+                      v-slot="{ option }: { option: IOption }"
+                      v-model="form.hall_template_id"
+                      :items="hallTemplates"
+                      search-key="address"
+                      placeholder="Виберіть зал"
+                    >
+                      {{ option.address }} #{{ option.number }}
+                    </SelectInput>
+                    <InputError :message="form.errors.hall_template_id" class="mt-1.5" />
+                  </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2.5">
+                <div class="grid sm:grid-cols-2 gap-2.5">
                   <div>
                     <NumberInput
                       id="standard_seat_price"
