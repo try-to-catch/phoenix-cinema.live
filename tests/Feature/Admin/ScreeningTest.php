@@ -149,10 +149,7 @@ class ScreeningTest extends TestCase
                     ->has('movie', fn (Assert $page) => $page
                         ->whereAll([
                             'id' => $screening->movie->id,
-                            'slug' => $screening->movie->slug,
                             'title' => $screening->movie->title,
-                            'thumbnail' => $screening->movie->thumbnail_path,
-                            'duration_in_minutes' => $screening->movie->duration_in_minutes,
                         ])
                     )
                     ->has('hall', fn (Assert $page) => $page

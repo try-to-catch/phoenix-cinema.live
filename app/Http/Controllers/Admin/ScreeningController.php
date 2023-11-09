@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Actions\Hall\CreateHallAction;
 use App\Actions\Movies\GetMoviesAction;
 use App\Actions\Screening\CreateScreeningAction;
+use App\Actions\Session\SaveFlashMessageAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Screening\StoreScreeningRequest;
 use App\Http\Requests\Admin\Screening\UpdateScreeningRequest;
@@ -20,8 +21,14 @@ use Inertia\Response;
 
 class ScreeningController extends Controller
 {
+
+    public function __construct(private readonly SaveFlashMessageAction $saveFlashMessageAction)
+    {
+    }
+
     public function index(): RedirectResponse
     {
+        $this->saveFlashMessageAction->handle();
         return to_route('admin.movies.screenings.index');
     }
 
@@ -45,9 +52,10 @@ class ScreeningController extends Controller
      */
     public function store(
         StoreScreeningRequest $request,
-        CreateHallAction $createHallAction,
+        CreateHallAction      $createHallAction,
         CreateScreeningAction $createScreeningAction
-    ): RedirectResponse {
+    ): RedirectResponse
+    {
         $hallTemplateId = $request->input('hall_template_id');
 
         //TODO add validation that there are not other screenings at the same time in the same hall | priority 3.5/5
@@ -65,6 +73,7 @@ class ScreeningController extends Controller
      */
     public function show(Screening $screening): RedirectResponse
     {
+        $this->saveFlashMessageAction->handle();
         return to_route('admin.screenings.edit', ['screening' => $screening->id]);
     }
 

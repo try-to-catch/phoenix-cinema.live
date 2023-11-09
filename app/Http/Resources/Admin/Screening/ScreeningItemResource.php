@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Admin\Screening;
 
 use App\Http\Resources\Admin\Hall\HallResource;
-use App\Http\Resources\Admin\Movie\MovieSummaryResource;
+use App\Http\Resources\Admin\Movie\MovieMinResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,7 +22,7 @@ class ScreeningItemResource extends JsonResource
             'end_time' => $this->end_time->format('Y-m-d H:i'),
             'standard_seat_price' => $this->standard_seat_price,
             'premium_seat_price' => $this->premium_seat_price,
-            'movie' => MovieSummaryResource::make($this->movie)->resolve(),
+            'movie' => MovieMinResource::make($this->movie)->resolve(),
             'hall' => HallResource::make($this->hall)->resolve(),
         ];
     }
