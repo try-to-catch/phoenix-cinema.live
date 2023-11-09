@@ -16,7 +16,8 @@ class CreateScreeningAction
         unset($newScreening['hall_template_id'],$newScreening['movie_id']);
 
         $newScreening['start_time'] = Carbon::parse($newScreening['start_time']);
-        $newScreening['end_time'] = $newScreening['start_time']->addMinutes($movie->duration_in_minutes);
+
+        $newScreening['end_time'] = $newScreening['start_time']->copy()->addMinutes($movie->duration_in_minutes);
 
         return $movie->screenings()->create($newScreening);
     }
