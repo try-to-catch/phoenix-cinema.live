@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin\HallTemplate;
 
-use App\Http\Requests\Admin\Movie\MovieListRequest;
+use App\Http\Requests\Shared\SearchRequest;
 
-class HallTemplateListRequest extends MovieListRequest
+class HallTemplateListRequest extends SearchRequest
 {
 }

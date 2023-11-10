@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin\MovieScreenings;
 
-use App\Http\Requests\Admin\Movie\MovieListRequest;
+use App\Http\Requests\Shared\SearchRequest;
 
-class MovieScreeningsListRequest extends MovieListRequest
+class MovieScreeningsListRequest extends SearchRequest
 {
 }
