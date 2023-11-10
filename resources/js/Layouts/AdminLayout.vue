@@ -86,7 +86,11 @@ const activeRoute = computed(() => {
                 >
                   Зали
                 </NavLink>
-                <NavLink v-if="isAdmin" :active="activeRoute.startsWith('admin.personnel')" href="#">
+                <NavLink
+                  v-if="isAdmin"
+                  :active="activeRoute.startsWith('admin.users')"
+                  :href="route('admin.users.index')"
+                >
                   Персонал
                 </NavLink>
               </div>
@@ -143,8 +147,12 @@ const activeRoute = computed(() => {
             >
               Зали
             </ResponsiveNavLink>
-            <ResponsiveNavLink v-if="isAdmin" :active="activeRoute.startsWith('admin.personnel')" href="#">
-              Персонал
+            <ResponsiveNavLink
+              v-if="isAdmin"
+              :active="activeRoute.startsWith('admin.users')"
+              :href="route('admin.users.index')"
+            >
+              персонал
             </ResponsiveNavLink>
           </div>
 

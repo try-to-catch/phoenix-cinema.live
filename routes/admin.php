@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\HallTemplateController;
 use App\Http\Controllers\Admin\MovieController;
 use App\Http\Controllers\Admin\MovieScreeningsController;
 use App\Http\Controllers\Admin\ScreeningController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', DashboardController::class)->name('dashboard');
@@ -29,3 +30,7 @@ Route::resource('hall-templates', HallTemplateController::class)
     ]);
 
 Route::resource('screenings', ScreeningController::class);
+
+Route::middleware('role:admin')
+    ->resource('users', UserController::class)
+    ->only(['index', 'edit', 'update']);
