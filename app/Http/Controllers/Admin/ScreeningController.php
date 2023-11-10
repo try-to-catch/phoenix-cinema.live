@@ -21,7 +21,6 @@ use Inertia\Response;
 
 class ScreeningController extends Controller
 {
-
     public function __construct(private readonly SaveFlashMessageAction $saveFlashMessageAction)
     {
     }
@@ -29,6 +28,7 @@ class ScreeningController extends Controller
     public function index(): RedirectResponse
     {
         $this->saveFlashMessageAction->handle();
+
         return to_route('admin.movies.screenings.index');
     }
 
@@ -52,10 +52,9 @@ class ScreeningController extends Controller
      */
     public function store(
         StoreScreeningRequest $request,
-        CreateHallAction      $createHallAction,
+        CreateHallAction $createHallAction,
         CreateScreeningAction $createScreeningAction
-    ): RedirectResponse
-    {
+    ): RedirectResponse {
         $hallTemplateId = $request->input('hall_template_id');
 
         //TODO add validation that there are not other screenings at the same time in the same hall | priority 3.5/5
@@ -74,6 +73,7 @@ class ScreeningController extends Controller
     public function show(Screening $screening): RedirectResponse
     {
         $this->saveFlashMessageAction->handle();
+
         return to_route('admin.screenings.edit', ['screening' => $screening->id]);
     }
 
