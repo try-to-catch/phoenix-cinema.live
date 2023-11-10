@@ -7,6 +7,7 @@ withDefaults(
     id: string
     type: string
     labelInner: string
+    disabled?: boolean
     styles?: string
     placeholder?: string
     required?: boolean
@@ -16,6 +17,7 @@ withDefaults(
   {
     styles: '',
     placeholder: '',
+    disabled: false,
     required: false,
     autofocus: false,
     autocomplete: 'off',
@@ -46,10 +48,11 @@ defineExpose({ focus: () => input.value?.focus() })
       :autofocus="autofocus"
       :class="[styles]"
       :placeholder="placeholder"
+      :disabled="disabled"
       :required="required"
       :type="type"
       :value="modelValue"
-      class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-white bg-tertiary rounded-lg border-1 border-neutral-800 appearance-none focus:outline-none focus:ring-0 focus:border-secondary peer"
+      class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-white disabled:text-neutral-400 bg-tertiary rounded-lg border-1 border-neutral-800 appearance-none focus:outline-none focus:ring-0 focus:border-secondary peer"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
     />
     <label
