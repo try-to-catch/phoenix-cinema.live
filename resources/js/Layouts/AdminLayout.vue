@@ -63,9 +63,6 @@ const activeRoute = computed(() => {
 
               <!-- Navigation Links -->
               <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                <NavLink :active="activeRoute.startsWith('admin.dashboard')" :href="route('admin.dashboard')">
-                  Dashboard
-                </NavLink>
                 <NavLink
                   :active="activeRoute.startsWith('admin.movies') && !activeRoute.includes('screenings')"
                   :href="route('admin.movies.index')"
@@ -126,9 +123,6 @@ const activeRoute = computed(() => {
           class="sm:hidden right-0 left-0 sticky h-screen z-20 bg-primary"
         >
           <div class="pt-2 pb-3 space-y-1">
-            <ResponsiveNavLink :active="activeRoute.startsWith('admin.dashboard')" :href="route('admin.dashboard')">
-              Dashboard
-            </ResponsiveNavLink>
             <ResponsiveNavLink
               :active="activeRoute.startsWith('admin.movies') && !activeRoute.includes('screenings')"
               :href="route('admin.movies.index')"
