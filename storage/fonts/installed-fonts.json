@@ -1,9 +1,9 @@
 {
     "rubik": {
-        "300": "E:\\laravel\\cineluxe\\storage\\fonts\/rubik_300_82a112de692d08b55c2b11842e5a67fc",
-        "normal": "E:\\laravel\\cineluxe\\storage\\fonts\/rubik_normal_b6ec54c36a02fb811d72194115ec42db",
-        "500": "E:\\laravel\\cineluxe\\storage\\fonts\/rubik_500_c5ab0af2d954c4140f26e728dad090b3",
-        "600": "E:\\laravel\\cineluxe\\storage\\fonts\/rubik_600_5d61a1f1e601158e12a385b1e07b6a27",
-        "bold": "rubik_bold_98a50ec8225be60b521143fc843a3c06"
+        "300": "\/var\/www\/phoenix-cinema.live\/storage\/fonts\/rubik_300_82a112de692d08b55c2b11842e5a67fc",
+        "normal": "\/var\/www\/phoenix-cinema.live\/storage\/fonts\/rubik_normal_b6ec54c36a02fb811d72194115ec42db",
+        "500": "\/var\/www\/phoenix-cinema.live\/storage\/fonts\/rubik_500_c5ab0af2d954c4140f26e728dad090b3",
+        "600": "rubik_600_5d61a1f1e601158e12a385b1e07b6a27",
+        "bold": "\/var\/www\/phoenix-cinema.live\/storage\/fonts\/rubik_bold_98a50ec8225be60b521143fc843a3c06"
     }
 }
