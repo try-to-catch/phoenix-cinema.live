@@ -11,7 +11,7 @@
 </p>
 
 ## About Phoenix
-___
+
 Phoenix is a web service for booking cinema tickets from anywhere in the world where you have internet access. The application has numerous features, some of which are described below:
 
 - viewing information about films and their shows
@@ -26,11 +26,11 @@ Phoenix is a web service for booking cinema tickets from anywhere in the world w
 - admin panel with the ability to create, update and view films halls, screenings.
 
 ## Used technologies
-___
+
 Laravel, Vue.js(Composition API), Inertia.js, TypeScript, Redis, MySQL, Docker, NPM, Vite, Tailwind CSS, Sanctum, Intervention Image, PHPUnit, Simple QrCode, laravel-dompdf, Laravel Breeze, Artisan Console Commands, Prettier, ESLint, Git, Github.
 
 ## Installation guide
-___
+
 There is two ways to install this project:
 1. Using Docker(recommended)
 2. Using local environment
@@ -69,6 +69,6 @@ If you choose this way, you need to install all dependencies on your local machi
 2. Run `npm run dev` to start development server
 
 ## Conclusion
-___
+
 The project is currently hosted on DigitalOcean. You can visit it by clicking on the link below:
 <a href="https://phoenix-cinema.live" target="_blank">phoenix-cinema.live</a>
