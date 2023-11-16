@@ -26,7 +26,7 @@ const { canAccessAdminPanel } = useRole()
     <template #content>
       <slot name="content" />
       <template v-if="!$slots['content']">
-        <DropdownLink v-if="canAccessAdminPanel" :href="route('admin.dashboard')">Адмін. панель</DropdownLink>
+        <DropdownLink v-if="canAccessAdminPanel" :href="route('admin.movies.index')">Адмін. панель</DropdownLink>
         <DropdownLink :href="route('profile.orders.index')">Профіль</DropdownLink>
         <DropdownLink :href="route('logout')" as="button" method="post">Вийти</DropdownLink>
       </template>

@@ -31,9 +31,9 @@ class AddRoleToUserCommand extends Command
      */
     public function handle(): int
     {
-        $userId = $this->ask('Who will receive an extra role? Specify the user ID');
+        $userId = $this->ask('Who will receive an extra role? Specify the user Email');
 
-        $user = User::query()->find($userId);
+        $user = User::query()->where('email', $userId)->first();
         if (! $user->exists()) {
             $this->error('User not found');
 
@@ -43,6 +43,12 @@ class AddRoleToUserCommand extends Command
         $roles = Role::query()->get(['id', 'name']);
 
         $roleNames = $roles->diff($user->roles)->pluck('name')->toArray();
+
+        if (empty($roleNames)) {
+            $this->error('All roles are already assigned to the user');
+
+            return self::FAILURE;
+        }
 
         $selectedRoleIndex = $this->choice('What is the role of the new user? (current roles: ['.$user->roles->values()->implode('name', ', ').'])', $roleNames, 1);
 

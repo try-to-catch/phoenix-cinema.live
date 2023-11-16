@@ -8,8 +8,6 @@ use App\Http\Controllers\Admin\ScreeningController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', DashboardController::class)->name('dashboard');
-
 Route::controller(MovieScreeningsController::class)->name('movies.screenings.')->group(function () {
     Route::get('/movies/screenings', 'index')->name('index');
     Route::get('/movies/{movie}/screenings', 'show')->name('show');
