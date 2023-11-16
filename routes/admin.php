@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HallTemplateController;
 use App\Http\Controllers\Admin\MovieController;
 use App\Http\Controllers\Admin\MovieScreeningsController;
