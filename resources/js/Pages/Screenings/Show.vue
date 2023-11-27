@@ -14,8 +14,8 @@ import PrimaryButton from '@/Components/Breeze/PrimaryButton.vue'
 import SummarizingRow from '@/Components/Payment/SummarizingRow.vue'
 import AuthSuggestionModal from '@/Components/Modals/AuthSuggestionModal.vue'
 import PaymentSection from '@/Components/Payment/PaymentSection.vue'
-import type { ISeat } from '@/types/seats/ISeat'
 import { SeatType } from '@/types/seats/ISeat'
+import type { ISeat } from '@/types/seats/ISeat'
 import type { IScreeningInfo } from '@/types/screenings/IScreeningInfo'
 import type { OrderFormType } from '@/types/orders/OrderFormType'
 import { computed, ref, watchEffect } from 'vue'
@@ -198,15 +198,17 @@ const sendStoreOrderRequest = () => {
           <SummarizingRow :total="orderTotalCount" small-text="шт." title="Кількість місць" />
 
           <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5 mt-4">
-            <SelectedSeatCard
-              v-for="seat in extendedSelectedSeats"
-              :key="seat.id"
-              :price="seat.price"
-              :row="seat.row_number"
-              :seat="seat.seat_number"
-              :type="seat.type"
-              @remove="removeSeat(seat)"
-            />
+            <transition-group name="card-group">
+              <SelectedSeatCard
+                v-for="seat in extendedSelectedSeats"
+                :key="seat.id"
+                :price="seat.price"
+                :row="seat.row_number"
+                :seat="seat.seat_number"
+                :type="seat.type"
+                @remove="removeSeat(seat)"
+              />
+            </transition-group>
           </div>
         </div>
       </div>
@@ -237,3 +239,15 @@ const sendStoreOrderRequest = () => {
     <AuthSuggestionModal ref="authSuggestionModalRef" />
   </MainLayout>
 </template>
+
+<style scoped>
+.card-group-move,
+.card-group-enter-active {
+  transition: all 0.5s ease;
+}
+
+.card-group-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+</style>
