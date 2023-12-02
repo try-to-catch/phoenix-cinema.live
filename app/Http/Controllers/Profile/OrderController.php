@@ -16,7 +16,7 @@ class OrderController extends Controller
      */
     public function index(): Response
     {
-        $orders = User::orders()
+        $orders = auth()->user()->orders()
             ->select('id', 'screening_id', 'created_at')
             ->with([
                 'screening' => function ($query) {
