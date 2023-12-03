@@ -43,7 +43,7 @@ class MovieFactory extends Factory
             'studio' => fake()->company(),
             'main_cast' => fake()->words(5, true),
             'start_showing' => $startingDate->format('Y-m-d'),
-            'end_showing' => $startingDate->addMonths(rand(1, 3))->addDays(rand(1, 30))->format('Y-m-d'),
+            'end_showing' => $startingDate->copy()->addMonths(rand(1, 3))->addDays(rand(1, 30))->format('Y-m-d'),
         ];
     }
 }
