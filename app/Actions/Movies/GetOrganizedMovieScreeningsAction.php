@@ -16,7 +16,7 @@ class GetOrganizedMovieScreeningsAction
         return Cache::remember("movies:{$movie['id']}:organized_screenings", 60 * 15, function () use ($movie) {
 
             $movie->load('screenings');
-            $screenings = $movie->screenings()->notOver()->sortBy('start_time')->groupBy(function ($screening) {
+            $screenings = $movie->screenings()->notOver()->orderBy('start_time')->get()->groupBy(function ($screening) {
                 return $screening->start_time->isoFormat('D MMMM');
             });
 
