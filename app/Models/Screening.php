@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -71,5 +72,10 @@ class Screening extends Model
         return Attribute::make(
             get: fn ($value, $attributes) => Carbon::parse($attributes['end_time'])->isPast(),
         );
+    }
+
+    public function scopeNotOver(Builder $query): void
+    {
+        $query->where('end_time', '>', now());
     }
 }
