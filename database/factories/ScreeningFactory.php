@@ -24,7 +24,7 @@ class ScreeningFactory extends Factory
         return [
             'movie_id' => Movie::first()->id ?? MovieFactory::new(),
             'start_time' => $startTime,
-            'end_time' => $startTime->addMinutes(rand(90, 180)),
+            'end_time' => $startTime->copy()->addMinutes(rand(90, 180)),
             'standard_seat_price' => fake()->numberBetween(100, 200),
             'premium_seat_price' => fake()->numberBetween(200, 300),
         ];
